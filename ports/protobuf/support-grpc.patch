@@ -1,0 +1,33 @@
+diff --git a/cmake/protobuf-config.cmake.in b/cmake/protobuf-config.cmake.in
+index 18054687..0b06e240 100644
+--- a/cmake/protobuf-config.cmake.in
++++ b/cmake/protobuf-config.cmake.in
+@@ -15,7 +15,7 @@ function(protobuf_generate)
+   if(COMMAND target_sources)
+     list(APPEND _singleargs TARGET)
+   endif()
+-  set(_multiargs PROTOS IMPORT_DIRS GENERATE_EXTENSIONS)
++  set(_multiargs PROTOS IMPORT_DIRS GENERATE_EXTENSIONS GENERATE_EXTENSIONS_ADD ARGS_ADD DEPENDS_ADD)
+ 
+   cmake_parse_arguments(protobuf_generate "${_options}" "${_singleargs}" "${_multiargs}" "${ARGN}")
+ 
+@@ -44,7 +44,7 @@ function(protobuf_generate)
+ 
+   if(NOT protobuf_generate_GENERATE_EXTENSIONS)
+     if(protobuf_generate_LANGUAGE STREQUAL cpp)
+-      set(protobuf_generate_GENERATE_EXTENSIONS .pb.h .pb.cc)
++      set(protobuf_generate_GENERATE_EXTENSIONS .pb.h .pb.cc ${protobuf_generate_GENERATE_EXTENSIONS_ADD})
+     elseif(protobuf_generate_LANGUAGE STREQUAL python)
+       set(protobuf_generate_GENERATE_EXTENSIONS _pb2.py)
+     else()
+@@ -105,8 +105,8 @@ function(protobuf_generate)
+     add_custom_command(
+       OUTPUT ${_generated_srcs}
+       COMMAND  protobuf::protoc
+-      ARGS --${protobuf_generate_LANGUAGE}_out ${_dll_export_decl}${protobuf_generate_PROTOC_OUT_DIR} ${_protobuf_include_path} ${_abs_file}
+-      DEPENDS ${_abs_file} protobuf::protoc
++      ARGS --${protobuf_generate_LANGUAGE}_out ${_dll_export_decl}${protobuf_generate_PROTOC_OUT_DIR} ${_protobuf_include_path} ${_abs_file} ${protobuf_generate_ARGS_ADD}
++      DEPENDS ${_abs_file} protobuf::protoc ${protobuf_generate_DEPENDS_ADD}
+       COMMENT "Running ${protobuf_generate_LANGUAGE} protocol buffer compiler on ${_proto}"
+       VERBATIM )
+   endforeach()

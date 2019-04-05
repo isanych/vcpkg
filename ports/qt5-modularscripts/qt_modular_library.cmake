@@ -37,7 +37,9 @@ function(qt_modular_build_library SOURCE_PATH)
     #Find Python and add it to the path
     vcpkg_find_acquire_program(PYTHON2)
     get_filename_component(PYTHON2_EXE_PATH ${PYTHON2} DIRECTORY)
-    set(ENV{PATH} "${PYTHON2_EXE_PATH};$ENV{PATH}")
+    if(CMAKE_HOST_WIN32)
+        set(ENV{PATH} "${PYTHON2_EXE_PATH};$ENV{PATH}")
+    endif()
 
     file(TO_NATIVE_PATH "${CURRENT_INSTALLED_DIR}" NATIVE_INSTALLED_DIR)
     file(TO_NATIVE_PATH "${CURRENT_PACKAGES_DIR}" NATIVE_PACKAGES_DIR)

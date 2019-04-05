@@ -30,14 +30,13 @@ if("${_target_type}" STREQUAL "STATIC_LIBRARY")
         pcre2-16 
         Qt5ThemeSupport
         Qt5EventDispatcherSupport
-        Qt5PlatformCompositorSupport 
         Qt5FontDatabaseSupport)
 
     if(MSVC)
        set_property(TARGET Qt5::Core APPEND PROPERTY INTERFACE_LINK_LIBRARIES 
            Netapi32.lib Ws2_32.lib Mincore.lib Winmm.lib Iphlpapi.lib Wtsapi32.lib Dwmapi.lib)
 
-      add_qt_library(Qt5::Core Qt5WindowsUIAutomationSupport qwindows qdirect2d)
+      add_qt_library(Qt5::Core Qt5WindowsUIAutomationSupport Qt5PlatformCompositorSupport qwindows qdirect2d)
 
     elseif(APPLE)
        set_property(TARGET Qt5::Core APPEND PROPERTY INTERFACE_LINK_LIBRARIES           

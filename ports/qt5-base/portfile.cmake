@@ -54,6 +54,9 @@ set(CORE_OPTIONS
     -no-fontconfig
     -nomake examples
     -nomake tests
+    -no-opengl
+    -sql-sqlite
+    -no-sql-psql
 )
 
 if(VCPKG_LIBRARY_LINKAGE STREQUAL "static")

@@ -86,7 +86,7 @@ function(vcpkg_download_distfile VAR)
             # When using the internal hash skip, do not output an explicit message.
             return()
         endif()
-        if(vcpkg_download_distfile_SKIP_SHA512)
+        if(vcpkg_download_distfile_SKIP_SHA512 OR NOT vcpkg_download_distfile_SHA512 OR vcpkg_download_distfile_SHA512 STREQUAL 0)
             message(STATUS "Skipping hash check for ${FILE_PATH}.")
             return()
         endif()

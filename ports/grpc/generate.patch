@@ -1,0 +1,35 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 75aa7f4616..5126e7c2f7 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -18802,5 +18802,6 @@ foreach(_config gRPCConfig gRPCConfigVersion)
+   )
+ endforeach()
+ 
++install(FILES cmake/gRPCGenerate.cmake DESTINATION ${gRPC_INSTALL_CMAKEDIR})
+ install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/etc/roots.pem
+   DESTINATION ${gRPC_INSTALL_SHAREDIR})
+diff --git a/cmake/gRPCConfig.cmake.in b/cmake/gRPCConfig.cmake.in
+index 1a0fa6a462..32e990e7c1 100644
+--- a/cmake/gRPCConfig.cmake.in
++++ b/cmake/gRPCConfig.cmake.in
+@@ -6,3 +6,4 @@
+ 
+ # Targets
+ include(${CMAKE_CURRENT_LIST_DIR}/gRPCTargets.cmake)
++include(${CMAKE_CURRENT_LIST_DIR}/gRPCGenerate.cmake)
+diff --git a/cmake/gRPCGenerate.cmake b/cmake/gRPCGenerate.cmake
+new file mode 100644
+index 0000000000..48aee8351a
+--- /dev/null
++++ b/cmake/gRPCGenerate.cmake
+@@ -0,0 +1,9 @@
++function(grpc_generate)
++  if(NOT gRPC_PROTO_GENS_DIR)
++    set(gRPC_PROTO_GENS_DIR ${CMAKE_CURRENT_BINARY_DIR})
++  endif()
++  if(NOT gRPC_CPP_PLUGIN)
++    get_target_property(gRPC_CPP_PLUGIN gRPC::grpc_cpp_plugin IMPORTED_LOCATION_RELEASE)
++  endif()
++  protobuf_generate(${ARGV} GENERATE_EXTENSIONS_ADD .grpc.pb.cc .grpc.pb.h _mock.grpc.pb.h ARGS_ADD --grpc_out=generate_mock_code=true:${gRPC_PROTO_GENS_DIR} --plugin=protoc-gen-grpc=${gRPC_CPP_PLUGIN} DEPENDS_ADD ${gRPC_CPP_PLUGIN})
++endfunction()

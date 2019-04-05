@@ -30,7 +30,9 @@ endif()
 
 vcpkg_find_acquire_program(PYTHON3)
 get_filename_component(PYTHON3_DIR "${PYTHON3}" DIRECTORY)
-set(ENV{PATH} "$ENV{PATH};${PYTHON3_DIR}")
+if(CMAKE_HOST_WIN32)
+    set(ENV{PATH} "$ENV{PATH};${PYTHON3_DIR}")
+endif()
 
 vcpkg_configure_cmake(
     SOURCE_PATH ${SOURCE_PATH}

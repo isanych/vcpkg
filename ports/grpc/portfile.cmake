@@ -14,7 +14,7 @@ vcpkg_from_github(
     REF v1.19.1
     SHA512  4bb127d946fc16887fd4cf75215f0bc9f6d17dbd36fc4f1b191a64914f96c49dddb41f1b6c72fd24ea0a40f242b4398248f32fcb1fe9a764367be1c2edda9142
     HEAD_REF master
-    PATCHES fix-uwp.patch
+    PATCHES fix-uwp.patch generate.patch
 )
 
 if(VCPKG_CMAKE_SYSTEM_NAME STREQUAL "WindowsStore")

@@ -16,6 +16,8 @@ file(WRITE "${SOURCE_PATH}/.git" "repocontent")
 # syncqt is a PERL script
 vcpkg_find_acquire_program(PERL)
 get_filename_component(PERL_EXE_PATH ${PERL} DIRECTORY)
-set(ENV{PATH} "${PERL_EXE_PATH};$ENV{PATH}")
+if(CMAKE_HOST_WIN32)
+  set(ENV{PATH} "${PERL_EXE_PATH};$ENV{PATH}")
+endif()
 
 qt_modular_build_library(${SOURCE_PATH})

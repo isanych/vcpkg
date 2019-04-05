@@ -122,6 +122,7 @@ static void inner(const VcpkgCmdArguments& args)
     if (args.command == "install" || args.command == "remove" || args.command == "export" || args.command == "update")
     {
         Commands::Version::warn_if_vcpkg_version_mismatch(paths);
+#ifndef NDEBUG
         std::string surveydate = *GlobalState::g_surveydate.lock();
         auto maybe_surveydate = Chrono::CTime::parse(surveydate);
         if (auto p_surveydate = maybe_surveydate.get())
@@ -144,6 +145,7 @@ static void inner(const VcpkgCmdArguments& args)
                 }
             }
         }
+#endif // !NDEBUG
     }
 
     if (const auto command_function = find_command(Commands::get_available_commands_type_b()))
@@ -166,7 +168,7 @@ static void inner(const VcpkgCmdArguments& args)
         else
         {
 #if defined(_WIN32)
-            default_triplet = Triplet::X86_WINDOWS;
+            default_triplet = Triplet::X64_WINDOWS;
 #elif defined(__APPLE__)
             default_triplet = Triplet::from_canonical_name("x64-osx");
 #elif defined(__FreeBSD__)

@@ -19,17 +19,19 @@ function(install_qt)
     if(CMAKE_HOST_WIN32)
         vcpkg_find_acquire_program(JOM)
         set(INVOKE "${JOM}" /J ${NUMBER_OF_PROCESSORS})
+        set(_PATHSEP ";")
     else()
         find_program(MAKE make)
         set(INVOKE "${MAKE}" -j${NUMBER_OF_PROCESSORS})
+        set(_PATHSEP ":")
     endif()
     vcpkg_find_acquire_program(PYTHON3)
     get_filename_component(PYTHON3_EXE_PATH ${PYTHON3} DIRECTORY)
-    set(ENV{PATH} "${PYTHON3_EXE_PATH};$ENV{PATH}")
+    set(ENV{PATH} "${PYTHON3_EXE_PATH}${_PATHSEP}$ENV{PATH}")
     set(_path "$ENV{PATH}")
 
     message(STATUS "Package ${TARGET_TRIPLET}-dbg")
-    set(ENV{PATH} "${CURRENT_INSTALLED_DIR}/debug/bin;${_path}")
+    set(ENV{PATH} "${CURRENT_INSTALLED_DIR}/debug/bin${_PATHSEP}${_path}")
     vcpkg_execute_required_process(
         COMMAND ${INVOKE}
         WORKING_DIRECTORY ${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-dbg
@@ -43,7 +45,7 @@ function(install_qt)
     message(STATUS "Package ${TARGET_TRIPLET}-dbg done")
     
     message(STATUS "Package ${TARGET_TRIPLET}-rel")
-    set(ENV{PATH} "${CURRENT_INSTALLED_DIR}/bin;${_path}")
+    set(ENV{PATH} "${CURRENT_INSTALLED_DIR}/bin${_PATHSEP}${_path}")
     vcpkg_execute_required_process(
         COMMAND ${INVOKE}
         WORKING_DIRECTORY ${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-rel

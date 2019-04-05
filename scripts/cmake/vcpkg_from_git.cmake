@@ -72,6 +72,7 @@ function(vcpkg_from_git)
   set(TEMP_SOURCE_PATH "${CURRENT_BUILDTREES_DIR}/src/${SANITIZED_REF}")
 
   function(test_hash FILE_PATH FILE_KIND CUSTOM_ERROR_ADVICE)
+    if(NOT _vdud_SHA512 OR _vdud_SHA512 STREQUAL 0)
     file(SHA512 ${FILE_PATH} FILE_HASH)
     if(NOT FILE_HASH STREQUAL _vdud_SHA512)
         message(FATAL_ERROR
@@ -80,6 +81,7 @@ function(vcpkg_from_git)
             "    Expected hash: [ ${_vdud_SHA512} ]\n"
             "      Actual hash: [ ${FILE_HASH} ]\n"
             "${CUSTOM_ERROR_ADVICE}\n")
+    endif()
     endif()
   endfunction()
 
