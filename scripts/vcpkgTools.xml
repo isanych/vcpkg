@@ -15,11 +15,11 @@
         <archiveName>cmake-3.12.4-Darwin-x86_64.tar.gz</archiveName>
     </tool>
     <tool name="cmake" os="linux">
-        <version>3.14.0</version>
-        <exeRelativePath>cmake-3.14.0-Linux-x86_64/bin/cmake</exeRelativePath>
-        <url>https://github.com/Kitware/CMake/releases/download/v3.14.0/cmake-3.14.0-Linux-x86_64.tar.gz</url>
-        <sha512>e687c0f3acfb15c880ddac67e2821907f833cb900c6ecedb4ab5df5102604d82753c948e3c7dca6e5bcce6278a09b7d577b1afade2e133aec5b2057ac48d3c74</sha512>
-        <archiveName>cmake-3.14.0-Linux-x86_64.tar.gz</archiveName>
+        <version>3.10.2</version>
+        <exeRelativePath>cmake-3.14.1-Linux-x86_64/bin/cmake</exeRelativePath>
+        <url>https://github.com/Kitware/CMake/releases/download/v3.14.1/cmake-3.14.1-Linux-x86_64.tar.gz</url>
+        <sha512>6a25fdf6f4dbda63f7fd9ccf30ef62a751d2f59b90fcf26ccaa604b4c6fe06e9cbc058e6485b448ccffd226c81ea608c3270458b81a7026995ff1e6e041a456f</sha512>
+        <archiveName>cmake-3.14.1-Linux-x86_64.tar.gz</archiveName>
     </tool>
     <tool name="cmake" os="freebsd">
         <version>3.12.4</version>
@@ -94,7 +94,7 @@
         <archiveName>ninja-win-1.9.0.zip</archiveName>
     </tool>
     <tool name="ninja" os="linux">
-        <version>1.9.0</version>
+        <version>1.8.2</version>
         <exeRelativePath>ninja</exeRelativePath>
         <url>https://github.com/ninja-build/ninja/releases/download/v1.9.0/ninja-linux.zip</url>
         <sha512>a9c1f73c03aef147f1f43f50936d282c3065d0b72e1776d533abe47193c8b87777f39147ecc12db7ed240fc86c2944b60a90fd8cfd886bbd856ee53ee2c18dd0</sha512>
