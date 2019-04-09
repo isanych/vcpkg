@@ -4,14 +4,14 @@
 #include <vcpkg/base/lineinfo.h>
 #include <vcpkg/base/strings.h>
 
-#ifdef __GNUC__
+#ifdef SUPPORTS_BACKTRACE
 #include <backtrace.h>
 #include <cxxabi.h>
 #endif
 
 namespace vcpkg::Checks
 {
-#ifdef __GNUC__
+#ifdef SUPPORTS_BACKTRACE
     static int full_callback(
         void* data __attribute__((unused)), uintptr_t pc, const char* filename, int lineno, const char* function)
     {
@@ -52,13 +52,13 @@ namespace vcpkg::Checks
 
     // Exit the tool without an error message.
     [[noreturn]] inline void exit_fail(const LineInfo& line_info)
-	{
-#ifdef __GNUC__
+    {
+#ifdef SUPPORTS_BACKTRACE
         auto lbstate = backtrace_create_state(nullptr, 1, error_callback, nullptr);
         backtrace_full(lbstate, 0, full_callback, error_callback, 0);
 #endif
-		exit_with_code(line_info, EXIT_FAILURE);
-	}
+        exit_with_code(line_info, EXIT_FAILURE);
+    }
 
     // Exit the tool successfully.
     [[noreturn]] inline void exit_success(const LineInfo& line_info) { exit_with_code(line_info, EXIT_SUCCESS); }
