@@ -8,11 +8,11 @@
         <archiveName>cmake-3.14.1-win64-x64.zip</archiveName>
     </tool>
     <tool name="cmake" os="osx">
-        <version>3.12.4</version>
-        <exeRelativePath>cmake-3.12.4-Darwin-x86_64/CMake.app/Contents/bin/cmake</exeRelativePath>
-        <url>https://github.com/Kitware/CMake/releases/download/v3.12.4/cmake-3.12.4-Darwin-x86_64.tar.gz</url>
-        <sha512>67ce23394d9679818ab0f2792f5d585c8c6f385e18584d488a47d48b768d1ee20b58247d22945aeff1ff9f84b7e843457dac98a50801ac3068ab1fbcbe0b0f45</sha512>
-        <archiveName>cmake-3.12.4-Darwin-x86_64.tar.gz</archiveName>
+        <version>3.14.0</version>
+        <exeRelativePath>cmake-3.14.0-Darwin-x86_64/CMake.app/Contents/bin/cmake</exeRelativePath>
+        <url>https://github.com/Kitware/CMake/releases/download/v3.14.0/cmake-3.14.0-Darwin-x86_64.tar.gz</url>
+        <sha512>a5a7217a049be3bb2ef5c93292b1d92eb4dd5ec6ab2dd04984aae01d2732eb343cea4f9741b333a5e21a27eb7934f568f780f3558e7ff870150c3309fc4656b3</sha512>
+        <archiveName>cmake-3.14.0-Darwin-x86_64.tar.gz</archiveName>
     </tool>
     <tool name="cmake" os="linux">
         <version>3.10.2</version>
