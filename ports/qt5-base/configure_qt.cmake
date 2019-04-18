@@ -9,9 +9,7 @@ function(configure_qt)
     get_filename_component(PERL_EXE_PATH ${PERL} DIRECTORY)
 
     file(REMOVE_RECURSE ${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-rel ${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-dbg)
-    if(CMAKE_HOST_WIN32)
-        set(ENV{PATH} "$ENV{PATH};${PERL_EXE_PATH}")
-    endif()
+    vcpkg_add_to_path("${PERL_EXE_PATH}")
 
     if(VCPKG_LIBRARY_LINKAGE STREQUAL static)
         list(APPEND _csc_OPTIONS "-static")
