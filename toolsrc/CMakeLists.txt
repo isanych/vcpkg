@@ -77,7 +77,7 @@ endif()
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 target_link_libraries(vcpkg PRIVATE Threads::Threads)
-if(GCC)
+if(GCC AND CMAKE_BUILD_TYPE STREQUAL Debug)
     include(CheckCXXSourceCompiles)
     set(CMAKE_REQUIRED_LIBRARIES backtrace)
     check_cxx_source_compiles("#include <backtrace.h>
