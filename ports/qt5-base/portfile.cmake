@@ -51,13 +51,22 @@ set(CORE_OPTIONS
     -system-doubleconversion
     -system-sqlite
     -system-harfbuzz
-    -no-fontconfig
     -nomake examples
     -nomake tests
-    -no-opengl
     -sql-sqlite
     -no-sql-psql
 )
+if($ENV{QT_NO_GUI})
+  list(APPEND CORE_OPTIONS
+    -no-gui
+    -no-widgets
+  )
+else()
+  list(APPEND CORE_OPTIONS
+    -no-fontconfig
+    -no-opengl
+  )
+endif()
 
 if(VCPKG_LIBRARY_LINKAGE STREQUAL "static")
     list(APPEND CORE_OPTIONS
