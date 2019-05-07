@@ -55,14 +55,21 @@ function(vcpkg_build_qmake)
     set(ENV{_CL_} "/utf-8")
 
     #First generate the makefiles so we can modify them
-    if(NOT DEFINED VCPKG_BUILD_TYPE OR VCPKG_BUILD_TYPE STREQUAL "debug")
-        if(CMAKE_HOST_WIN32)
-            set(ENV{PATH} "${CURRENT_INSTALLED_DIR}/debug/lib;${CURRENT_INSTALLED_DIR}/debug/bin;${CURRENT_INSTALLED_DIR}/tools/qt5;${ENV_PATH_BACKUP}")
-        endif()
+<<<<<<< HEAD
+    if(CMAKE_HOST_WIN32)
+        set(ENV{PATH} "${CURRENT_INSTALLED_DIR}/debug/lib;${CURRENT_INSTALLED_DIR}/debug/bin;${CURRENT_INSTALLED_DIR}/tools/qt5;${ENV_PATH_BACKUP}")
+    endif()
     if(NOT _csc_SKIP_MAKEFILES)
         run_jom(qmake_all makefiles dbg)
 
         if(CMAKE_HOST_WIN32)
+=======
+    if(NOT DEFINED VCPKG_BUILD_TYPE OR VCPKG_BUILD_TYPE STREQUAL "debug")
+        set(ENV{PATH} "${CURRENT_INSTALLED_DIR}/debug/lib;${CURRENT_INSTALLED_DIR}/debug/bin;${CURRENT_INSTALLED_DIR}/tools/qt5;${ENV_PATH_BACKUP}")
+        if(NOT _csc_SKIP_MAKEFILES)
+            run_jom(qmake_all makefiles dbg)
+
+>>>>>>> origin/master
             #Store debug makefiles path
             file(GLOB_RECURSE DEBUG_MAKEFILES ${DEBUG_DIR}/*Makefile*)
 
@@ -79,17 +86,29 @@ function(vcpkg_build_qmake)
                 file(WRITE "${DEBUG_MAKEFILE}" "${_contents}")
             endforeach()
         endif()
+<<<<<<< HEAD
     endif()
+
+    run_jom("${_csc_DEBUG_TARGETS}" ${_csc_BUILD_LOGNAME} dbg)
+
+    if(CMAKE_HOST_WIN32)
+        set(ENV{PATH} "${CURRENT_INSTALLED_DIR}/lib;${CURRENT_INSTALLED_DIR}/bin;${CURRENT_INSTALLED_DIR}/tools/qt5;${ENV_PATH_BACKUP}")
+    endif()
+    if(NOT _csc_SKIP_MAKEFILES)
+        run_jom(qmake_all makefiles rel)
+
+        if(CMAKE_HOST_WIN32)
+=======
 
         run_jom("${_csc_DEBUG_TARGETS}" ${_csc_BUILD_LOGNAME} dbg)
     endif()
 
+    if(NOT DEFINED VCPKG_BUILD_TYPE OR VCPKG_BUILD_TYPE STREQUAL "release")
         set(ENV{PATH} "${CURRENT_INSTALLED_DIR}/lib;${CURRENT_INSTALLED_DIR}/bin;${CURRENT_INSTALLED_DIR}/tools/qt5;${ENV_PATH_BACKUP}")
-    endif()
         if(NOT _csc_SKIP_MAKEFILES)
             run_jom(qmake_all makefiles rel)
 
-        if(CMAKE_HOST_WIN32)
+>>>>>>> origin/master
             #Store release makefile path
             file(GLOB_RECURSE RELEASE_MAKEFILES ${RELEASE_DIR}/*Makefile*)
 
@@ -104,9 +123,11 @@ function(vcpkg_build_qmake)
                 file(WRITE "${RELEASE_MAKEFILE}" "${_contents}")
             endforeach()
         endif()
-    endif()
+<<<<<<< HEAD
+=======
 
         run_jom("${_csc_RELEASE_TARGETS}" ${_csc_BUILD_LOGNAME} rel)
+>>>>>>> origin/master
     endif()
     
     # Restore the original value of ENV{PATH}
