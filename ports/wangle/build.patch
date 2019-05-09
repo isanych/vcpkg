@@ -1,12 +1,8 @@
 diff --git a/wangle/CMakeLists.txt b/wangle/CMakeLists.txt
-index dd348b0..4e84a15 100644
+index 15dc8b6..ed8c79b 100644
 --- a/wangle/CMakeLists.txt
 +++ b/wangle/CMakeLists.txt
-@@ -39,9 +39,9 @@ endif()
-+find_package(ZLIB REQUIRED)
-   find_package(Librt)
- endif()
-@@ -124,6 +125,7 @@ target_include_directories(
+@@ -123,6 +123,7 @@ target_include_directories(
    PUBLIC
      $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/..>
      $<INSTALL_INTERFACE:${INCLUDE_INSTALL_DIR}>
