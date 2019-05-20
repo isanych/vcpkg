@@ -101,7 +101,7 @@ if(NOT VCPKG_CMAKE_SYSTEM_NAME OR VCPKG_CMAKE_SYSTEM_NAME STREQUAL "WindowsStore
 elseif(VCPKG_CMAKE_SYSTEM_NAME STREQUAL "Linux")
     configure_qt(
         SOURCE_PATH ${SOURCE_PATH}
-        PLATFORM "linux-g++"
+        PLATFORM "linux-$<IF:$<CXX_COMPILER_ID:Clang>,clang,g++>"
         OPTIONS
             ${CORE_OPTIONS}
         OPTIONS_RELEASE
