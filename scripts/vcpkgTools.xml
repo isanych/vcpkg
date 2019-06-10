@@ -97,7 +97,7 @@
         <version>1.8.2</version>
         <exeRelativePath>ninja</exeRelativePath>
         <url>https://github.com/ninja-build/ninja/releases/download/v1.9.0/ninja-linux.zip</url>
-        <sha512>a9c1f73c03aef147f1f43f50936d282c3065d0b72e1776d533abe47193c8b87777f39147ecc12db7ed240fc86c2944b60a90fd8cfd886bbd856ee53ee2c18dd0</sha512>
+        <sha512>751fd86520a1a38fb47baadf4a46ab49f9ebb11d6ff9c01e71326564ebf10f141ca2627620e315fcab82db1493a30123f11194f41226241d80413d5008acfc59</sha512>
         <archiveName>ninja-linux-1.9.0.zip</archiveName>
     </tool>
     <tool name="ninja" os="osx">
