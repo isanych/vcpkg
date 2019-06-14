@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <tools version="2">
     <tool name="cmake" os="windows">
-        <version>3.14.1</version>
-        <exeRelativePath>cmake-3.14.1-win64-x64\bin\cmake.exe</exeRelativePath>
-        <url>https://github.com/Kitware/CMake/releases/download/v3.14.1/cmake-3.14.1-win64-x64.zip</url>
-        <sha512>8d5e643520af139c732b4b62aa503caf13b934a3c9e5ba41cbd04b652895583c1a9c032e6189a9b79124e6b9f373de251c1fd40a784a2d1b79bd926c001dd04b</sha512>
-        <archiveName>cmake-3.14.1-win64-x64.zip</archiveName>
+        <version>3.14.0</version>
+        <exeRelativePath>cmake-3.14.5-win64-x64\bin\cmake.exe</exeRelativePath>
+        <url>https://github.com/Kitware/CMake/releases/download/v3.14.5/cmake-3.14.5-win64-x64.zip</url>
+        <sha512>877b90bc4c686ff1b65093fbca6f24d4c25544e3f9a3100937a006f8ba68b18354ae82786694ed0db5b0949fe6adf44da5b6ce4b0c5b9688fb12cb12aa707cb4</sha512>
+        <archiveName>cmake.zip</archiveName>
     </tool>
     <tool name="cmake" os="osx">
         <version>3.14.0</version>
@@ -16,10 +16,10 @@
     </tool>
     <tool name="cmake" os="linux">
         <version>3.10.2</version>
-        <exeRelativePath>cmake-3.14.1-Linux-x86_64/bin/cmake</exeRelativePath>
-        <url>https://github.com/Kitware/CMake/releases/download/v3.14.1/cmake-3.14.1-Linux-x86_64.tar.gz</url>
-        <sha512>6a25fdf6f4dbda63f7fd9ccf30ef62a751d2f59b90fcf26ccaa604b4c6fe06e9cbc058e6485b448ccffd226c81ea608c3270458b81a7026995ff1e6e041a456f</sha512>
-        <archiveName>cmake-3.14.1-Linux-x86_64.tar.gz</archiveName>
+        <exeRelativePath>cmake-3.14.5-Linux-x86_64/bin/cmake</exeRelativePath>
+        <url>https://github.com/Kitware/CMake/releases/download/v3.14.5/cmake-3.14.5-Linux-x86_64.tar.gz</url>
+        <sha512>260215e2e92880466bcfcad5b30de0f86c3748c47de1c14e2a3f13a6bc4ae7b47b688ad6033c937ffb13696ea479aefaabccb78add6e95fd0f39ab021b17670d</sha512>
+        <archiveName>cmake.tar.gz</archiveName>
     </tool>
     <tool name="cmake" os="freebsd">
         <version>3.12.4</version>
@@ -30,10 +30,10 @@
     </tool>
     <tool name="git" os="windows">
         <version>2.7.4</version>
-        <exeRelativePath>mingw32\bin\git.exe</exeRelativePath>
-        <url>https://github.com/git-for-windows/git/releases/download/v2.21.0.windows.1/PortableGit-2.21.0-32-bit.7z.exe</url>
-        <sha512>d5600fc35e91cfa84e3547e38a9da9798cf0a53810cc35ac9a0dee671c4ef0e9fbcbe3eda9c790f8db4eafce7ce58d7a168d28938a66cdcca000bf5a7f5267c1</sha512>
-        <archiveName>PortableGit-2.21.0-32-bit.7z.exe</archiveName>
+        <exeRelativePath>mingw64\bin\git.exe</exeRelativePath>
+        <url>https://github.com/git-for-windows/git/releases/download/v2.22.0.windows.1/PortableGit-2.22.0-64-bit.7z.exe</url>
+        <sha512>2d935dc309568a9694711ac080967388c98b69907fb015f6536a4a0920084e0c</sha512>
+        <archiveName>PortableGit.exe</archiveName>
     </tool>
     <tool name="git" os="linux">
         <version>2.7.4</version>
@@ -57,7 +57,7 @@
         <version>2.6.7</version>
         <exeRelativePath>vswhere.exe</exeRelativePath>
         <url>https://github.com/Microsoft/vswhere/releases/download/2.6.7/vswhere.exe</url>
-        <sha512></sha512>
+        <sha512>dc4c224cd7fd29233b251277fddd4be5e011a4e42638322d490da27dbe36cf6fc3513305a6a678d740d44047bf5ca1834d2ef5e30e7ff376989e1d60559f3f40</sha512>
     </tool>
     <tool name="nuget" os="windows">
         <version>4.9.4</version>
@@ -87,10 +87,10 @@
         <archiveName>aria2-1.34.0-win-64bit-build1.zip</archiveName>
     </tool>
     <tool name="ninja" os="windows">
-        <version>1.9.0</version>
+        <version>1.8.2</version>
         <exeRelativePath>ninja.exe</exeRelativePath>
         <url>https://github.com/ninja-build/ninja/releases/download/v1.9.0/ninja-win.zip</url>
-        <sha512></sha512>
+        <sha512>1c050e602ec63d4dcf44d9ab3d2d02ac731b4b2977bc0b420a21e85604487f58ec8d3045941d4153ef06ab00c175ca7cf9d57b8e20a757528290e135639962ac</sha512>
         <archiveName>ninja-win-1.9.0.zip</archiveName>
     </tool>
     <tool name="ninja" os="linux">
