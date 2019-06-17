@@ -27,7 +27,7 @@ vcpkg_extract_source_archive_ex(
 )
 
 # Remove vendored dependencies to ensure they are not picked up by the build
-foreach(DEPENDENCY freetype zlib harfbuzzng libjpeg libpng double-conversion sqlite)
+foreach(DEPENDENCY freetype zlib harfbuzzng libjpeg libpng double-conversion sqlite icu)
     if(EXISTS ${SOURCE_PATH}/src/3rdparty/${DEPENDENCY})
         file(REMOVE_RECURSE ${SOURCE_PATH}/src/3rdparty/${DEPENDENCY})
     endif()
@@ -119,6 +119,7 @@ elseif(VCPKG_CMAKE_SYSTEM_NAME STREQUAL "Linux")
             "FREETYPE_LIBS=${CURRENT_INSTALLED_DIR}/lib/libfreetype.a"
             "PSQL_LIBS=${CURRENT_INSTALLED_DIR}/lib/libpq.a ${CURRENT_INSTALLED_DIR}/lib/libssl.a ${CURRENT_INSTALLED_DIR}/lib/libcrypto.a -ldl -lpthread"
             "SQLITE_LIBS=${CURRENT_INSTALLED_DIR}/lib/libsqlite3.a -ldl -lpthread"
+            "ICU_LIBS=${CURRENT_INSTALLED_DIR}/lib/libicui18n.a ${CURRENT_INSTALLED_DIR}/lib/libicuuc.a ${CURRENT_INSTALLED_DIR}/lib/libicudata.a"
         OPTIONS_DEBUG
             "LIBJPEG_LIBS=${CURRENT_INSTALLED_DIR}/debug/lib/libjpeg.a"
             "QMAKE_LIBS_PRIVATE+=${CURRENT_INSTALLED_DIR}/debug/lib/libpng16d.a"
@@ -128,6 +129,7 @@ elseif(VCPKG_CMAKE_SYSTEM_NAME STREQUAL "Linux")
             "FREETYPE_LIBS=${CURRENT_INSTALLED_DIR}/debug/lib/libfreetyped.a"
             "PSQL_LIBS=${CURRENT_INSTALLED_DIR}/debug/lib/libpqd.a ${CURRENT_INSTALLED_DIR}/debug/lib/libssl.a ${CURRENT_INSTALLED_DIR}/debug/lib/libcrypto.a -ldl -lpthread"
             "SQLITE_LIBS=${CURRENT_INSTALLED_DIR}/debug/lib/libsqlite3.a -ldl -lpthread"
+            "ICU_LIBS=${CURRENT_INSTALLED_DIR}/debug/lib/libicui18n.a ${CURRENT_INSTALLED_DIR}/debug/lib/libicuuc.a ${CURRENT_INSTALLED_DIR}/debug/lib/libicudata.a"
     )
 
 elseif(VCPKG_CMAKE_SYSTEM_NAME STREQUAL "Darwin")
