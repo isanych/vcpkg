@@ -56,7 +56,7 @@ function(vcpkg_build_qmake)
 
     #First generate the makefiles so we can modify them
     if(NOT DEFINED VCPKG_BUILD_TYPE OR VCPKG_BUILD_TYPE STREQUAL "debug")
-        set(ENV{PATH} "${CURRENT_INSTALLED_DIR}/debug/lib;${CURRENT_INSTALLED_DIR}/debug/bin;${CURRENT_INSTALLED_DIR}/tools/qt5;${ENV_PATH_BACKUP}")
+        set(ENV{PATH} "${CURRENT_INSTALLED_DIR}/debug/lib${_PATHSEP}${CURRENT_INSTALLED_DIR}/debug/bin${_PATHSEP}${CURRENT_INSTALLED_DIR}/tools/qt5${_PATHSEP}${ENV_PATH_BACKUP}")
         if(NOT _csc_SKIP_MAKEFILES)
             run_jom(qmake_all makefiles dbg)
 
@@ -81,7 +81,7 @@ function(vcpkg_build_qmake)
     endif()
 
     if(NOT DEFINED VCPKG_BUILD_TYPE OR VCPKG_BUILD_TYPE STREQUAL "release")
-        set(ENV{PATH} "${CURRENT_INSTALLED_DIR}/lib;${CURRENT_INSTALLED_DIR}/bin;${CURRENT_INSTALLED_DIR}/tools/qt5;${ENV_PATH_BACKUP}")
+        set(ENV{PATH} "${CURRENT_INSTALLED_DIR}/lib${_PATHSEP}${CURRENT_INSTALLED_DIR}/bin${_PATHSEP}${CURRENT_INSTALLED_DIR}/tools/qt5${_PATHSEP}${ENV_PATH_BACKUP}")
         if(NOT _csc_SKIP_MAKEFILES)
             run_jom(qmake_all makefiles rel)
 

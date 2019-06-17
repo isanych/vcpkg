@@ -241,6 +241,7 @@ if $vcpkgUseSystem; then
 else
     fetchTool "cmake" "$UNAME" cmakeExe || exit 1
     fetchTool "ninja" "$UNAME" ninjaExe || exit 1
+    chmod +x "$ninjaExe"
 fi
 selectCXX CXX || exit 1
 
