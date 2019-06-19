@@ -60,7 +60,7 @@ function(vcpkg_build_qmake)
     if(NOT DEFINED VCPKG_BUILD_TYPE OR VCPKG_BUILD_TYPE STREQUAL "debug")
         set(ENV{PATH} "${CURRENT_INSTALLED_DIR}/debug/lib${_PATHSEP}${CURRENT_INSTALLED_DIR}/debug/bin${_PATHSEP}${CURRENT_INSTALLED_DIR}/tools/qt5${_PATHSEP}${ENV_PATH_BACKUP}")
         if(NOT _csc_SKIP_MAKEFILES)
-            run_jom(qmake_all makefiles dbg)
+            run_jom(all makefiles dbg)
 
             #Store debug makefiles path
             file(GLOB_RECURSE DEBUG_MAKEFILES ${DEBUG_DIR}/*Makefile*)
@@ -85,7 +85,7 @@ function(vcpkg_build_qmake)
     if(NOT DEFINED VCPKG_BUILD_TYPE OR VCPKG_BUILD_TYPE STREQUAL "release")
         set(ENV{PATH} "${CURRENT_INSTALLED_DIR}/lib${_PATHSEP}${CURRENT_INSTALLED_DIR}/bin${_PATHSEP}${CURRENT_INSTALLED_DIR}/tools/qt5${_PATHSEP}${ENV_PATH_BACKUP}")
         if(NOT _csc_SKIP_MAKEFILES)
-            run_jom(qmake_all makefiles rel)
+            run_jom(all makefiles rel)
 
             #Store release makefile path
             file(GLOB_RECURSE RELEASE_MAKEFILES ${RELEASE_DIR}/*Makefile*)
