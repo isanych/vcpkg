@@ -10,12 +10,12 @@ if(EXISTS "${CURRENT_INSTALLED_DIR}/include/openssl/ssl.h")
   return()
 endif()
 
-set(OPENSSL_VERSION 1.0.2q)
+set(OPENSSL_VERSION ${PORT_VERSION})
 
 vcpkg_find_acquire_program(PERL)
 
 vcpkg_download_distfile(OPENSSL_SOURCE_ARCHIVE
-    URLS "https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz" "https://www.openssl.org/source/old/1.0.2/openssl-${OPENSSL_VERSION}.tar.gz"
+    URLS "https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz" "https://www.openssl.org/source/old/${PORT_CMAKE_VERSION}/openssl-${OPENSSL_VERSION}.tar.gz"
     FILENAME "openssl-${OPENSSL_VERSION}.tar.gz"
     SHA512 403e6cad42db3ba860c3fa4fa81c1b7b02f0b873259e5c19a7fc8e42de0854602555f1b1ca74f4e3a7737a4cbd3aac063061e628ec86534586500819fae7fec0
 )
@@ -69,3 +69,6 @@ if(VCPKG_LIBRARY_LINKAGE STREQUAL "static")
 endif()
 
 vcpkg_test_cmake(PACKAGE_NAME OpenSSL MODULE)
+vcpkg_pkgconfig(NAME libcrypto COMMON -lcrypto -ldl REQUIRES zlib)
+vcpkg_pkgconfig(NAME libssl COMMON -lssl REQUIRES libcrypto)
+vcpkg_pkgconfig(NAME openssl COMMON -lssl REQUIRES libcrypto)

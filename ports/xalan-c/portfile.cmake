@@ -9,7 +9,7 @@ endif()
 
 vcpkg_check_linkage(ONLY_DYNAMIC_LIBRARY ONLY_DYNAMIC_CRT)
 
-set(XALANC_VERSION 1.11)
+set(XALANC_VERSION ${PORT_VERSION})
 
 vcpkg_download_distfile(ARCHIVE
     URLS "http://www-us.apache.org/dist/xalan/xalan-c/sources/xalan_c-${XALANC_VERSION}-src.zip"
