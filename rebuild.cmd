@@ -1,3 +1,5 @@
+rem git, tar, cmake, ninja, python2 & python3 should be in the path
+cd c:\opt
 rem cd "%~dp0"
 rem rd /q/s buildtrees installed packages
 rem copy triplets\x64-windows-dynamic.cmake triplets\x64-windows.cmake

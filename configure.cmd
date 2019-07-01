@@ -2,6 +2,6 @@ rem for /f "delims=" %%i in ('"%ProgramFiles(x86)%\Microsoft Visual Studio\Insta
 rem call "%p%\VC\Auxiliary\Build\vcvars.bat" x64
 rem -vcvars_ver=14.16.27023
 if not exist "%~dp0vcpkg.exe" call "%~dp0bootstrap-vcpkg"
-"%~dp0vcpkg" install protobuf grpc hdf5 highfive boost rapidjson cryptopp xerces-c xalan-c
+"%~dp0vcpkg" install zlib protobuf grpc hdf5 highfive boost rapidjson cryptopp xerces-c xalan-c
 rem "%~dp0vcpkg" install bzip2 double-conversion freetype harfbuzz libjpeg-turbo liblzma libpng openssl pcre2 sqlite3 zlib
 copy "%~dp0installed\x64-windows\tools\protobuf\*.exe" "%~dp0installed\x64-windows\bin"
