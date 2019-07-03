@@ -67,7 +67,7 @@ file(COPY ${SOURCE_PATH}/COPYING DESTINATION ${CURRENT_PACKAGES_DIR}/share/pcre)
 file(RENAME ${CURRENT_PACKAGES_DIR}/share/pcre/COPYING ${CURRENT_PACKAGES_DIR}/share/pcre/copyright)
 
 vcpkg_copy_pdbs()
-vcpkg_pkgconfig(NAME libpcre COMMON -lpcre -pthread)
+vcpkg_pkgconfig(NAME libpcre COMMON -lpcre -lpthread -pthread)
 vcpkg_pkgconfig(NAME libpcre-16 COMMON -lpcre-16 -pthread)
 vcpkg_pkgconfig(NAME libpcre-32 COMMON -lpcre-32 -pthread)
 vcpkg_pkgconfig(NAME libpcre-cpp COMMON -lpcre-cpp REQUIRES libpcre-8)
