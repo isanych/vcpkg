@@ -83,19 +83,17 @@ if(NOT VCPKG_CMAKE_SYSTEM_NAME OR VCPKG_CMAKE_SYSTEM_NAME STREQUAL "WindowsStore
             -mp
             -opengl dynamic # other options are "-no-opengl", "-opengl angle", and "-opengl desktop"
         OPTIONS_RELEASE
-            LIBJPEG_LIBS="-ljpeg"
-            ZLIB_LIBS="-lzlib"
-            LIBPNG_LIBS="-llibpng16"
-            PSQL_LIBS="-llibpq"
-            PCRE2_LIBS="-lpcre2-16"
-            FREETYPE_LIBS="-lfreetype"
+            "LIBJPEG_LIBS=-ljpeg"
+            "ZLIB_LIBS=-lzlib"
+            "LIBPNG_LIBS=-llibpng16"
+            "PCRE2_LIBS=-lpcre2-16"
+            "FREETYPE_LIBS=-lfreetype"
         OPTIONS_DEBUG
-            LIBJPEG_LIBS="-ljpegd"
-            ZLIB_LIBS="-lzlibd"
-            LIBPNG_LIBS="-llibpng16d"
-            PSQL_LIBS="-llibpqd"
-            PCRE2_LIBS="-lpcre2-16d"
-            FREETYPE_LIBS="-lfreetyped"
+            "LIBJPEG_LIBS=-ljpegd"
+            "ZLIB_LIBS=-lzlibd"
+            "LIBPNG_LIBS=-llibpng16d"
+            "PCRE2_LIBS=-lpcre2-16d"
+            "FREETYPE_LIBS=-lfreetyped"
     )
 
 elseif(VCPKG_CMAKE_SYSTEM_NAME STREQUAL "Linux")
@@ -117,7 +115,6 @@ elseif(VCPKG_CMAKE_SYSTEM_NAME STREQUAL "Linux")
             "ZLIB_LIBS=${CURRENT_INSTALLED_DIR}/lib/libz.a"
             "LIBPNG_LIBS=${CURRENT_INSTALLED_DIR}/lib/libpng16.a"
             "FREETYPE_LIBS=${CURRENT_INSTALLED_DIR}/lib/libfreetype.a"
-            "PSQL_LIBS=${CURRENT_INSTALLED_DIR}/lib/libpq.a ${CURRENT_INSTALLED_DIR}/lib/libssl.a ${CURRENT_INSTALLED_DIR}/lib/libcrypto.a -ldl -lpthread"
             "SQLITE_LIBS=${CURRENT_INSTALLED_DIR}/lib/libsqlite3.a -ldl -lpthread"
             "ICU_LIBS=${CURRENT_INSTALLED_DIR}/lib/libicui18n.a ${CURRENT_INSTALLED_DIR}/lib/libicuuc.a ${CURRENT_INSTALLED_DIR}/lib/libicudata.a"
         OPTIONS_DEBUG
@@ -127,7 +124,6 @@ elseif(VCPKG_CMAKE_SYSTEM_NAME STREQUAL "Linux")
             "ZLIB_LIBS=${CURRENT_INSTALLED_DIR}/debug/lib/libz.a"
             "LIBPNG_LIBS=${CURRENT_INSTALLED_DIR}/debug/lib/libpng16d.a"
             "FREETYPE_LIBS=${CURRENT_INSTALLED_DIR}/debug/lib/libfreetyped.a"
-            "PSQL_LIBS=${CURRENT_INSTALLED_DIR}/debug/lib/libpqd.a ${CURRENT_INSTALLED_DIR}/debug/lib/libssl.a ${CURRENT_INSTALLED_DIR}/debug/lib/libcrypto.a -ldl -lpthread"
             "SQLITE_LIBS=${CURRENT_INSTALLED_DIR}/debug/lib/libsqlite3.a -ldl -lpthread"
             "ICU_LIBS=${CURRENT_INSTALLED_DIR}/debug/lib/libicui18n.a ${CURRENT_INSTALLED_DIR}/debug/lib/libicuuc.a ${CURRENT_INSTALLED_DIR}/debug/lib/libicudata.a"
     )
