@@ -109,23 +109,23 @@ elseif(VCPKG_CMAKE_SYSTEM_NAME STREQUAL "Linux")
         OPTIONS
             ${CORE_OPTIONS}
         OPTIONS_RELEASE
-            "LIBJPEG_LIBS=${CURRENT_INSTALLED_DIR}/lib/libjpeg.a"
-            "QMAKE_LIBS_PRIVATE+=${CURRENT_INSTALLED_DIR}/lib/libpng16.a"
-            "QMAKE_LIBS_PRIVATE+=${CURRENT_INSTALLED_DIR}/lib/libz.a"
-            "ZLIB_LIBS=${CURRENT_INSTALLED_DIR}/lib/libz.a"
-            "LIBPNG_LIBS=${CURRENT_INSTALLED_DIR}/lib/libpng16.a"
-            "FREETYPE_LIBS=${CURRENT_INSTALLED_DIR}/lib/libfreetype.a"
-            "SQLITE_LIBS=${CURRENT_INSTALLED_DIR}/lib/libsqlite3.a -ldl -lpthread"
-            "ICU_LIBS=${CURRENT_INSTALLED_DIR}/lib/libicui18n.a ${CURRENT_INSTALLED_DIR}/lib/libicuuc.a ${CURRENT_INSTALLED_DIR}/lib/libicudata.a"
+            "LIBJPEG_LIBS=-ljpeg"
+            "QMAKE_LIBS_PRIVATE+=-lpng16"
+            "QMAKE_LIBS_PRIVATE+=-lz"
+            "ZLIB_LIBS=-lz"
+            "LIBPNG_LIBS=-lpng16"
+            "FREETYPE_LIBS=-lfreetype"
+            "SQLITE_LIBS=-lsqlite3 -ldl -lpthread"
+            "ICU_LIBS=-licui18n -licuuc -licudata"
         OPTIONS_DEBUG
-            "LIBJPEG_LIBS=${CURRENT_INSTALLED_DIR}/debug/lib/libjpeg.a"
-            "QMAKE_LIBS_PRIVATE+=${CURRENT_INSTALLED_DIR}/debug/lib/libpng16d.a"
-            "QMAKE_LIBS_PRIVATE+=${CURRENT_INSTALLED_DIR}/debug/lib/libz.a"
-            "ZLIB_LIBS=${CURRENT_INSTALLED_DIR}/debug/lib/libz.a"
-            "LIBPNG_LIBS=${CURRENT_INSTALLED_DIR}/debug/lib/libpng16d.a"
-            "FREETYPE_LIBS=${CURRENT_INSTALLED_DIR}/debug/lib/libfreetyped.a"
-            "SQLITE_LIBS=${CURRENT_INSTALLED_DIR}/debug/lib/libsqlite3.a -ldl -lpthread"
-            "ICU_LIBS=${CURRENT_INSTALLED_DIR}/debug/lib/libicui18n.a ${CURRENT_INSTALLED_DIR}/debug/lib/libicuuc.a ${CURRENT_INSTALLED_DIR}/debug/lib/libicudata.a"
+            "LIBJPEG_LIBS=-ljpeg"
+            "QMAKE_LIBS_PRIVATE+=-lpng16d"
+            "QMAKE_LIBS_PRIVATE+=-lz"
+            "ZLIB_LIBS=-lz"
+            "LIBPNG_LIBS=-lpng16d"
+            "FREETYPE_LIBS=-lfreetyped"
+            "SQLITE_LIBS=-lsqlite3 -ldl -lpthread"
+            "ICU_LIBS=-licui18n -licuuc -licudata"
     )
 
 elseif(VCPKG_CMAKE_SYSTEM_NAME STREQUAL "Darwin")
