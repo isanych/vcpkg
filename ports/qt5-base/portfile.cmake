@@ -267,4 +267,9 @@ endif()
 file(COPY ${CMAKE_CURRENT_LIST_DIR}/vcpkg-cmake-wrapper.cmake DESTINATION ${CURRENT_PACKAGES_DIR}/share/qt5core)
 
 file(INSTALL ${SOURCE_PATH}/LICENSE.LGPLv3 DESTINATION  ${CURRENT_PACKAGES_DIR}/share/${PORT} RENAME copyright)
-#
+
+file(GLOB BIN_FILES "${CURRENT_PACKAGES_DIR}/bin/*" "${CURRENT_PACKAGES_DIR}/debug/bin/*")
+if(NOT BIN_FILES)
+    file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/bin")
+    file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/bin")
+endif()
