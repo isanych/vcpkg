@@ -30,6 +30,12 @@ else()
     set(ENABLE_CPP OFF)
 endif()
 
+if ("szip" IN_LIST FEATURES)
+    set(ENABLE_SZIP ON)
+else()
+    set(ENABLE_SZIP OFF)
+endif()
+
 file(REMOVE ${SOURCE_PATH}/config/cmake_ext_mod/FindSZIP.cmake)#Outdated; does not find debug szip 
 
 vcpkg_configure_cmake(
@@ -43,8 +49,8 @@ vcpkg_configure_cmake(
         -DHDF5_BUILD_CPP_LIB=${ENABLE_CPP}
         -DHDF5_ENABLE_PARALLEL=${ENABLE_PARALLEL}
         -DHDF5_ENABLE_Z_LIB_SUPPORT=ON
-        -DHDF5_ENABLE_SZIP_SUPPORT=ON
-        -DHDF5_ENABLE_SZIP_ENCODING=ON
+        -DHDF5_ENABLE_SZIP_SUPPORT=${ENABLE_SZIP}
+        -DHDF5_ENABLE_SZIP_ENCODING=${ENABLE_SZIP}
         -DHDF5_INSTALL_DATA_DIR=share/hdf5/data
         -DHDF5_INSTALL_CMAKE_DIR=share
 )
