@@ -444,21 +444,21 @@ TEST_CASE ("BinaryParagraph serialize abi", "[paragraph]")
     REQUIRE(pghs[0]["Abi"] == "123abc");
 }
 
-TEST_METHOD(to_port_version)
+TEST_CASE ("to_port_version", "[paragraph]")
 {
-    Assert::AreEqual("1.2.3", vcpkg::to_port_version("1.2.3-1").c_str());
-    Assert::AreEqual("1.2.3", vcpkg::to_port_version("1.2.3-").c_str());
-    Assert::AreEqual("1.2.3", vcpkg::to_port_version("1.2.3").c_str());
-    Assert::AreEqual("", vcpkg::to_port_version("").c_str());
-    Assert::AreEqual("", vcpkg::to_port_version("-1").c_str());
+    REQUIRE(vcpkg::to_port_version("1.2.3-1") == "1.2.3");
+    REQUIRE(vcpkg::to_port_version("1.2.3-") == "1.2.3");
+    REQUIRE(vcpkg::to_port_version("1.2.3") == "1.2.3");
+    REQUIRE(vcpkg::to_port_version("").empty());
+    REQUIRE(vcpkg::to_port_version("-1").empty());
 }
 
-TEST_METHOD(to_cmake_version)
+TEST_CASE("to_cmake_version", "[paragraph]")
 {
-    Assert::AreEqual("1.2.3", vcpkg::to_cmake_version("1.2.3-1").c_str());
-    Assert::AreEqual("1.2.3", vcpkg::to_cmake_version("1.2.3a-1").c_str());
-    Assert::AreEqual("1.2.3.4", vcpkg::to_cmake_version("1.2.3.4.5").c_str());
-    Assert::AreEqual("1.2.3", vcpkg::to_cmake_version("1.2.3").c_str());
-    Assert::AreEqual("", vcpkg::to_port_version("").c_str());
-    Assert::AreEqual("", vcpkg::to_port_version("-1").c_str());
+    REQUIRE(vcpkg::to_cmake_version("1.2.3-1") == "1.2.3");
+    REQUIRE(vcpkg::to_cmake_version("1.2.3a-1") == "1.2.3");
+    REQUIRE(vcpkg::to_cmake_version("1.2.3.4.5") == "1.2.3.4");
+    REQUIRE(vcpkg::to_cmake_version("1.2.3") == "1.2.3");
+    REQUIRE(vcpkg::to_cmake_version("").empty());
+    REQUIRE(vcpkg::to_cmake_version("-1").empty());
 }
