@@ -1,5 +1,5 @@
 diff --git a/cmake/protobuf-config.cmake.in b/cmake/protobuf-config.cmake.in
-index 29e39d88..920c1707 100644
+index 29e39d88..4f111767 100644
 --- a/cmake/protobuf-config.cmake.in
 +++ b/cmake/protobuf-config.cmake.in
 @@ -10,12 +10,12 @@ include("${CMAKE_CURRENT_LIST_DIR}/protobuf-targets.cmake")
@@ -26,7 +26,31 @@ index 29e39d88..920c1707 100644
      elseif(protobuf_generate_LANGUAGE STREQUAL python)
        set(protobuf_generate_GENERATE_EXTENSIONS _pb2.py)
      else()
-@@ -96,17 +96,28 @@ function(protobuf_generate)
+@@ -70,7 +70,7 @@ function(protobuf_generate)
+   if(protobuf_generate_APPEND_PATH)
+     # Create an include path for each file specified
+     foreach(_file ${protobuf_generate_PROTOS})
+-      get_filename_component(_abs_file ${_file} ABSOLUTE)
++      get_filename_component(_abs_file ${_file} REALPATH)
+       get_filename_component(_abs_path ${_abs_file} PATH)
+       list(FIND _protobuf_include_path ${_abs_path} _contains_already)
+       if(${_contains_already} EQUAL -1)
+@@ -82,7 +82,7 @@ function(protobuf_generate)
+   endif()
+ 
+   foreach(DIR ${protobuf_generate_IMPORT_DIRS})
+-    get_filename_component(ABS_PATH ${DIR} ABSOLUTE)
++    get_filename_component(ABS_PATH ${DIR} REALPATH)
+     list(FIND _protobuf_include_path ${ABS_PATH} _contains_already)
+     if(${_contains_already} EQUAL -1)
+         list(APPEND _protobuf_include_path -I ${ABS_PATH})
+@@ -91,22 +91,33 @@ function(protobuf_generate)
+ 
+   set(_generated_srcs_all)
+   foreach(_proto ${protobuf_generate_PROTOS})
+-    get_filename_component(_abs_file ${_proto} ABSOLUTE)
++    get_filename_component(_abs_file ${_proto} REALPATH)
+     get_filename_component(_abs_dir ${_abs_file} DIRECTORY)
      get_filename_component(_basename ${_proto} NAME_WE)
      file(RELATIVE_PATH _rel_dir ${CMAKE_CURRENT_SOURCE_DIR} ${_abs_dir})
  
