@@ -1,8 +1,14 @@
 diff --git a/cmake/protobuf-config.cmake.in b/cmake/protobuf-config.cmake.in
-index 18054687..0b06e240 100644
+index 29e39d88..920c1707 100644
 --- a/cmake/protobuf-config.cmake.in
 +++ b/cmake/protobuf-config.cmake.in
-@@ -15,7 +15,7 @@ function(protobuf_generate)
+@@ -10,12 +10,12 @@ include("${CMAKE_CURRENT_LIST_DIR}/protobuf-targets.cmake")
+ function(protobuf_generate)
+   include(CMakeParseArguments)
+ 
+-  set(_options APPEND_PATH)
++  set(_options APPEND_PATH DESCRIPTORS)
+   set(_singleargs LANGUAGE OUT_VAR EXPORT_MACRO PROTOC_OUT_DIR)
    if(COMMAND target_sources)
      list(APPEND _singleargs TARGET)
    endif()
@@ -20,13 +26,34 @@ index 18054687..0b06e240 100644
      elseif(protobuf_generate_LANGUAGE STREQUAL python)
        set(protobuf_generate_GENERATE_EXTENSIONS _pb2.py)
      else()
-@@ -105,8 +105,8 @@ function(protobuf_generate)
+@@ -96,17 +96,28 @@ function(protobuf_generate)
+     get_filename_component(_basename ${_proto} NAME_WE)
+     file(RELATIVE_PATH _rel_dir ${CMAKE_CURRENT_SOURCE_DIR} ${_abs_dir})
+ 
++    set(_possible_rel_dir)
++    if (NOT protobuf_generate_APPEND_PATH)
++        set(_possible_rel_dir ${_rel_dir}/)
++    endif()
++
+     set(_generated_srcs)
+     foreach(_ext ${protobuf_generate_GENERATE_EXTENSIONS})
+-      list(APPEND _generated_srcs "${protobuf_generate_PROTOC_OUT_DIR}/${_rel_dir}/${_basename}${_ext}")
++      list(APPEND _generated_srcs "${protobuf_generate_PROTOC_OUT_DIR}/${_possible_rel_dir}${_basename}${_ext}")
+     endforeach()
++
++    if(protobuf_generate_DESCRIPTORS AND protobuf_generate_LANGUAGE STREQUAL cpp)
++      set(_descriptor_file "${CMAKE_CURRENT_BINARY_DIR}/${_basename}.desc")
++      set(_dll_desc_out "--descriptor_set_out=${_descriptor_file}")
++      list(APPEND _generated_srcs ${_descriptor_file})
++    endif()
+     list(APPEND _generated_srcs_all ${_generated_srcs})
+ 
      add_custom_command(
        OUTPUT ${_generated_srcs}
        COMMAND  protobuf::protoc
 -      ARGS --${protobuf_generate_LANGUAGE}_out ${_dll_export_decl}${protobuf_generate_PROTOC_OUT_DIR} ${_protobuf_include_path} ${_abs_file}
 -      DEPENDS ${_abs_file} protobuf::protoc
-+      ARGS --${protobuf_generate_LANGUAGE}_out ${_dll_export_decl}${protobuf_generate_PROTOC_OUT_DIR} ${_protobuf_include_path} ${_abs_file} ${protobuf_generate_ARGS_ADD}
++      ARGS --${protobuf_generate_LANGUAGE}_out ${_dll_export_decl}${protobuf_generate_PROTOC_OUT_DIR} ${_dll_desc_out} ${_protobuf_include_path} ${_abs_file} ${protobuf_generate_ARGS_ADD}
 +      DEPENDS ${_abs_file} protobuf::protoc ${protobuf_generate_DEPENDS_ADD}
        COMMENT "Running ${protobuf_generate_LANGUAGE} protocol buffer compiler on ${_proto}"
        VERBATIM )
