@@ -86,7 +86,7 @@ if(VCPKG_CMAKE_SYSTEM_NAME STREQUAL "Linux")
         )
         message(STATUS "Building ${TARGET_TRIPLET}-${SHORT}")
         vcpkg_execute_required_process(
-            COMMAND make -i -j
+            COMMAND make -i -j${VCPKG_CONCURRENCY}
             WORKING_DIRECTORY ${DIR}
             LOGNAME make-${TARGET_TRIPLET}-${SHORT}
         )
