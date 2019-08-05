@@ -63,6 +63,8 @@ vcpkg_fixup_cmake_targets()
 #Linux build create additional scripts here. I dont know what they are doing so I am deleting them and hope for the best
 if(VCPKG_LIBRARY_LINKAGE STREQUAL "static")
     file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/bin ${CURRENT_PACKAGES_DIR}/debug/bin)
+else()
+    file(REMOVE ${CURRENT_PACKAGES_DIR}/lib/libhdf5*.a ${CURRENT_PACKAGES_DIR}/debug/lib/libhdf5*.a)
 endif()
 
 file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/share)
