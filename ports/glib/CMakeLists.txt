@@ -90,6 +90,7 @@ else()
             COMMAND "${CMAKE_SOURCE_DIR}/configure"
                 --disable-libelf
                 --disable-libmount
+                --disable-selinux
                 "CPPFLAGS=${CXXFLAGS}"
                 "CFLAGS=${CFLAGS}"
                 "LDFLAGS=${LDFLAGS}"
