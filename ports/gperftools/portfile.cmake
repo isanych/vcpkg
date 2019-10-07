@@ -1,24 +1,32 @@
 include(vcpkg_common_functions)
 
-vcpkg_download_distfile(ARCHIVE
-    URLS "https://github.com/gperftools/gperftools/archive/master.zip"
-    FILENAME "master.zip"
-    SHA512 e9a1c311ca0a4a391685b39a20c4c74a6562208f18ffddca4994b2bc1de54aab8cd614debc802a66431f826aeda982ed8b53c0914f5e45eda540538a13309c95
-)
-
-vcpkg_extract_source_archive_ex(
+vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
-    ARCHIVE ${ARCHIVE} 
+    REPO isanych/gperftools
+    REF master
+    SHA512 8c992fdb927bc1d71f34d2b84755bea2be8ceaed485baac8481be8d6e824d699a43a9c8885586f78d6130444a432d5715f84c9512c1ea2c34ddb99cbfe83aefd
 )
 
-vcpkg_build_msbuild(
-    PROJECT_PATH ${SOURCE_PATH}/gperftools.sln
-	SOURCE_PATH ${SOURCE_PATH}
-	RELEASE_CONFIGURATION Release-Override
-)
+if(VCPKG_CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    message("gperftools requires the following libraries from the system package manager:
+    autoconf automake libtool
+These can be installed on Ubuntu systems via sudo apt install autoconf automake libtool")
 
+    vcpkg_configure_make(
+        SOURCE_PATH ${SOURCE_PATH}
+        PRERUN_SHELL autogen.sh
+    )
 
-vcpkg_install_cmake()
+    vcpkg_install_make()
+else()
+    vcpkg_build_msbuild(
+        PROJECT_PATH ${SOURCE_PATH}/gperftools.sln
+        SOURCE_PATH ${SOURCE_PATH}
+        RELEASE_CONFIGURATION Release-Override
+    )
+
+    vcpkg_install_cmake()
+endif()
 
 # Handle copyright
 # file(INSTALL ${SOURCE_PATH}/LICENSE DESTINATION ${CURRENT_PACKAGES_DIR}/share/gperftools RENAME copyright)
