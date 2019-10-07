@@ -29,6 +29,8 @@ def write_file(name, data):
 
 
 def ensure_link_full(name, source):
+    if not os.path.exists(source):
+        return
     if os.path.isfile(name) and os.stat(name).st_size == 0:
         os.remove(name)
     if os.path.exists(name):
