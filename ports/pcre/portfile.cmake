@@ -1,6 +1,6 @@
 include(vcpkg_common_functions)
 
-set(PCRE_VERSION {PORT_VERSION})
+set(PCRE_VERSION ${PORT_VERSION})
 
 vcpkg_download_distfile(ARCHIVE
     URLS "https://ftp.pcre.org/pub/pcre/pcre-${PCRE_VERSION}.zip"
