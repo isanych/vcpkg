@@ -58,11 +58,12 @@ def qt_conf_one(name, content):
     if os.path.exists(name):
         content = read_file(name)
     if "${CURRENT_INSTALLED_DIR}" in content:
-        write_file(name, content.replace("${CURRENT_INSTALLED_DIR}", cwd))
+        write_file(name, content.replace("${CURRENT_INSTALLED_DIR}", cwd.replace("\\", "/")))
+    return content
 
 
 def qt_conf(f1, f2, content):
-    qt_conf_one(f1, content)
+    content = qt_conf_one(f1, content)
     qt_conf_one(f2, content)
 
 
@@ -73,7 +74,28 @@ if os.path.exists("debug/lib/cmake"):
     check_call(["python", "../../../../ports/qt5-base/fixcmake.py"])
     os.chdir(cwd)
 
-qt_conf("tools/qt5/qt_release.conf", "bin/qt.conf", """[DevicePaths]
+qt_conf("tools/qt5/qt_release.conf", "bin/qt.conf",  """[DevicePaths]
+Prefix=${CURRENT_INSTALLED_DIR}
+Documentation=share/qt5/doc
+LibraryExecutables=tools/qt5
+Imports=tools/qt5/imports
+ArchData=tools/qt5
+Data=share/qt5
+Translations=share/qt5/translations
+Examples=share/qt5/examples
+[Paths]
+Prefix=${CURRENT_INSTALLED_DIR}
+Documentation=share/qt5/doc
+LibraryExecutables=tools/qt5
+Imports=tools/qt5/imports
+ArchData=tools/qt5
+Data=share/qt5
+Translations=share/qt5/translations
+Examples=share/qt5/examples
+HostPrefix=${CURRENT_INSTALLED_DIR}/tools/qt5
+TargetSpec=win32-msvc
+HostSpec=win32-msvc
+""" if sys.platform == "win32" else """[DevicePaths]
 Prefix=${CURRENT_INSTALLED_DIR}
 Documentation=share/qt5/doc
 LibraryExecutables=tools/qt5
@@ -97,6 +119,35 @@ HostSpec=linux-g++
 """)
 
 qt_conf("tools/qt5/qt_debug.conf", "debug/bin/qt.conf", """[DevicePaths]
+Prefix=${CURRENT_INSTALLED_DIR}
+Documentation=share/qt5/debug/doc
+Libraries=debug/lib
+LibraryExecutables=tools/qt5/debug
+Binaries=debug/bin
+Plugins=debug/plugins
+Imports=tools/qt5/debug/imports
+Qml2Imports=debug/qml
+ArchData=tools/qt5/debug
+Data=share/qt5/debug
+Translations=share/qt5/debug/translations
+Examples=share/qt5/debug/examples
+[Paths]
+Prefix=${CURRENT_INSTALLED_DIR}
+Documentation=share/qt5/debug/doc
+Libraries=debug/lib
+LibraryExecutables=tools/qt5/debug
+Binaries=debug/bin
+Plugins=debug/plugins
+Imports=tools/qt5/debug/imports
+Qml2Imports=debug/qml
+ArchData=tools/qt5/debug
+Data=share/qt5/debug
+Translations=share/qt5/debug/translations
+Examples=share/qt5/debug/examples
+HostPrefix=${CURRENT_INSTALLED_DIR}/tools/qt5/debug
+TargetSpec=win32-msvc
+HostSpec=win32-msvc
+""" if sys.platform == "win32" else """[DevicePaths]
 Prefix=${CURRENT_INSTALLED_DIR}
 Documentation=share/qt5/debug/doc
 Libraries=debug/lib
