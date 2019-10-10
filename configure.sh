@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -xe
 
 X= cd -- "$(dirname -- "$0")"
 vcpkgRootDir=`pwd`
