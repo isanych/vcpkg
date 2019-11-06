@@ -24,10 +24,22 @@ if [[ "$1" = "--full" ]]; then
   fi
   mkdir -p x64-linux-dbg x64-linux-rel
   cd x64-linux-dbg
+  if [[ "${VCPKG_BASE}" = centos7 ]]; then
+    rm -rf /usr/local/include /usr/local/lib /usr/local/lib64
+    ln -s $vcpkgRootDir/installed/x64-linux/include /usr/local/include
+    ln -s $vcpkgRootDir/installed/x64-linux/debug/lib /usr/local/lib
+    ln -s $vcpkgRootDir/installed/x64-linux/debug/lib /usr/local/lib64
+  fi
   $vcpkgRootDir/installed/x64-linux/debug/bin/qmake ../src/5.12.5-d4a4c6e836
   make
   make install
   cd ../x64-linux-rel
+  if [[ "${VCPKG_BASE}" = centos7 ]]; then
+    rm -rf /usr/local/include /usr/local/lib /usr/local/lib64
+    ln -s $vcpkgRootDir/installed/x64-linux/include /usr/local/include
+    ln -s $vcpkgRootDir/installed/x64-linux/lib /usr/local/lib
+    ln -s $vcpkgRootDir/installed/x64-linux/lib /usr/local/lib64
+  fi
   $vcpkgRootDir/installed/x64-linux/bin/qmake ../src/5.12.5-d4a4c6e836
   make
   make install
