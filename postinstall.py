@@ -201,6 +201,8 @@ exe = ".exe" if sys.platform == "win32" else ""
 for t in ("moc", "qmake", "rcc", "uic"):
     ensure_links("bin", "tools/qt5/bin/" + t + exe)
     ensure_links("debug/bin", "tools/qt5/debug/bin/" + t + exe)
+for t in ("h5diff",):
+    ensure_links("bin", "tools/hdf5/" + t + exe)
 if os.path.exists("tools/protobuf/protoc") and sys.platform != "win32" and not os.access("tools/protobuf/protoc", os.X_OK):
     os.chmod("tools/protobuf/protoc", 0o744)
 ensure_link("bin", "tools/protobuf/protoc" + exe)
