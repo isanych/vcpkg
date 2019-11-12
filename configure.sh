@@ -47,4 +47,5 @@ if [[ "$1" = "--full" ]]; then
 fi
 ./vcpkg install protobuf grpc hdf5 highfive boost rapidjson cryptopp xerces-c xalan-c
 cd installed/x64-linux
+chmod 777 tools/protobuf/*
 ../../postinstall.py
