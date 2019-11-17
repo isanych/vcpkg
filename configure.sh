@@ -30,6 +30,7 @@ if [[ "$1" = "--full" ]]; then
     ln -s $vcpkgRootDir/installed/x64-linux/debug/lib /usr/local/lib
     ln -s $vcpkgRootDir/installed/x64-linux/debug/lib /usr/local/lib64
   fi
+  export LD_LIBRARY_PATH="$vcpkgRootDir/installed/x64-linux/debug/lib:$vcpkgRootDir/installed/x64-linux/lib"
   $vcpkgRootDir/installed/x64-linux/debug/bin/qmake ../src/5.12.5-d4a4c6e836
   make
   make install
@@ -40,6 +41,7 @@ if [[ "$1" = "--full" ]]; then
     ln -s $vcpkgRootDir/installed/x64-linux/lib /usr/local/lib
     ln -s $vcpkgRootDir/installed/x64-linux/lib /usr/local/lib64
   fi
+  export LD_LIBRARY_PATH="$vcpkgRootDir/installed/x64-linux/lib:$vcpkgRootDir/installed/x64-linux/debug/lib"
   $vcpkgRootDir/installed/x64-linux/bin/qmake ../src/5.12.5-d4a4c6e836
   make
   make install
