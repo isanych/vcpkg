@@ -8,7 +8,7 @@ export CXX=`which g++`
 [[ -f vcpkg ]] || ./bootstrap-vcpkg.sh -useSystemBinaries
 export LD_LIBRARY_PATH="$vcpkgRootDir/installed/x64-linux/lib:$vcpkgRootDir/installed/x64-linux/debug/lib"
 [[ -f /usr/include/jpeglib.h ]] || ./vcpkg install libjpeg-turbo
-./vcpkg install icu qt5-base qt5-script
+./vcpkg install icu qt5-base qt5-script qt5-xmlpatterns
 if [[ "$1" = "--full" ]]; then
   cd installed/x64-linux
   ../../postinstall.py
