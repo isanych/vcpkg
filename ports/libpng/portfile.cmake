@@ -1,5 +1,32 @@
 include(vcpkg_common_functions)
 
+set(LIBPNG_VER 1.6.37)
+
+# Download the apng patch
+set(LIBPNG_APNG_OPTION )
+if ("apng" IN_LIST FEATURES)
+    set(LIBPNG_APG_PATCH_NAME libpng-${LIBPNG_VER}-apng.patch)
+    set(LIBPNG_APG_PATCH_PATH ${CURRENT_BUILDTREES_DIR}/src/${LIBPNG_APG_PATCH_NAME})
+    if (NOT EXISTS ${LIBPNG_APG_PATCH_PATH})
+        vcpkg_download_distfile(LIBPNG_APNG_PATCH_ARCHIVE
+            URLS "https://downloads.sourceforge.net/project/libpng-apng/libpng16/${LIBPNG_VER}/${LIBPNG_APG_PATCH_NAME}.gz"
+            FILENAME "${LIBPNG_APG_PATCH_NAME}.gz"
+            SHA512 226adcb3a8c60f2267fe2976ab531329ae43c2603dab4d0cf8f16217d64069936b879f3d6516b75d259c47d6f5c5b1f24f887602206c8e46abde0fb7f5c7946b
+        )
+        
+        vcpkg_find_acquire_program(7Z)
+    
+        vcpkg_execute_required_process(
+            COMMAND ${7Z} x ${LIBPNG_APNG_PATCH_ARCHIVE} -aoa
+            WORKING_DIRECTORY ${CURRENT_BUILDTREES_DIR}/src
+            LOGNAME extract-patch.log
+        )
+    endif()
+    
+    set(APNG_EXTRA_PATCH ${LIBPNG_APG_PATCH_PATH})    
+    set(LIBPNG_APNG_OPTION "-DPNG_PREFIX=a")
+endif()
+
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO glennrp/libpng
@@ -9,6 +36,7 @@ vcpkg_from_github(
     PATCHES
         use-abort-on-all-platforms.patch
         fix-libm-unix.patch
+        ${APNG_EXTRA_PATCH}
 )
 
 if(VCPKG_LIBRARY_LINKAGE STREQUAL dynamic)
@@ -23,6 +51,7 @@ vcpkg_configure_cmake(
     SOURCE_PATH ${SOURCE_PATH}
     PREFER_NINJA
     OPTIONS
+        ${LIBPNG_APNG_OPTION}
         -DPNG_STATIC=${PNG_STATIC_LIBS}
         -DPNG_SHARED=${PNG_SHARED_LIBS}
         -DPNG_TESTS=OFF
