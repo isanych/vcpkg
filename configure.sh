@@ -5,7 +5,7 @@ vcpkgRootDir=`pwd`
 export CC=`which gcc`
 export CXX=`which g++`
 [[ ! -d /deploy/vcpkg/downloads || -e downloads ]] || ln -s /deploy/vcpkg/downloads
-[[ -f vcpkg ]] || ./bootstrap-vcpkg.sh -useSystemBinaries
+[[ -f vcpkg ]] || ./bootstrap-vcpkg.sh -useSystemBinaries -disableMetrics
 export LD_LIBRARY_PATH="$vcpkgRootDir/installed/x64-linux/lib:$vcpkgRootDir/installed/x64-linux/debug/lib"
 [[ -f /usr/include/jpeglib.h ]] || ./vcpkg install libjpeg-turbo
 ./vcpkg install icu qt5-base qt5-script qt5-xmlpatterns
