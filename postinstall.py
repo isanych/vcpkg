@@ -203,6 +203,6 @@ for t in ("moc", "qmake", "rcc", "uic"):
     ensure_links("debug/bin", "tools/qt5/debug/bin/" + t + exe)
 for t in ("h5diff",):
     ensure_links("bin", "tools/hdf5/" + t + exe)
-if os.path.exists("tools/protobuf/protoc") and sys.platform != "win32" and not os.access("tools/protobuf/protoc", os.X_OK):
-    os.chmod("tools/protobuf/protoc", 0o744)
+if os.path.exists("tools/protobuf/protoc") and sys.platform != "win32" and os.stat("tools/protobuf/protoc").st_mode & 0o777 != 0o755:
+    os.chmod("tools/protobuf/protoc", 0o755)
 ensure_link("bin", "tools/protobuf/protoc" + exe)
