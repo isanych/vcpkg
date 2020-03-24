@@ -1,26 +1,27 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 75aa7f4616..5126e7c2f7 100644
+index f6de091..66b3fae 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -18802,5 +18802,6 @@ foreach(_config gRPCConfig gRPCConfigVersion)
-   )
- endforeach()
+@@ -18414,6 +18414,7 @@ install(FILES
+   DESTINATION ${gRPC_INSTALL_CMAKEDIR}/modules
+ )
  
-+install(FILES cmake/gRPCGenerate.cmake DESTINATION ${gRPC_INSTALL_CMAKEDIR})
++install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/cmake/gRPCGenerate.cmake DESTINATION ${gRPC_INSTALL_CMAKEDIR})
  install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/etc/roots.pem
    DESTINATION ${gRPC_INSTALL_SHAREDIR})
+ 
 diff --git a/cmake/gRPCConfig.cmake.in b/cmake/gRPCConfig.cmake.in
-index 1a0fa6a462..32e990e7c1 100644
+index 5bfa73c..558ca62 100644
 --- a/cmake/gRPCConfig.cmake.in
 +++ b/cmake/gRPCConfig.cmake.in
-@@ -6,3 +6,4 @@
+@@ -10,3 +10,4 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/modules)
  
  # Targets
  include(${CMAKE_CURRENT_LIST_DIR}/gRPCTargets.cmake)
 +include(${CMAKE_CURRENT_LIST_DIR}/gRPCGenerate.cmake)
 diff --git a/cmake/gRPCGenerate.cmake b/cmake/gRPCGenerate.cmake
 new file mode 100644
-index 0000000000..48aee8351a
+index 0000000..48aee83
 --- /dev/null
 +++ b/cmake/gRPCGenerate.cmake
 @@ -0,0 +1,9 @@
