@@ -1,3 +1,11 @@
 Source: gperftools
-Version: 2.7
-Description: The fastest malloc we’ve seen; works particularly well with threads and STL
+Version: 2019-09-02
+Description: A set of tools for performance profiling and memory checking
+Supports: !(arm|arm64|uwp)
+Homepage: https://github.com/gperftools/gperftools
+
+Feature: override
+Description: Override allocators
+
+Feature: tools
+Description: Build gperftools CLI tools
