@@ -45,6 +45,7 @@ vcpkg_configure_cmake(
 )
 
 vcpkg_install_cmake()
+vcpkg_fixup_cmake_targets(CONFIG_PATH lib/cmake/FreeGLUT)
 
 # Rename static lib (otherwise it's incompatible with FindGLUT.cmake)
 if(VCPKG_LIBRARY_LINKAGE STREQUAL "static")
