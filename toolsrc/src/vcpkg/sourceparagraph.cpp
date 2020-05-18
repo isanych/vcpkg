@@ -260,5 +260,4 @@ namespace vcpkg
         }
         return version;
     }
-
 }
