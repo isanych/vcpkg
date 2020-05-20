@@ -42,6 +42,10 @@ if(FEATURES MATCHES "tools" AND VCPKG_CRT_LINKAGE STREQUAL "static")
     list(APPEND FEATURE_OPTIONS -DBUILD_STATIC_EXECS=ON)
 endif()
 
+if(VCPKG_LIBRARY_LINKAGE STREQUAL "dynamic")
+    list(APPEND FEATURE_OPTIONS -DHDF5_ENABLE_THREADSAFE=ON)
+endif()
+
 find_library(SZIP_RELEASE NAMES libsz libszip szip sz PATHS "${CURRENT_INSTALLED_DIR}/lib" NO_DEFAULT_PATH)
 find_library(SZIP_DEBUG NAMES libsz libszip szip sz libsz_D libszip_D szip_D sz_D szip_debug PATHS "${CURRENT_INSTALLED_DIR}/debug/lib" NO_DEFAULT_PATH)
 
