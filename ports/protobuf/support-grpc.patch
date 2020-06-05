@@ -1,5 +1,5 @@
 diff --git a/cmake/protobuf-config.cmake.in b/cmake/protobuf-config.cmake.in
-index 29e39d88..4f111767 100644
+index 11b85d3c0..2115a7f20 100644
 --- a/cmake/protobuf-config.cmake.in
 +++ b/cmake/protobuf-config.cmake.in
 @@ -10,12 +10,12 @@ include("${CMAKE_CURRENT_LIST_DIR}/protobuf-targets.cmake")
@@ -8,7 +8,7 @@ index 29e39d88..4f111767 100644
  
 -  set(_options APPEND_PATH)
 +  set(_options APPEND_PATH DESCRIPTORS)
-   set(_singleargs LANGUAGE OUT_VAR EXPORT_MACRO PROTOC_OUT_DIR)
+   set(_singleargs LANGUAGE OUT_VAR EXPORT_MACRO PROTOC_OUT_DIR PLUGIN)
    if(COMMAND target_sources)
      list(APPEND _singleargs TARGET)
    endif()
@@ -17,7 +17,7 @@ index 29e39d88..4f111767 100644
  
    cmake_parse_arguments(protobuf_generate "${_options}" "${_singleargs}" "${_multiargs}" "${ARGN}")
  
-@@ -44,7 +44,7 @@ function(protobuf_generate)
+@@ -48,7 +48,7 @@ function(protobuf_generate)
  
    if(NOT protobuf_generate_GENERATE_EXTENSIONS)
      if(protobuf_generate_LANGUAGE STREQUAL cpp)
@@ -26,7 +26,7 @@ index 29e39d88..4f111767 100644
      elseif(protobuf_generate_LANGUAGE STREQUAL python)
        set(protobuf_generate_GENERATE_EXTENSIONS _pb2.py)
      else()
-@@ -70,7 +70,7 @@ function(protobuf_generate)
+@@ -74,7 +74,7 @@ function(protobuf_generate)
    if(protobuf_generate_APPEND_PATH)
      # Create an include path for each file specified
      foreach(_file ${protobuf_generate_PROTOS})
@@ -35,7 +35,7 @@ index 29e39d88..4f111767 100644
        get_filename_component(_abs_path ${_abs_file} PATH)
        list(FIND _protobuf_include_path ${_abs_path} _contains_already)
        if(${_contains_already} EQUAL -1)
-@@ -82,7 +82,7 @@ function(protobuf_generate)
+@@ -84,7 +84,7 @@ function(protobuf_generate)
    endif()
  
    foreach(DIR ${protobuf_generate_IMPORT_DIRS})
@@ -44,15 +44,18 @@ index 29e39d88..4f111767 100644
      list(FIND _protobuf_include_path ${ABS_PATH} _contains_already)
      if(${_contains_already} EQUAL -1)
          list(APPEND _protobuf_include_path -I ${ABS_PATH})
-@@ -91,22 +91,33 @@ function(protobuf_generate)
+@@ -97,7 +97,7 @@ function(protobuf_generate)
  
    set(_generated_srcs_all)
    foreach(_proto ${protobuf_generate_PROTOS})
 -    get_filename_component(_abs_file ${_proto} ABSOLUTE)
 +    get_filename_component(_abs_file ${_proto} REALPATH)
      get_filename_component(_abs_dir ${_abs_file} DIRECTORY)
-     get_filename_component(_basename ${_proto} NAME_WE)
-     file(RELATIVE_PATH _rel_dir ${CMAKE_CURRENT_SOURCE_DIR} ${_abs_dir})
+     get_filename_component(_basename ${_proto} NAME_WLE)
+ 
+@@ -117,17 +117,28 @@ function(protobuf_generate)
+       return()
+     endif()
  
 +    set(_possible_rel_dir)
 +    if (NOT protobuf_generate_APPEND_PATH)
@@ -75,9 +78,9 @@ index 29e39d88..4f111767 100644
      add_custom_command(
        OUTPUT ${_generated_srcs}
        COMMAND  protobuf::protoc
--      ARGS --${protobuf_generate_LANGUAGE}_out ${_dll_export_decl}${protobuf_generate_PROTOC_OUT_DIR} ${_protobuf_include_path} ${_abs_file}
+-      ARGS --${protobuf_generate_LANGUAGE}_out ${_dll_export_decl}${protobuf_generate_PROTOC_OUT_DIR} ${_plugin} ${_protobuf_include_path} ${_abs_file}
 -      DEPENDS ${_abs_file} protobuf::protoc
-+      ARGS --${protobuf_generate_LANGUAGE}_out ${_dll_export_decl}${protobuf_generate_PROTOC_OUT_DIR} ${_dll_desc_out} ${_protobuf_include_path} ${_abs_file} ${protobuf_generate_ARGS_ADD}
++      ARGS --${protobuf_generate_LANGUAGE}_out ${_dll_export_decl}${protobuf_generate_PROTOC_OUT_DIR} ${_plugin} ${_protobuf_include_path} ${_abs_file} ${protobuf_generate_ARGS_ADD}
 +      DEPENDS ${_abs_file} protobuf::protoc ${protobuf_generate_DEPENDS_ADD}
        COMMENT "Running ${protobuf_generate_LANGUAGE} protocol buffer compiler on ${_proto}"
        VERBATIM )
