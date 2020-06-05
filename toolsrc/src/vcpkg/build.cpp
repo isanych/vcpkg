@@ -375,7 +375,7 @@ namespace vcpkg::Build
         variables.emplace("CMD", "BUILD");
         variables.emplace("PORT", scf.core_paragraph->name);
         variables.emplace("CURRENT_PORT_DIR", scfl.source_location.generic_u8string());
-        variables.emplace("VCPKG_ROOT_PATH", paths.root.generic_u8string());
+        variables.emplace("VCPKG_ROOT_DIR", paths.root.generic_u8string());
         variables.emplace("PACKAGES_DIR", paths.packages.generic_u8string());
         variables.emplace("BUILDTREES_DIR", paths.buildtrees.generic_u8string());
         variables.emplace("_VCPKG_INSTALLED_DIR", paths.installed.generic_u8string());
