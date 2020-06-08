@@ -15,7 +15,7 @@ elseif(EXISTS /etc/debian_version)
 endif()
 
 set(IS_LTO TRUE)
-if(PORT STREQUAL cryptopp OR PORT STREQUAL double-conversion OR PORT STREQUAL hdf5 OR PORT STREQUAL libffi)
+if(PORT STREQUAL cryptopp OR PORT STREQUAL double-conversion OR PORT STREQUAL hdf5 OR PORT STREQUAL libffi OR PORT STREQUAL upb OR PORT STREQUAL abseil)
     set(IS_LTO FALSE)
 endif()
 
