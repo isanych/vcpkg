@@ -1,0 +1,92 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 4dd6454..cc954e1 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -8,7 +8,7 @@ else()
+     cmake_policy(VERSION 3.12)
+ endif()
+ 
+-cmake_minimum_required (VERSION 3.0)
++cmake_minimum_required (VERSION 3.14)
+ cmake_policy(SET CMP0048 NEW)
+ 
+ project(upb)
+@@ -58,8 +58,12 @@ elseif(UNIX)
+   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--build-id")
+ endif()
+ 
+-enable_testing()
++if (MSVC)
++  add_compile_options(/wd4146 -D_CRT_SECURE_NO_WARNINGS)
++endif()
+ 
++enable_testing()
++add_library(descriptor_upb_proto INTERFACE)
+ add_library(port
+   upb/port.c)
+ add_library(upb
+@@ -154,7 +158,8 @@ target_link_libraries(upb_cc_bindings INTERFACE
+   handlers
+   port
+   upb)
+-add_library(upb_test
++if(ENABLE_TESTING)
++add_executable(upb_test
+   tests/testmain.cc
+   tests/test_util.h
+   tests/upb_test.h)
+@@ -162,5 +167,27 @@ target_link_libraries(upb_test
+   handlers
+   port
+   upb)
++endif()
+ 
+-
++install(
++  DIRECTORY upb
++  DESTINATION include
++  FILES_MATCHING
++  PATTERN "*.h"
++  PATTERN "*.inc"
++  PATTERN "*.int.h" EXCLUDE
++)
++target_include_directories(upb PUBLIC $<INSTALL_INTERFACE:include>)
++install(TARGETS
++  upb
++  upb_cc_bindings
++  upb_json
++  upb_pb
++  table
++  descriptor_upb_proto
++  handlers
++  reflection
++  port
++  EXPORT upb-config
++)
++install(EXPORT upb-config NAMESPACE upb:: DESTINATION share/upb)
+diff --git a/upb/json_decode.c b/upb/json_decode.c
+index 301f16a..9c70173 100644
+--- a/upb/json_decode.c
++++ b/upb/json_decode.c
+@@ -733,7 +733,7 @@ static upb_msgval jsondec_double(jsondec *d, const upb_fielddef *f) {
+     case JD_STRING:
+       str = jsondec_string(d);
+       if (jsondec_streql(str, "NaN")) {
+-        val.double_val = 0.0 / 0.0;
++        val.double_val = UPB_NAN;
+       } else if (jsondec_streql(str, "Infinity")) {
+         val.double_val = UPB_INFINITY;
+       } else if (jsondec_streql(str, "-Infinity")) {
+diff --git a/upb/port_def.inc b/upb/port_def.inc
+index 61675d3..9e9c506 100644
+--- a/upb/port_def.inc
++++ b/upb/port_def.inc
+@@ -172,3 +172,8 @@ int msvc_vsnprintf(char* s, size_t n, const char* format, va_list arg);
+ #else
+ #define UPB_INFINITY (1.0 / 0.0)
+ #endif
++#ifdef NAN
++#define UPB_NAN NAN
++#else
++#define UPB_NAN (0.0 / 0.0)
++#endif

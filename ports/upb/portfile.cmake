@@ -3,12 +3,11 @@ vcpkg_check_linkage(ONLY_STATIC_LIBRARY)
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO protocolbuffers/upb
-    REF  9effcbcb27f0a665f9f345030188c0b291e32482
-    SHA512 416ff26ec21181d53be23e94203205072152ab3a8e4b3b28d16263a601995fd2d2f8afe5d8cfbecdac8543249482287b9fe6129314f7c9a7880660f5508bb85e
+    REF  7d38c201faf7eb56fe4effdb0acd45c657f0286a # 2020-06-05
+    SHA512 4a0f681250e28b58c09e2db773e90ffaaef59818f952fd46361e3912770a9a2d92fbf2a674e71426156b643375b34b23f6951f5daa85bef8b1fcdb9714d03936
     HEAD_REF master
     PATCHES
-        add-cmake-install.patch
-        fix-uwp.patch
+        add-cmake-install-and-fix-uwp.patch
 )
 
 vcpkg_configure_cmake(
