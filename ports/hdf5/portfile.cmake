@@ -78,7 +78,8 @@ if(FEATURES MATCHES "tools")
     else()
         set(TOOL_SUFFIXES "-static${VCPKG_TARGET_EXECUTABLE_SUFFIX};${VCPKG_TARGET_EXECUTABLE_SUFFIX}")
     endif()
-    
+
+    file(MAKE_DIRECTORY "${CURRENT_PACKAGES_DIR}/tools/${PORT}")
     foreach(tool IN LISTS TOOLS)
         foreach(suffix IN LISTS TOOL_SUFFIXES)
             set(full_tool "${CURRENT_PACKAGES_DIR}/debug/bin/${tool}${suffix}")
