@@ -1,0 +1,12 @@
+diff --git a/src/3rdparty/chromium/media/cdm/supported_cdm_versions.h b/src/3rdparty/chromium/media/cdm/supported_cdm_versions.h
+index 857a3ab63..94b521e5b 100644
+--- a/src/3rdparty/chromium/media/cdm/supported_cdm_versions.h
++++ b/src/3rdparty/chromium/media/cdm/supported_cdm_versions.h
+@@ -6,6 +6,7 @@
+ #define MEDIA_CDM_SUPPORTED_CDM_VERSIONS_H_
+
+ #include <array>
++#include <stddef.h>
+
+ #include "media/base/media_export.h"
+ #include "media/cdm/api/content_decryption_module.h"

@@ -41,11 +41,11 @@ vcpkg_add_to_path(PREPEND "${NINJA_DIR}")
 if(QT_MAJOR_MINOR_VER STREQUAL "5.14")
     set(PATCHES common.pri.latest.patch gl.latest.patch)
 else()
-    set(PATCHES common.pri.patch gl.patch)
+    set(PATCHES common.pri.patch gl.patch gcc10.patch)
 endif()
 
 if(NOT VCPKG_TARGET_IS_WINDOWS)
-    list(APPEND CORE_OPTIONS "BUILD_OPTIONS" "-webengine-system-libwebp" "-webengine-system-ffmpeg" "-webengine-system-icu")
+    list(APPEND CORE_OPTIONS "BUILD_OPTIONS" "-no-webengine-webrtc")
 endif()
 
 qt_submodule_installation(${CORE_OPTIONS} PATCHES ${PATCHES})
