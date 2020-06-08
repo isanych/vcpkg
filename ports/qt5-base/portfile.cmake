@@ -94,7 +94,7 @@ set(CORE_OPTIONS
     -confirm-license
     ${license_option}
     #-simulator_and_device
-    -ltcg
+    #-ltcg
     #-combined-angle-lib 
     # ENV ANGLE_DIR to external angle source dir. (Will always be compiled with Qt)
     #-optimized-tools
@@ -187,6 +187,7 @@ if(GLIB_RELEASE MATCHES "-NOTFOUND" OR GLIB_DEBUG MATCHES "-NOTFOUND")
 endif()
 
 set(RELEASE_OPTIONS
+            -ltcg
             "LIBJPEG_LIBS=${JPEG_RELEASE}"
             "ZLIB_LIBS=${ZLIB_RELEASE}"
             "LIBPNG_LIBS=${LIBPNG_RELEASE} ${ZLIB_RELEASE}"
