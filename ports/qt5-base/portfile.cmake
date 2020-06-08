@@ -78,11 +78,23 @@ file(REMOVE_RECURSE ${SOURCE_PATH}/include/QtZlib)
 # This fixes issues on machines with default codepages that are not ASCII compatible, such as some CJK encodings
 set(ENV{_CL_} "/utf-8")
 
+if(VCPKG_TARGET_IS_WINDOWS)
+    set(license_file "$ENV{USERPROFILE}/.qt-license")
+else()
+    set(license_file "$ENV{HOME}/.qt-license")
+endif()
+
+if(EXISTS ${license_file})
+    set(license_option "-commercial")
+else()
+    set(license_option "-opensource")
+endif()
+
 set(CORE_OPTIONS
     -confirm-license
-    -opensource
+    ${license_option}
     #-simulator_and_device
-    #-ltcg
+    -ltcg
     #-combined-angle-lib 
     # ENV ANGLE_DIR to external angle source dir. (Will always be compiled with Qt)
     #-optimized-tools

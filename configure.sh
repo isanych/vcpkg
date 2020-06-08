@@ -15,11 +15,11 @@ if [[ "$1" = "--full" ]]; then
   cd ../..
   mkdir -p buildtrees/qt5-webengine
   cd buildtrees/qt5-webengine
-  if [[ ! -d src/5.12.5-d4a4c6e836 ]]; then
+  if [[ ! -d src/5.12.8 ]]; then
     mkdir -p src x64-linux-dbg x64-linux-rel
     cd src
-    curl -Ss http://mirror.prqa.co.uk/qt/qtwebengine-everywhere-src-5.12.5.tar.xz | tar xJ
-    mv qtwebengine-everywhere-src-5.12.5 5.12.5-d4a4c6e836
+    curl -Ss http://mirror.prqa.co.uk/qt/qtwebengine-everywhere-src-5.12.8.tar.xz | tar xJ
+    mv qtwebengine-everywhere-src-5.12.8 5.12.8
     cd ..
   fi
   mkdir -p x64-linux-dbg x64-linux-rel
@@ -31,7 +31,7 @@ if [[ "$1" = "--full" ]]; then
     ln -s $vcpkgRootDir/installed/x64-linux/debug/lib /usr/local/lib64
   fi
   export LD_LIBRARY_PATH="$vcpkgRootDir/installed/x64-linux/debug/lib:$vcpkgRootDir/installed/x64-linux/lib"
-  $vcpkgRootDir/installed/x64-linux/debug/bin/qmake ../src/5.12.5-d4a4c6e836
+  $vcpkgRootDir/installed/x64-linux/debug/bin/qmake ../src/5.12.8
   make
   make install
   cd ../x64-linux-rel
@@ -42,12 +42,12 @@ if [[ "$1" = "--full" ]]; then
     ln -s $vcpkgRootDir/installed/x64-linux/lib /usr/local/lib64
   fi
   export LD_LIBRARY_PATH="$vcpkgRootDir/installed/x64-linux/lib:$vcpkgRootDir/installed/x64-linux/debug/lib"
-  $vcpkgRootDir/installed/x64-linux/bin/qmake ../src/5.12.5-d4a4c6e836
+  $vcpkgRootDir/installed/x64-linux/bin/qmake ../src/5.12.8
   make
   make install
   cd $vcpkgRootDir
 fi
-./vcpkg install protobuf grpc hdf5 highfive boost rapidjson cryptopp xerces-c xalan-c
+./vcpkg install protobuf grpc hdf5 boost rapidjson cryptopp xerces-c xalan-c
 cd installed/x64-linux
 chmod 777 tools/protobuf/*
 ../../postinstall.py

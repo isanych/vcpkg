@@ -70,9 +70,6 @@ def qt_conf(f1, f2, content):
 cwd = os.getcwd()
 if os.path.exists("debug/lib/cmake"):
     shutil.rmtree("debug/lib/cmake")
-    os.chdir("lib/cmake")
-    check_call(["python", "../../../../ports/qt5-base/fixcmake.py"])
-    os.chdir(cwd)
 
 qt_conf("tools/qt5/qt_release.conf", "bin/qt.conf",  """[DevicePaths]
 Prefix=${CURRENT_INSTALLED_DIR}
