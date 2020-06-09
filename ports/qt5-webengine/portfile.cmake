@@ -48,4 +48,5 @@ if(NOT VCPKG_TARGET_IS_WINDOWS)
     list(APPEND CORE_OPTIONS "BUILD_OPTIONS" "-no-webengine-webrtc")
 endif()
 
+set(VCPKG_EXECUTE_COUNT 2)
 qt_submodule_installation(${CORE_OPTIONS} PATCHES ${PATCHES})
