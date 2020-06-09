@@ -187,7 +187,7 @@ if(GLIB_RELEASE MATCHES "-NOTFOUND" OR GLIB_DEBUG MATCHES "-NOTFOUND")
 endif()
 
 set(RELEASE_OPTIONS
-            -ltcg
+            #-ltcg
             "LIBJPEG_LIBS=${JPEG_RELEASE}"
             "ZLIB_LIBS=${ZLIB_RELEASE}"
             "LIBPNG_LIBS=${LIBPNG_RELEASE} ${ZLIB_RELEASE}"
