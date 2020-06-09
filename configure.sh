@@ -1,6 +1,6 @@
 #!/bin/bash -xe
 
-X= cd -- "$(dirname -- "$0")"
+cd `dirname $BASH_SOURCE`
 vcpkgRootDir=`pwd`
 export CC=`which gcc`
 export CXX=`which g++`
