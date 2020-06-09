@@ -19,4 +19,4 @@ fi
 cd installed/x64-linux
 chmod 777 tools/protobuf/*
 ../../postinstall.py
-[[ -z "${VCPKG_BASE}" || ! -d /deploy/vcpkg ]] || tar cJf /deploy/vcpkg/vcpkg-2020-${VCPKG_BASE}-x64-gcc10100.txz -C "$vcpkgRootDir/.." vcpkg/installed/x64-linux vcpkg/scripts vcpkg/triplets/x64-linux.cmake vcpkg/.vcpkg-root
+[[ -z "${VCPKG_BASE}" || ! -d /deploy/vcpkg ]] || tar cJf /deploy/vcpkg/vcpkg-2020-${VCPKG_BASE}-x64-gcc1010.txz -C "$vcpkgRootDir/.." vcpkg/installed/x64-linux vcpkg/scripts vcpkg/triplets/x64-linux.cmake vcpkg/.vcpkg-root
