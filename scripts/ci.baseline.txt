@@ -618,7 +618,7 @@ ignition-msgs5:x64-linux=fail
 ignition-msgs5:arm64-windows=fail
 ignition-msgs5:arm-uwp=fail
 ignition-msgs5:x64-uwp=fail
-ignition-msgs5:x64-osx=fail
+ignition-msgs5:x64-osx=skip
 imgui-sfml:x64-linux=ignore
 intel-ipsec:arm64-windows=fail
 intel-ipsec:arm-uwp=fail
@@ -1515,6 +1515,13 @@ qpid-proton:x64-uwp=fail
 qpid-proton:x64-windows-static=fail
 qt5-activeqt:x64-linux=fail
 qt5-activeqt:x64-osx=fail
+# Skip deprecated Qt module 
+# (remnove after 1 year or longer due to vcpkg upgrade not handling removed ports correctly)
+qt5-canvas3d:x64-linux=skip
+qt5-canvas3d:x64-osx=skip
+qt5-canvas3d:x64-windows=skip
+qt5-canvas3d:x64-windows-static=skip
+qt5-canvas3d:x86-windows=skip
 qt5-macextras:x64-linux=fail
 qt5-macextras:x64-windows=fail
 qt5-macextras:x64-windows-static=fail
@@ -1527,9 +1534,6 @@ qt5-wayland:x64-windows=fail
 qt5-wayland:x64-windows-static=fail
 qt5-winextras:x64-linux=fail
 qt5-winextras:x64-osx=fail
-# Too big for CI.
-qt5-webengine:x64-windows=skip
-qt5-webengine:x86-windows=skip
 # Missing prerequisites for CI success
 qt5-webengine:x64-linux=fail
 qt5-webengine:x64-osx=fail

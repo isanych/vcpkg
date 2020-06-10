@@ -38,14 +38,10 @@ vcpkg_add_to_path(PREPEND "${PYTHON2_DIR}")
 vcpkg_add_to_path(PREPEND "${GPERF_DIR}")
 vcpkg_add_to_path(PREPEND "${NINJA_DIR}")
 
-if(QT_MAJOR_MINOR_VER STREQUAL "5.14")
-    set(PATCHES common.pri.latest.patch gl.latest.patch)
-else()
-    set(PATCHES common.pri.patch gl.patch gcc10.patch)
-endif()
+set(PATCHES common.pri.patch gl.patch build.patch)
 
 if(NOT VCPKG_TARGET_IS_WINDOWS)
-    list(APPEND CORE_OPTIONS "BUILD_OPTIONS" "-no-webengine-webrtc")
+    list(APPEND CORE_OPTIONS "BUILD_OPTIONS" "-no-webengine-webrtc" "-webengine-system-ffmpeg" "-webengine-system-icu")
 endif()
 
 set(VCPKG_EXECUTE_COUNT 2)
