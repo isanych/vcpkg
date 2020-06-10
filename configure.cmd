@@ -8,3 +8,4 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 if %errorlevel% neq 0 exit /b %errorlevel%
 copy "%~dp0postinstall.py" "%~dp0installed\%VCPKG_DEFAULT_TRIPLET%\"
 tar czf "%~dp0..\vcpkg-2020-windows-%x%-vs2019.tgz" -C "%~dp0.." vcpkg/installed/%VCPKG_DEFAULT_TRIPLET% vcpkg/scripts vcpkg/triplets/%VCPKG_DEFAULT_TRIPLET%.cmake vcpkg/.vcpkg-root
+curl -Ss -u build:buildpass --upload-file "%~dp0..\vcpkg-2020-windows-%x%-vs2019.tgz" http://nexus/repository/raw/vcpkg/vcpkg-2020-windows-%x%-vs2019.tgz
