@@ -46,7 +46,7 @@ Halting portfile execution.
     if(NOT VCPKG_EXECUTE_COUNT)
       set(VCPKG_EXECUTE_COUNT 1)
     endif()
-    foreach(loop_count RANGE ${VCPKG_EXECUTE_COUNT})
+    foreach(loop_count RANGE 1 ${VCPKG_EXECUTE_COUNT})
         set(LOG_OUT "${CURRENT_BUILDTREES_DIR}/${vcpkg_execute_required_process_LOGNAME}-out-${loop_count}.log")
         set(LOG_ERR "${CURRENT_BUILDTREES_DIR}/${vcpkg_execute_required_process_LOGNAME}-err-${loop_count}.log")
         _execute_process(
