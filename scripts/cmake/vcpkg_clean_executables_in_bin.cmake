@@ -26,33 +26,14 @@ function(vcpkg_clean_executables_in_bin)
     endif()
 
     foreach(file_name ${_vct_FILE_NAMES})
-        file(REMOVE
+        vcpkg_remove_if_exists(
             "${CURRENT_PACKAGES_DIR}/bin/${file_name}${VCPKG_TARGET_EXECUTABLE_SUFFIX}"
             "${CURRENT_PACKAGES_DIR}/debug/bin/${file_name}${VCPKG_TARGET_EXECUTABLE_SUFFIX}"
         )
     endforeach()
 
-    function(try_remove_empty_directory directory)
-        if(NOT EXISTS "${directory}")
-            return()
-        endif()
-
-        if(NOT IS_DIRECTORY "${directory}")
-            message(FATAL_ERROR "${directory} is supposed to be an existing directory.")
-        endif()
-
-        # TODO:
-        # For an empty directory,
-        #     file(GLOB items "${directory}" "${directory}/*")
-        # will return a list with one item.
-        file(GLOB items "${directory}/" "${directory}/*")
-        list(LENGTH items items_count)
-
-        if(${items_count} EQUAL 0)
-            file(REMOVE_RECURSE "${directory}")
-        endif()
-    endfunction()
-
-    try_remove_empty_directory("${CURRENT_PACKAGES_DIR}/bin")
-    try_remove_empty_directory("${CURRENT_PACKAGES_DIR}/debug/bin")
+    vcpkg_remove_empty_directory(
+        "${CURRENT_PACKAGES_DIR}/bin"
+        "${CURRENT_PACKAGES_DIR}/debug/bin"
+    )
 endfunction()
