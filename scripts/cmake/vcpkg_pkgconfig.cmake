@@ -41,6 +41,15 @@
 ## ### REQUIRES_DEBUG
 ## Additional Debug dependencies. These are in addition to `REQUIRES`.
 ##
+## ### CFLAGS
+## Common flags for `Cflags:` section
+##
+## ### CFLAGS_RELEASE
+## Additional Release Cflags. These are in addition to `CFLAGS`.
+##
+## ### CFLAGS_DEBUG
+## Additional Debug Cflags. These are in addition to `CFLAGS`.
+##
 ## ## Notes
 ## If libraries are not specified `-l${PORT}` used.
 ## If dependencies are not specified, port dependencies are used.
@@ -49,7 +58,7 @@ function(vcpkg_pkgconfig)
     if(CMAKE_HOST_WIN32)
         return()
     endif()
-    cmake_parse_arguments(_pc "REMOVE" "NAME" "COMMON;RELEASE;DEBUG;REQUIRES;REQUIRES_RELEASE;REQUIRES_DEBUG" ${ARGN})
+    cmake_parse_arguments(_pc "REMOVE" "NAME" "COMMON;RELEASE;DEBUG;REQUIRES;REQUIRES_RELEASE;REQUIRES_DEBUG;CFLAGS;CFLAGS_RELEASE;CFLAGS_DEBUG" ${ARGN})
     set(PORT_LIBS_RELEASE ${_pc_COMMON} ${_pc_RELEASE})
     set(PORT_LIBS_DEBUG ${_pc_COMMON} ${_pc_DEBUG})
     if(NOT PORT_LIBS_RELEASE)
@@ -75,6 +84,8 @@ function(vcpkg_pkgconfig)
     list(JOIN PORT_LIBS_DEBUG " " PORT_LIBS_DEBUG)
     list(JOIN PORT_REQUIRES_RELEASE ", " PORT_REQUIRES_RELEASE)
     list(JOIN PORT_REQUIRES_DEBUG ", " PORT_REQUIRES_DEBUG)
+    set(PORT_CFLAGS_RELEASE "${_pc_CFLAGS} ${_pc_CFLAGS_RELEASE}")
+    set(PORT_CFLAGS_DEBUG "${_pc_CFLAGS} ${_pc_CFLAGS_DEBUG}")
     if(NOT DEFINED VCPKG_BUILD_TYPE OR VCPKG_BUILD_TYPE STREQUAL "release")
         if(_pc_REMOVE)
             file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/lib/pkgconfig")

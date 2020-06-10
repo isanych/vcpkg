@@ -9,4 +9,4 @@ Description: @PORT_DESCRIPTION@
 Version: @PORT_VERSION@
 Requires: @PORT_REQUIRES_RELEASE@
 Libs: -L${libdir} @PORT_LIBS_RELEASE@
-Cflags: -I${includedir}
+Cflags: -I${includedir} @PORT_CFLAGS_RELEASE@

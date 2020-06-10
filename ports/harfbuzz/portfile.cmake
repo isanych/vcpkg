@@ -58,4 +58,4 @@ endif()
 
 # Handle copyright
 file(INSTALL ${SOURCE_PATH}/COPYING DESTINATION ${CURRENT_PACKAGES_DIR}/share/${PORT} RENAME copyright)
-vcpkg_pkgconfig(REQUIRES freetype2)
+vcpkg_pkgconfig(REQUIRES freetype2 CFLAGS "-I\${includedir}/harfbuzz")
