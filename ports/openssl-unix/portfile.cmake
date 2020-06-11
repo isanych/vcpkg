@@ -1,6 +1,4 @@
-include(vcpkg_common_functions)
-
-if(VCPKG_CMAKE_SYSTEM_NAME STREQUAL "WindowsStore" OR NOT VCPKG_CMAKE_SYSTEM_NAME)
+if(VCPKG_TARGET_IS_WINDOWS)
     message(FATAL_ERROR "This port is only for openssl on Unix-like systems")
 endif()
 
@@ -28,9 +26,10 @@ vcpkg_extract_source_archive_ex(
 )
 
 if(CMAKE_HOST_WIN32)
-    vcpkg_acquire_msys(MSYS_ROOT PACKAGES make)
+    vcpkg_acquire_msys(MSYS_ROOT PACKAGES make perl)
     set(BASH ${MSYS_ROOT}/usr/bin/bash.exe)
     set(MAKE ${MSYS_ROOT}/usr/bin/make.exe)
+    set(PERL ${MSYS_ROOT}/usr/bin/perl.exe)
 else()
     find_program(MAKE make)
     if(NOT MAKE)
@@ -65,7 +64,6 @@ if(VCPKG_LIBRARY_LINKAGE STREQUAL "static")
     file(COPY ${CMAKE_CURRENT_LIST_DIR}/vcpkg-cmake-wrapper.cmake DESTINATION ${CURRENT_PACKAGES_DIR}/share/openssl)
 endif()
 
-vcpkg_test_cmake(PACKAGE_NAME OpenSSL MODULE)
 vcpkg_pkgconfig(NAME libcrypto COMMON -lcrypto -ldl REQUIRES zlib)
 vcpkg_pkgconfig(NAME libssl COMMON -lssl REQUIRES libcrypto)
 vcpkg_pkgconfig(NAME openssl COMMON -lssl REQUIRES libcrypto)
