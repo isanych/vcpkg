@@ -41,7 +41,7 @@ vcpkg_add_to_path(PREPEND "${NINJA_DIR}")
 set(PATCHES common.pri.patch gl.patch build.patch)
 
 if(NOT VCPKG_TARGET_IS_WINDOWS)
-    list(APPEND CORE_OPTIONS "BUILD_OPTIONS" "-no-webengine-webrtc")
+    list(APPEND CORE_OPTIONS "BUILD_OPTIONS" "-no-webengine-webrtc" "-no-webengine-printing-and-pdf")
 endif()
 
 qt_submodule_installation(${CORE_OPTIONS} PATCHES ${PATCHES})
