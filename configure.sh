@@ -15,7 +15,9 @@ if [[ "${VCPKG_BASE}" = centos7 ]]; then
   ln -s $vcpkgRootDir/installed/x64-linux/lib /usr/local/lib64
 fi
 ./vcpkg install glib libjpeg-turbo
-./vcpkg install icu qt5-base qt5-script qt5-xmlpatterns qt5-webengine
+./vcpkg install icu qt5-base
+[[ ! "${VCPKG_BASE}" = opensuse ]] || VCPKG_SKIP_EXTRA=1
+[[ -n "VCPKG_SKIP_EXTRA" ]] ./vcpkg install qt5-script qt5-xmlpatterns qt5-webengine
 ./vcpkg install protobuf grpc hdf5 boost rapidjson cryptopp xerces-c xalan-c
 cd installed/x64-linux
 chmod 777 tools/protobuf/*
