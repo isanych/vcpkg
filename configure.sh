@@ -17,7 +17,7 @@ fi
 ./vcpkg install glib libjpeg-turbo
 ./vcpkg install icu qt5-base
 [[ ! "${VCPKG_BASE}" = opensuse ]] || VCPKG_SKIP_EXTRA=1
-[[ -n "VCPKG_SKIP_EXTRA" ]] ./vcpkg install qt5-script qt5-xmlpatterns qt5-webengine
+[[ -n "VCPKG_SKIP_EXTRA" ]] || ./vcpkg install qt5-script qt5-xmlpatterns qt5-webengine
 ./vcpkg install protobuf grpc hdf5 boost rapidjson cryptopp xerces-c xalan-c
 cd installed/x64-linux
 chmod 777 tools/protobuf/*
