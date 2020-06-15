@@ -8,7 +8,7 @@ export CXX=`which g++`
 [[ -f vcpkg ]] || ./bootstrap-vcpkg.sh -useSystemBinaries -disableMetrics
 export LD_LIBRARY_PATH="$vcpkgRootDir/installed/x64-linux/lib:$vcpkgRootDir/installed/x64-linux/debug/lib"
 export PKG_CONFIG_PATH="$vcpkgRootDir/installed/x64-linux/lib/pkgconfig:$vcpkgRootDir/installed/x64-linux/debug/lib/pkgconfig"
-if [[ ! -e /usr/lib64/libssl.so.1.1 ]] || export LD_LIBRARY_PATH="/usr/lib64:$LD_LIBRARY_PATH"
+[[ ! -e /usr/lib64/libssl.so.1.1 ]] || export LD_LIBRARY_PATH="/usr/lib64:$LD_LIBRARY_PATH"
 if [[ "${VCPKG_BASE}" = centos7 ]]; then
   rm -rf /usr/local/include /usr/local/lib /usr/local/lib64
   ln -s $vcpkgRootDir/installed/x64-linux/include /usr/local/include
