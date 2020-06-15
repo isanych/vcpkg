@@ -6,13 +6,9 @@ export CC=`which gcc`
 export CXX=`which g++`
 [[ ! -d /deploy/vcpkg/downloads || -e downloads ]] || ln -s /deploy/vcpkg/downloads
 [[ -f vcpkg ]] || ./bootstrap-vcpkg.sh -useSystemBinaries -disableMetrics
-./vcpkg install openssl
-if [[ -e /usr/lib64/libssl.so.1.1 ]]; then
-  rm "$vcpkgRootDir/installed/x64-linux/lib/libssl.so.1.1"
-  ln -s /usr/lib64/libssl.so.1.1 "$vcpkgRootDir/installed/x64-linux/lib/libssl.so.1.1"
-fi
 export LD_LIBRARY_PATH="$vcpkgRootDir/installed/x64-linux/lib:$vcpkgRootDir/installed/x64-linux/debug/lib"
 export PKG_CONFIG_PATH="$vcpkgRootDir/installed/x64-linux/lib/pkgconfig:$vcpkgRootDir/installed/x64-linux/debug/lib/pkgconfig"
+if [[ ! -e /usr/lib64/libssl.so.1.1 ]] || export LD_LIBRARY_PATH="/usr/lib64:$LD_LIBRARY_PATH"
 if [[ "${VCPKG_BASE}" = centos7 ]]; then
   rm -rf /usr/local/include /usr/local/lib /usr/local/lib64
   ln -s $vcpkgRootDir/installed/x64-linux/include /usr/local/include
