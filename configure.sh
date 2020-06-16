@@ -4,6 +4,7 @@ cd `dirname $BASH_SOURCE`
 vcpkgRootDir=`pwd`
 export CC=`which gcc`
 export CXX=`which g++`
+unset SITE_CONFIG 
 [[ ! -d /deploy/vcpkg/downloads || -e downloads ]] || ln -s /deploy/vcpkg/downloads
 [[ -f vcpkg ]] || ./bootstrap-vcpkg.sh -useSystemBinaries -disableMetrics
 export LD_LIBRARY_PATH="$vcpkgRootDir/installed/x64-linux/lib:$vcpkgRootDir/installed/x64-linux/debug/lib"
