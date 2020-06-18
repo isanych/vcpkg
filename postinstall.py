@@ -196,10 +196,10 @@ ensure_link_full("tools/qt5/bin", "bin")
 ensure_link_full("tools/qt5/debug/bin", "debug/bin")
 exe = ".exe" if sys.platform == "win32" else ""
 for t in ("moc", "qmake", "rcc", "uic"):
-    ensure_links("bin", "tools/qt5/bin/" + t + exe)
-    ensure_links("debug/bin", "tools/qt5/debug/bin/" + t + exe)
-for t in ("h5diff",):
-    ensure_links("bin", "tools/hdf5/" + t + exe)
+    ensure_links("bin", f"tools/qt5/bin/{t}{exe}")
+    ensure_links("debug/bin", f"tools/qt5/debug/bin/{t}{exe}")
+for t in ("h5diff", "h5dump"):
+    ensure_link_full(f"bin/{t}{exe}", f"tools/hdf5/{t}-shared{exe}")
 if os.path.exists("tools/protobuf/protoc") and sys.platform != "win32" and os.stat("tools/protobuf/protoc").st_mode & 0o777 != 0o755:
     os.chmod("tools/protobuf/protoc", 0o755)
-ensure_link("bin", "tools/protobuf/protoc" + exe)
+ensure_link("bin", f"tools/protobuf/protoc{exe}")
