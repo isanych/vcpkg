@@ -537,6 +537,12 @@ namespace vcpkg::Build
         variables.emplace("FEATURES", Strings::join(";", action.feature_list));
         variables.emplace("ALL_FEATURES", all_features);
         variables.emplace("PORT_FULL_VERSION", scf.core_paragraph->version);
+        variables.emplace("PORT_FULL_VERSION", scf.core_paragraph->version);
+        variables.emplace("PORT_VERSION", to_port_version(scf.core_paragraph->version));
+        variables.emplace("PORT_CMAKE_VERSION", to_cmake_version(scf.core_paragraph->version));
+        variables.emplace("PORT_DESCRIPTION", Strings::clean_shell_string(Strings::join(" ", scf.core_paragraph->description)));
+        variables.emplace("PORT_HOMEPAGE", scf.core_paragraph->homepage);
+
         get_generic_cmake_build_args(
             paths,
             triplet,
