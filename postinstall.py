@@ -4,6 +4,53 @@ import shutil
 import sys
 import subprocess
 
+EXEFLAG_NONE = 0x0000
+EXEFLAG_LINUX = 0x0001
+EXEFLAG_WINDOWS = 0x0002
+EXEFLAG_MACOS = 0x0004
+EXEFLAG_MACOS_FAT = 0x0008
+EXEFLAG_32BITS = 0x0010
+EXEFLAG_64BITS = 0x0020
+# Keep signatures sorted by size
+_EXE_SIGNATURES = (
+    ("\x4D\x5A", EXEFLAG_WINDOWS),
+    ("\xCE\xFA\xED\xFE", EXEFLAG_MACOS | EXEFLAG_32BITS),
+    ("\xCF\xFA\xED\xFE", EXEFLAG_MACOS | EXEFLAG_64BITS),
+    ("\xBE\xBA\xFE\xCA", EXEFLAG_MACOS | EXEFLAG_32BITS | EXEFLAG_MACOS_FAT),
+    ("\xBF\xBA\xFE\xCA", EXEFLAG_MACOS | EXEFLAG_64BITS | EXEFLAG_MACOS_FAT),
+    ("\x7F\x45\x4C\x46\x01", EXEFLAG_LINUX | EXEFLAG_32BITS),
+    ("\x7F\x45\x4C\x46\x02", EXEFLAG_LINUX | EXEFLAG_64BITS)
+)
+
+
+def get_exeflags(filepath):
+    try:
+        with open(filepath, "rb") as f:
+            buf = ""
+            buf_len = 0
+            for sig, flags in _EXE_SIGNATURES:
+                sig_len = len(sig)
+                if buf_len < sig_len:
+                    buf += f.read(sig_len - buf_len)
+                    buf_len = sig_len
+                if buf == sig:
+                    return flags
+    except:
+        pass
+    return EXEFLAG_NONE
+
+
+def is_elf(filepath):
+    return get_exeflags(filepath) & EXEFLAG_LINUX != 0
+
+
+def get_output(command):
+    return subprocess.check_output(command, universal_newlines=True).strip()
+
+
+def which(name):
+    return get_output(["which" if is_linux else "where", name]).split("\n")
+
 
 def check_call(args):
     print(" ".join(p if " " not in p else "'" + p + "'" for p in args), flush=True)
@@ -28,9 +75,23 @@ def write_file(name, data):
         return f.write(data)
 
 
+def set_rpath(file):
+    if not is_rpath or not is_elf(file):
+        return
+    parts = file.split("/")
+    is_debug = len(parts) > 2 and parts[-3] == "debug"
+    origin = f"$ORIGIN{'/'.join(['..'] * (len(parts) - 1))}{'/debug' if is_debug else ''}/lib"
+    current = get_output(["chrpath", file]).split()
+    if len(current) == 2 and current[1] == f"RPATH={origin}":
+        return
+    check_call(["patchelf", "--set-rpath", origin, file])
+    check_call(["bin/runpath2rpath", file])
+
+
 def ensure_link_full(name, source):
     if not os.path.exists(source):
         return
+    set_rpath(source)
     if os.path.isfile(name) and os.stat(name).st_size == 0:
         os.remove(name)
     if os.path.exists(name):
@@ -71,7 +132,7 @@ cwd = os.getcwd()
 if os.path.exists("debug/lib/cmake"):
     shutil.rmtree("debug/lib/cmake")
 
-qt_conf("tools/qt5/qt_release.conf", "bin/qt.conf",  """[DevicePaths]
+qt_conf("tools/qt5/qt_release.conf", "bin/qt.conf", """[DevicePaths]
 Prefix=${CURRENT_INSTALLED_DIR}
 Documentation=share/qt5/doc
 LibraryExecutables=tools/qt5
@@ -186,6 +247,7 @@ function(add_qt_library _target)
     endforeach()
 endfunction()
 """)
+is_rpath = False
 ensure_links("debug", "include")
 ensure_links("share", "lib/cmake")
 ensure_links("share/qt5", "doc")
@@ -194,12 +256,19 @@ ensure_links("share/qt5/debug", "debug/doc")
 ensure_links("tools/qt5/debug", "debug/mkspecs")
 ensure_link_full("tools/qt5/bin", "bin")
 ensure_link_full("tools/qt5/debug/bin", "debug/bin")
-exe = ".exe" if sys.platform == "win32" else ""
+is_linux = sys.platform != "win32"
+try:
+    is_rpath = is_linux and which("patchelf") and which("chrpath")
+    if is_rpath and not os.path.exists("bin/runpath2rpath"):
+        check_call(["gcc", "-o", "bin/runpath2rpath", "../../runpath2rpath.c"])
+except:
+    is_rpath = False
+exe = "" if is_linux else ".exe"
 for t in ("moc", "qmake", "rcc", "uic"):
     ensure_links("bin", f"tools/qt5/bin/{t}{exe}")
     ensure_links("debug/bin", f"tools/qt5/debug/bin/{t}{exe}")
 for t in ("h5diff", "h5dump"):
     ensure_link_full(f"bin/{t}{exe}", f"tools/hdf5/{t}-shared{exe}")
-if os.path.exists("tools/protobuf/protoc") and sys.platform != "win32" and os.stat("tools/protobuf/protoc").st_mode & 0o777 != 0o755:
+if os.path.exists("tools/protobuf/protoc") and is_linux and os.stat("tools/protobuf/protoc").st_mode & 0o777 != 0o755:
     os.chmod("tools/protobuf/protoc", 0o755)
 ensure_link("bin", f"tools/protobuf/protoc{exe}")
