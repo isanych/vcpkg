@@ -1,11 +1,12 @@
 #include <catch2/catch.hpp>
 
-#include <vcpkg/base/strings.h>
-
 #include <stdint.h>
+
+#include <string>
 #include <utility>
 #include <vector>
-#include <string>
+
+#include <vcpkg/base/strings.h>
 
 TEST_CASE ("b32 encoding", "[strings]")
 {
@@ -50,4 +51,14 @@ TEST_CASE ("clean_shell_string", "[strings]")
     REQUIRE(vcpkg::Strings::clean_shell_string("`123") == "123");
     REQUIRE(vcpkg::Strings::clean_shell_string("123`") == "123");
     REQUIRE(vcpkg::Strings::clean_shell_string("`1`2`3`") == "123");
+}
+
+TEST_CASE ("find_first_of", "[strings]")
+{
+    using vcpkg::Strings::find_first_of;
+    REQUIRE(find_first_of("abcdefg", "hij") == std::string());
+    REQUIRE(find_first_of("abcdefg", "a") == std::string("abcdefg"));
+    REQUIRE(find_first_of("abcdefg", "g") == std::string("g"));
+    REQUIRE(find_first_of("abcdefg", "bg") == std::string("bcdefg"));
+    REQUIRE(find_first_of("abcdefg", "gb") == std::string("bcdefg"));
 }

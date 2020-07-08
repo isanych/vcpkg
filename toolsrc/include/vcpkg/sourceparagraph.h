@@ -1,13 +1,13 @@
 #pragma once
 
-#include <string>
 #include <vcpkg/base/expected.h>
+#include <vcpkg/base/json.h>
 #include <vcpkg/base/span.h>
 #include <vcpkg/base/system.h>
 #include <vcpkg/base/system.print.h>
 #include <vcpkg/packagespec.h>
 #include <vcpkg/paragraphparser.h>
-#include <vector>
+#include <vcpkg/platform-expression.h>
 
 namespace vcpkg
 {
@@ -28,6 +28,9 @@ namespace vcpkg
         static Type from_string(const std::string&);
     };
 
+    bool operator==(const Type&, const Type&);
+    bool operator!=(const Type&, const Type&);
+
     /// <summary>
     /// Port version does not have packaging suffix, 1.2.3-1 -> 1.2.3
     /// </summary>
@@ -44,8 +47,8 @@ namespace vcpkg
     struct FeatureParagraph
     {
         std::string name;
-        std::string description;
-        std::vector<Dependency> depends;
+        std::vector<std::string> description;
+        std::vector<Dependency> dependencies;
     };
 
     /// <summary>
@@ -55,13 +58,17 @@ namespace vcpkg
     {
         std::string name;
         std::string version;
-        std::string description;
-        std::string maintainer;
+        int port_version = 0;
+        std::vector<std::string> description;
+        std::vector<std::string> maintainers;
         std::string homepage;
-        std::vector<Dependency> depends;
+        std::string documentation;
+        std::vector<Dependency> dependencies;
         std::vector<std::string> default_features;
+        std::string license; // SPDX license expression
+
         Type type;
-        std::string supports_expression;
+        PlatformExpression::Expr supports_expression;
     };
 
     /// <summary>
@@ -79,9 +86,13 @@ namespace vcpkg
             }
         }
 
+        static Parse::ParseExpected<SourceControlFile> parse_manifest_file(const fs::path& path_to_manifest,
+                                                                           const Json::Object& object);
+
         static Parse::ParseExpected<SourceControlFile> parse_control_file(
             const fs::path& path_to_control, std::vector<Parse::Paragraph>&& control_paragraphs);
 
+        // Always non-null in non-error cases
         std::unique_ptr<SourceParagraph> core_paragraph;
         std::vector<std::unique_ptr<FeatureParagraph>> feature_paragraphs;
 

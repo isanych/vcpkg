@@ -40,7 +40,7 @@ if(NOT VCPKG_LIBRARY_LINKAGE STREQUAL "static")
     list(APPEND FEATURE_OPTIONS
                     -DBUILD_STATIC_LIBS=OFF
                     -DONLY_SHARED_LIBS=ON
-		    -DHDF5_ENABLE_THREADSAFE=ON
+                    -DHDF5_ENABLE_THREADSAFE=ON
     )
 endif()
 
