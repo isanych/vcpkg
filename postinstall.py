@@ -13,35 +13,39 @@ EXEFLAG_32BITS = 0x0010
 EXEFLAG_64BITS = 0x0020
 # Keep signatures sorted by size
 _EXE_SIGNATURES = (
-    ("\x4D\x5A", EXEFLAG_WINDOWS),
-    ("\xCE\xFA\xED\xFE", EXEFLAG_MACOS | EXEFLAG_32BITS),
-    ("\xCF\xFA\xED\xFE", EXEFLAG_MACOS | EXEFLAG_64BITS),
-    ("\xBE\xBA\xFE\xCA", EXEFLAG_MACOS | EXEFLAG_32BITS | EXEFLAG_MACOS_FAT),
-    ("\xBF\xBA\xFE\xCA", EXEFLAG_MACOS | EXEFLAG_64BITS | EXEFLAG_MACOS_FAT),
-    ("\x7F\x45\x4C\x46\x01", EXEFLAG_LINUX | EXEFLAG_32BITS),
-    ("\x7F\x45\x4C\x46\x02", EXEFLAG_LINUX | EXEFLAG_64BITS)
+    (b"\x4D\x5A", EXEFLAG_WINDOWS),
+    (b"\xCE\xFA\xED\xFE", EXEFLAG_MACOS | EXEFLAG_32BITS),
+    (b"\xCF\xFA\xED\xFE", EXEFLAG_MACOS | EXEFLAG_64BITS),
+    (b"\xBE\xBA\xFE\xCA", EXEFLAG_MACOS | EXEFLAG_32BITS | EXEFLAG_MACOS_FAT),
+    (b"\xBF\xBA\xFE\xCA", EXEFLAG_MACOS | EXEFLAG_64BITS | EXEFLAG_MACOS_FAT),
+    (b"\x7F\x45\x4C\x46\x01", EXEFLAG_LINUX | EXEFLAG_32BITS),
+    (b"\x7F\x45\x4C\x46\x02", EXEFLAG_LINUX | EXEFLAG_64BITS)
 )
 
 
-def get_exeflags(filepath):
-    try:
-        with open(filepath, "rb") as f:
-            buf = ""
-            buf_len = 0
-            for sig, flags in _EXE_SIGNATURES:
-                sig_len = len(sig)
-                if buf_len < sig_len:
-                    buf += f.read(sig_len - buf_len)
-                    buf_len = sig_len
-                if buf == sig:
-                    return flags
-    except:
-        pass
+def get_exeflags(file):
+    with open(file, "rb") as f:
+        buf = b""
+        buf_len = 0
+        for sig, flags in _EXE_SIGNATURES:
+            sig_len = len(sig)
+            if buf_len < sig_len:
+                buf += f.read(sig_len - buf_len)
+                buf_len = sig_len
+            if buf == sig:
+                return flags
     return EXEFLAG_NONE
 
 
-def is_elf(filepath):
-    return get_exeflags(filepath) & EXEFLAG_LINUX != 0
+def is_linux_binary(file):
+    flag = get_exeflags(file)
+    ret = flag & EXEFLAG_LINUX != 0
+    return ret
+
+
+def is_elf(file):
+    ok = os.path.isfile(file)
+    return ok and is_linux_binary(file)
 
 
 def get_output(command):
@@ -75,14 +79,27 @@ def write_file(name, data):
         return f.write(data)
 
 
+def get_rpath(file):
+    try:
+        s = get_output(["chrpath", file]).split()
+        if len(s) == 2:
+            return s[1]
+    except subprocess.CalledProcessError:
+        pass
+    return ""
+
+
 def set_rpath(file):
     if not is_rpath or not is_elf(file):
         return
+    if os.path.islink(file):
+        file = os.path.realpath(file)
+        file = os.path.relpath(file)
     parts = file.split("/")
     is_debug = len(parts) > 2 and parts[-3] == "debug"
-    origin = f"$ORIGIN{'/'.join(['..'] * (len(parts) - 1))}{'/debug' if is_debug else ''}/lib"
-    current = get_output(["chrpath", file]).split()
-    if len(current) == 2 and current[1] == f"RPATH={origin}":
+    origin = f"$ORIGIN/{'/'.join(['..'] * (len(parts) - 1))}{'/debug' if is_debug else ''}/lib"
+    current = get_rpath(file)
+    if current == f"RPATH={origin}":
         return
     check_call(["patchelf", "--set-rpath", origin, file])
     check_call(["bin/runpath2rpath", file])
@@ -258,7 +275,7 @@ ensure_link_full("tools/qt5/bin", "bin")
 ensure_link_full("tools/qt5/debug/bin", "debug/bin")
 is_linux = sys.platform != "win32"
 try:
-    is_rpath = is_linux and which("patchelf") and which("chrpath")
+    is_rpath = is_linux and bool(which("patchelf")) and bool(which("chrpath"))
     if is_rpath and not os.path.exists("bin/runpath2rpath"):
         check_call(["gcc", "-o", "bin/runpath2rpath", "../../runpath2rpath.c"])
 except:
