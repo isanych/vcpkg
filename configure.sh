@@ -17,7 +17,7 @@ if [[ "${VCPKG_BASE}" = centos7 ]]; then
   ln -s $vcpkgRootDir/installed/x64-linux/lib /usr/local/lib64
 fi
 ./vcpkg install glib libjpeg-turbo
-./vcpkg install icu qt5-base
+./vcpkg install icu qt5-base qt5-script
 [[ ! "${VCPKG_BASE}" = opensuse ]] || VCPKG_SKIP_EXTRA=1
 if [[ -z "${VCPKG_SKIP_EXTRA}" ]]; then
   ./vcpkg install libwebp
@@ -35,7 +35,7 @@ if [[ -z "${VCPKG_SKIP_EXTRA}" ]]; then
   ln -s libwebpmuxd.so.1.1.0 libwebpmux.so.1.1.0
   ln -s libwebpmuxd.so.3.5.0 libwebpmux.so.3.5.0
   cd $vcpkgRootDir
-  ./vcpkg install qt5-script qt5-xmlpatterns qt5-webengine
+  ./vcpkg install qt5-xmlpatterns qt5-webengine
 fi
 ./vcpkg install protobuf grpc hdf5 boost rapidjson cryptopp xerces-c xalan-c
 cd installed/x64-linux
