@@ -24,10 +24,10 @@ if(PORT STREQUAL cryptopp OR PORT STREQUAL double-conversion OR PORT STREQUAL hd
     set(IS_LTO FALSE)
 endif()
 
-if(PORT MATCHES "^boost.*")
-    set(VCPKG_LIBRARY_LINKAGE static)
-    set(IS_LTO FALSE)
-endif()
+#if(PORT MATCHES "^boost.*")
+#    set(VCPKG_LIBRARY_LINKAGE static)
+#    set(IS_LTO FALSE)
+#endif()
 
 if(IS_LTO)
     set(VCPKG_CXX_FLAGS_RELEASE -flto)
