@@ -1,6 +1,7 @@
 set(VCPKG_TARGET_ARCHITECTURE x64)
 set(VCPKG_CRT_LINKAGE dynamic)
 set(VCPKG_CMAKE_SYSTEM_NAME Linux)
+set(VCPKG_LIBRARY_LINKAGE dynamic)
 
 if(EXISTS /etc/redhat-release)
     set(IS_RHEL TRUE)
@@ -23,17 +24,15 @@ if(PORT STREQUAL cryptopp OR PORT STREQUAL double-conversion OR PORT STREQUAL hd
     set(IS_LTO FALSE)
 endif()
 
+if(PORT MATCHES "^boost.*")
+    set(VCPKG_LIBRARY_LINKAGE static)
+    set(IS_LTO FALSE)
+endif()
+
 if(IS_LTO)
     set(VCPKG_CXX_FLAGS_RELEASE -flto)
     set(VCPKG_C_FLAGS_RELEASE -flto)
     set(VCPKG_LINKER_FLAGS_RELEASE -flto)
-endif()
-
-if(PORT MATCHES "^boost.*")
-    set(VCPKG_LIBRARY_LINKAGE static)
-    set(IS_LTO FALSE)
-else()
-    set(VCPKG_LIBRARY_LINKAGE dynamic)
 endif()
 
 if(PORT STREQUAL glib)

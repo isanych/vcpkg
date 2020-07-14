@@ -289,3 +289,4 @@ for t in ("h5diff", "h5dump"):
 if os.path.exists("tools/protobuf/protoc") and is_linux and os.stat("tools/protobuf/protoc").st_mode & 0o777 != 0o755:
     os.chmod("tools/protobuf/protoc", 0o755)
 ensure_link("bin", f"tools/protobuf/protoc{exe}")
+ensure_link("bin", f"tools/grpc/grpc_cpp_plugin{exe}")
