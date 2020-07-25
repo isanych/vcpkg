@@ -7,6 +7,12 @@ export CXX=`which g++`
 unset SITE_CONFIG 
 [[ ! -d /deploy/vcpkg/downloads || -e downloads ]] || ln -s /deploy/vcpkg/downloads
 [[ -f vcpkg ]] || ./bootstrap-vcpkg.sh -useSystemBinaries
+if [[ "x${VCPKG_BOOST_STATIC}" = "xtrue" ]]; then
+  touch $vcpkgRootDir/.boost_static
+  : ${VCPKG_SUFFIX:=-static}
+else
+  : ${VCPKG_SUFFIX:=-dynamic}
+fi
 export LD_LIBRARY_PATH="$vcpkgRootDir/installed/x64-linux/lib:$vcpkgRootDir/installed/x64-linux/debug/lib"
 export PKG_CONFIG_PATH="$vcpkgRootDir/installed/x64-linux/lib/pkgconfig:$vcpkgRootDir/installed/x64-linux/debug/lib/pkgconfig"
 [[ ! -e /usr/lib64/libssl.so.1.1 ]] || export LD_LIBRARY_PATH="/usr/lib64:$LD_LIBRARY_PATH"
@@ -41,4 +47,4 @@ fi
 cd installed/x64-linux
 chmod 777 tools/protobuf/*
 ../../postinstall.py
-[[ -z "${VCPKG_BASE}" || ! -d /deploy/vcpkg ]] || tar cJf /deploy/vcpkg/vcpkg-2020-${VCPKG_BASE}-x64-gcc1010.txz -C "$vcpkgRootDir/.." vcpkg/installed/x64-linux vcpkg/scripts vcpkg/triplets/x64-linux.cmake vcpkg/.vcpkg-root
+[[ -z "${VCPKG_BASE}" || ! -d /deploy/vcpkg ]] || tar cJf /deploy/vcpkg/vcpkg-2020-${VCPKG_BASE}-x64-gcc10${VCPKG_SUFFIX}.txz -C "$vcpkgRootDir/.." vcpkg/installed/x64-linux vcpkg/scripts vcpkg/triplets/x64-linux.cmake vcpkg/.vcpkg-root

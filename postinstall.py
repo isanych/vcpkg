@@ -281,7 +281,7 @@ try:
 except:
     is_rpath = False
 exe = "" if is_linux else ".exe"
-for t in ("moc", "qmake", "rcc", "uic"):
+for t in ("moc", "qmake", "rcc", "uic", "lrelease", "lupdate"):
     ensure_links("bin", f"tools/qt5/bin/{t}{exe}")
     ensure_links("debug/bin", f"tools/qt5/debug/bin/{t}{exe}")
 for t in ("h5diff", "h5dump"):
