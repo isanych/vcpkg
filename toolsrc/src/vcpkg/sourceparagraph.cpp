@@ -6,6 +6,7 @@
 #include <vcpkg/base/system.debug.h>
 #include <vcpkg/base/system.print.h>
 #include <vcpkg/base/util.h>
+
 #include <vcpkg/packagespec.h>
 #include <vcpkg/platform-expression.h>
 #include <vcpkg/sourceparagraph.h>
@@ -844,6 +845,7 @@ namespace vcpkg
         }
         return ret;
     }
+
     std::string to_port_version(std::string version)
     {
       auto pos = version.find('-');
