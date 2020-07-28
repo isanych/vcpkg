@@ -28,18 +28,20 @@ fi
 if [[ -z "${VCPKG_SKIP_EXTRA}" ]]; then
   ./vcpkg install libwebp
   cd installed/x64-linux/debug/lib
-  ln -s libwebpdecoderd.so libwebpdecoder.so
-  ln -s libwebpdecoderd.so.1.1.0 libwebpdecoder.so.1.1.0
-  ln -s libwebpdecoderd.so.4.0.1 libwebpdecoder.so.4.0.1
-  ln -s libwebpdemuxd.so libwebpdemux.so
-  ln -s libwebpdemuxd.so.1.1.0 libwebpdemux.so.1.1.0
-  ln -s libwebpdemuxd.so.2.6.0 libwebpdemux.so.2.6.0
-  ln -s libwebpd.so libwebp.so
-  ln -s libwebpd.so.1.1.0 libwebp.so.1.1.0
-  ln -s libwebpd.so.8.0.1 libwebp.so.8.0.1
-  ln -s libwebpmuxd.so libwebpmux.so
-  ln -s libwebpmuxd.so.1.1.0 libwebpmux.so.1.1.0
-  ln -s libwebpmuxd.so.3.5.0 libwebpmux.so.3.5.0
+  if [[ ! -f libwebpdecoder.so ]]; then
+    ln -s libwebpdecoderd.so libwebpdecoder.so
+    ln -s libwebpdecoderd.so.1.1.0 libwebpdecoder.so.1.1.0
+    ln -s libwebpdecoderd.so.4.0.1 libwebpdecoder.so.4.0.1
+    ln -s libwebpdemuxd.so libwebpdemux.so
+    ln -s libwebpdemuxd.so.1.1.0 libwebpdemux.so.1.1.0
+    ln -s libwebpdemuxd.so.2.6.0 libwebpdemux.so.2.6.0
+    ln -s libwebpd.so libwebp.so
+    ln -s libwebpd.so.1.1.0 libwebp.so.1.1.0
+    ln -s libwebpd.so.8.0.1 libwebp.so.8.0.1
+    ln -s libwebpmuxd.so libwebpmux.so
+    ln -s libwebpmuxd.so.1.1.0 libwebpmux.so.1.1.0
+    ln -s libwebpmuxd.so.3.5.0 libwebpmux.so.3.5.0
+  fi
   cd $vcpkgRootDir
   ./vcpkg install qt5-xmlpatterns qt5-webengine
 fi
