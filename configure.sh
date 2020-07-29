@@ -22,11 +22,12 @@ if [[ "${VCPKG_BASE}" = centos7 ]]; then
   ln -s $vcpkgRootDir/installed/x64-linux/lib /usr/local/lib
   ln -s $vcpkgRootDir/installed/x64-linux/lib /usr/local/lib64
 fi
-./vcpkg install glib libjpeg-turbo
-./vcpkg install icu qt5-base qt5-script
+v="$vcpkgRootDir/vcpkg install --feature-flags=-compilertracking --editable"
+$v glib libjpeg-turbo
+$v icu qt5-base qt5-script
 [[ ! "${VCPKG_BASE}" = opensuse ]] || VCPKG_SKIP_EXTRA=1
 if [[ -z "${VCPKG_SKIP_EXTRA}" ]]; then
-  ./vcpkg install libwebp
+  $v libwebp
   cd installed/x64-linux/debug/lib
   if [[ ! -f libwebpdecoder.so ]]; then
     ln -s libwebpdecoderd.so libwebpdecoder.so
@@ -43,9 +44,9 @@ if [[ -z "${VCPKG_SKIP_EXTRA}" ]]; then
     ln -s libwebpmuxd.so.3.5.0 libwebpmux.so.3.5.0
   fi
   cd $vcpkgRootDir
-  ./vcpkg install qt5-xmlpatterns qt5-webengine
+  $v qt5-xmlpatterns qt5-webengine
 fi
-./vcpkg install protobuf grpc hdf5 boost rapidjson cryptopp xerces-c xalan-c
+$v protobuf grpc hdf5 boost rapidjson cryptopp xerces-c xalan-c
 cd installed/x64-linux
 chmod 777 tools/protobuf/*
 ../../postinstall.py
