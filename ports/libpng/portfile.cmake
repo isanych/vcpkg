@@ -1,4 +1,4 @@
-set(LIBPNG_VER ${PORT_VERSION})
+set(LIBPNG_VER 1.6.37)
 
 # Download the apng patch
 set(LIBPNG_APNG_OPTION )

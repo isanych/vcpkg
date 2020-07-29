@@ -4,6 +4,7 @@ project(fontconfig C)
 add_definitions(-D_CRT_SECURE_NO_WARNINGS -D_CRT_NONSTDC_NO_WARNINGS -DHAVE_CONFIG_H)
 
 # find dependencies
+find_package(unofficial-iconv CONFIG REQUIRED)
 find_package(Freetype REQUIRED)
 find_package(EXPAT REQUIRED)
 
@@ -47,12 +48,11 @@ target_include_directories(fontconfig PRIVATE .
     ${EXPAT_INCLUDE_DIR})
 if(WIN32)
     target_include_directories(fontconfig PRIVATE ${FC_INCLUDE_DIR}/win32)
-    find_package(unofficial-iconv CONFIG REQUIRED)
-    target_link_libraries(fontconfig PRIVATE unofficial::iconv::libiconv Freetype::Freetype EXPAT::EXPAT)
 else()
     target_include_directories(fontconfig PRIVATE ${FC_INCLUDE_DIR}/unix)
-    target_link_libraries(fontconfig PRIVATE Freetype::Freetype EXPAT::EXPAT)
 endif()
+
+target_link_libraries(fontconfig PRIVATE unofficial::iconv::libiconv Freetype::Freetype EXPAT::EXPAT)
 
 install(TARGETS fontconfig
     EXPORT fontconfig-targets
@@ -87,9 +87,7 @@ install(
 
 file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/unofficial-fontconfig-config.cmake "
 include(CMakeFindDependencyMacro)
-if(WIN32)
-    find_dependency(unofficial-iconv)
-endif()
+find_dependency(unofficial-iconv CONFIG)
 find_dependency(Freetype)
 find_dependency(EXPAT)
 

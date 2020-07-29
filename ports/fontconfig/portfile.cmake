@@ -1,4 +1,4 @@
-set(FONTCONFIG_VERSION ${PORT_VERSION})
+set(FONTCONFIG_VERSION 2.12.4)
 vcpkg_download_distfile(ARCHIVE
     URLS "https://www.freedesktop.org/software/fontconfig/release/fontconfig-${FONTCONFIG_VERSION}.tar.gz"
     FILENAME "fontconfig-${FONTCONFIG_VERSION}.tar.gz"
