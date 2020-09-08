@@ -132,9 +132,6 @@
     <ClCompile Include="..\..\src\vcpkg\packagespec.cpp">
       <Filter>Source Files\vcpkg</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\vcpkg\paragraphparseresult.cpp">
-      <Filter>Source Files\vcpkg</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\vcpkg\paragraphs.cpp">
       <Filter>Source Files\vcpkg</Filter>
     </ClCompile>
@@ -251,6 +248,21 @@
     </ClCompile>
     <ClCompile Include="..\..\src\vcpkg\base\unicode.cpp">
       <Filter>Source Files\vcpkg\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\vcpkg\buildenvironment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\vcpkg\commands.info.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\vcpkg\configuration.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\vcpkg\export.prefab.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\vcpkg\registries.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -413,9 +425,6 @@
     <ClInclude Include="..\..\include\vcpkg\packagespec.h">
       <Filter>Header Files\vcpkg</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\vcpkg\paragraphparseresult.h">
-      <Filter>Header Files\vcpkg</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\vcpkg\paragraphs.h">
       <Filter>Header Files\vcpkg</Filter>
     </ClInclude>
@@ -535,6 +544,21 @@
     </ClInclude>
     <ClInclude Include="..\..\include\vcpkg\base\unicode.h">
       <Filter>Header Files\vcpkg\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\vcpkg\base\ignore_errors.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\vcpkg\buildenvironment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\vcpkg\commands.info.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\vcpkg\export.prefab.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\vcpkg\registries.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

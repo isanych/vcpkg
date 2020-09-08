@@ -450,14 +450,14 @@ namespace vcpkg::Build
     {
         out_vars.emplace("CMD", "BUILD");
         out_vars.emplace("TARGET_TRIPLET", triplet.canonical_name());
-        out_vars.emplace("TARGET_TRIPLET_FILE", paths.get_triplet_file_path(triplet).u8string());
+        out_vars.emplace("TARGET_TRIPLET_FILE", fs::u8string(paths.get_triplet_file_path(triplet)));
         out_vars.emplace("VCPKG_PLATFORM_TOOLSET", toolset.version.c_str());
-        out_vars.emplace("DOWNLOADS", paths.downloads.u8string());
+        out_vars.emplace("DOWNLOADS", fs::u8string(paths.downloads));
         out_vars.emplace("VCPKG_CONCURRENCY", std::to_string(get_concurrency()));
         if (!System::get_environment_variable("VCPKG_FORCE_SYSTEM_BINARIES").has_value())
         {
             const fs::path& git_exe_path = paths.get_tool_exe(Tools::GIT);
-            out_vars.emplace("GIT", git_exe_path.u8string());
+            out_vars.emplace("GIT", fs::u8string(git_exe_path));
         }
     }
 
@@ -473,9 +473,9 @@ namespace vcpkg::Build
         (void)(paths.get_tool_exe(Tools::NINJA));
 #endif
         std::unordered_map<std::string, std::string> cmake_args;
-        cmake_args.emplace("CURRENT_PORT_DIR", (paths.scripts / "detect_compiler").u8string());
-        cmake_args.emplace("CURRENT_BUILDTREES_DIR", buildpath.u8string());
-        cmake_args.emplace("CURRENT_PACKAGES_DIR", (paths.packages / ("detect_compiler_" + triplet.canonical_name())).u8string());
+        cmake_args.emplace("CURRENT_PORT_DIR", fs::u8string(paths.scripts / "detect_compiler"));
+        cmake_args.emplace("CURRENT_BUILDTREES_DIR", fs::u8string(buildpath));
+        cmake_args.emplace("CURRENT_PACKAGES_DIR", fs::u8string(paths.packages / ("detect_compiler_" + triplet.canonical_name())));
         get_generic_cmake_build_args(paths, triplet, abi_info.toolset.value_or_exit(VCPKG_LINE_INFO), cmake_args);
 
         std::vector<System::CMakeVariable> cvars;
@@ -553,7 +553,7 @@ namespace vcpkg::Build
 
         std::unordered_map<std::string, std::string> variables;
         variables.emplace("PORT", scf.core_paragraph->name);
-        variables.emplace("CURRENT_PORT_DIR", scfl.source_location.generic_u8string());
+        variables.emplace("CURRENT_PORT_DIR", fs::u8string(scfl.source_location));
         variables.emplace("VCPKG_USE_HEAD_VERSION", Util::Enum::to_bool(action.build_options.use_head_version) ? "1" : "0");
         variables.emplace("_VCPKG_NO_DOWNLOADS", !Util::Enum::to_bool(action.build_options.allow_downloads) ? "1" : "0");
         variables.emplace("_VCPKG_DOWNLOAD_TOOL", to_string(action.build_options.download_tool));
