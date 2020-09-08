@@ -46,3 +46,20 @@ index 37616eb..da9a8c5 100644
  endif()
  
  # install include files
+diff --git a/cmake/mimalloc-config-version.cmake b/cmake/mimalloc-config-version.cmake
+index 6454d91..c919185 100644
+--- a/cmake/mimalloc-config-version.cmake
++++ b/cmake/mimalloc-config-version.cmake
+@@ -3,6 +3,7 @@ set(mi_version_minor 6)
+ set(mi_version ${mi_version_major}.${mi_version_minor})
+ 
+ set(PACKAGE_VERSION ${mi_version})
++if(PACKAGE_FIND_VERSION_MAJOR)
+ if("${PACKAGE_FIND_VERSION_MAJOR}" EQUAL "${mi_version_major}")
+     if ("${PACKAGE_FIND_VERSION_MINOR}" EQUAL "${mi_version_minor}")
+         set(PACKAGE_VERSION_EXACT TRUE)
+@@ -14,3 +15,4 @@ if("${PACKAGE_FIND_VERSION_MAJOR}" EQUAL "${mi_version_major}")
+ else()
+     set(PACKAGE_VERSION_UNSUITABLE TRUE)
+ endif()
++endif()
