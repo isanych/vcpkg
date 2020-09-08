@@ -3,8 +3,8 @@ vcpkg_fail_port_install(ON_ARCH "arm" "arm64" ON_TARGET "uwp")
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO microsoft/mimalloc
-    REF 82684042be1be44d34caecc915fb51755278d843 # v1.6.1
-    SHA512 82477501a5fafa4df22c911039b74943275d0932404526692419b5c49d6ccfdd95c1c5a3689211db5cc2a845af039fda4892262b538ac7cdfb5bb35787dd355c
+    REF v1.6.4
+    SHA512 1c9042d29523b987647c01ee9162da1c6e1233576c27df525186b8d6d4a89143240a599cc8ffda2729f527f21f478b50349da5c84aca258feff66af1d85d7fc6
     HEAD_REF master
     PATCHES
         fix-cmake.patch
