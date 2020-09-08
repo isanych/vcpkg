@@ -46,7 +46,7 @@ if [[ -z "${VCPKG_SKIP_EXTRA}" ]]; then
   cd $vcpkgRootDir
   $v qt5-xmlpatterns qt5-webengine
 fi
-$v protobuf grpc hdf5 boost rapidjson cryptopp xerces-c xalan-c
+$v protobuf grpc hdf5 boost rapidjson cryptopp xerces-c xalan-c mimalloc[override]
 cd installed/x64-linux
 chmod 777 tools/protobuf/*
 ../../postinstall.py

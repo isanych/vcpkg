@@ -5,7 +5,7 @@ set PATH=%~dp0installed\%VCPKG_DEFAULT_TRIPLET%\lib;%~dp0installed\%VCPKG_DEFAUL
 set v="%~dp0vcpkg" install  --feature-flags=-compilertracking --editable 
 %v% pcre icu qt5-base qt5-script qt5-xmlpatterns qt5-webengine
 if %errorlevel% neq 0 exit /b %errorlevel%
-%v% protobuf hdf5 boost rapidjson cryptopp xerces-c xalan-c grpc
+%v% protobuf hdf5 boost rapidjson cryptopp xerces-c xalan-c grpc mimalloc[override]
 if %errorlevel% neq 0 exit /b %errorlevel%
 copy "%~dp0postinstall.py" "%~dp0installed\%VCPKG_DEFAULT_TRIPLET%\"
 tar czf "%~dp0..\vcpkg-2020-windows-%x%-vs2019.tgz" -C "%~dp0.." vcpkg/installed/%VCPKG_DEFAULT_TRIPLET% vcpkg/scripts vcpkg/triplets/%VCPKG_DEFAULT_TRIPLET%.cmake vcpkg/.vcpkg-root
