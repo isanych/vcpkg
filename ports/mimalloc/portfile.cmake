@@ -20,9 +20,7 @@ vcpkg_configure_cmake(
     SOURCE_PATH ${SOURCE_PATH}
     PREFER_NINJA
     OPTIONS_DEBUG
-        -DMI_CHECK_FULL=ON
-    OPTIONS_RELEASE
-        -DMI_CHECK_FULL=OFF
+        -DMI_DEBUG_FULL=ON
     OPTIONS
         -DMI_INTERPOSE=ON
         -DMI_USE_CXX=OFF
