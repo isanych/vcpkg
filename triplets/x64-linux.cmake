@@ -1,3 +1,4 @@
+cmake_policy(SET CMP0057 NEW)
 set(VCPKG_TARGET_ARCHITECTURE x64)
 set(VCPKG_CRT_LINKAGE dynamic)
 set(VCPKG_CMAKE_SYSTEM_NAME Linux)
@@ -20,7 +21,8 @@ elseif(EXISTS /etc/debian_version)
 endif()
 
 set(IS_LTO TRUE)
-if(PORT STREQUAL cryptopp OR PORT STREQUAL double-conversion OR PORT STREQUAL hdf5 OR PORT STREQUAL libffi OR PORT STREQUAL upb OR PORT STREQUAL abseil)
+set(NO_LTO abseil brotli cryptopp double-conversion hdf5 libffi upb)
+if(PORT IN_LIST NO_LTO)
     set(IS_LTO FALSE)
 endif()
 
