@@ -1,5 +1,5 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 37616eb..da9a8c5 100644
+index 37616eb..dca9b4e 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -251,13 +251,27 @@ if(MI_BUILD_SHARED)
@@ -17,7 +17,7 @@ index 37616eb..da9a8c5 100644
 +        COMMENT "Copy mimalloc-redirect.dll to output directory")
 +      install (
 +        FILES $<TARGET_FILE_DIR:mimalloc>/mimalloc-redirect.dll
-+        DESTINATION ${CMAKE_INSTALL_BINDIR}
++        DESTINATION bin
 +      )
 +    elseif(CMAKE_SIZEOF_VOID_P EQUAL 4)
 +      target_link_libraries(mimalloc PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/bin/mimalloc-redirect32.lib)
@@ -26,7 +26,7 @@ index 37616eb..da9a8c5 100644
 +      COMMENT "Copy mimalloc-redirect32.dll to output directory")
 +      install (
 +        FILES $<TARGET_FILE_DIR:mimalloc>/mimalloc-redirect32.dll
-+        DESTINATION ${CMAKE_INSTALL_BINDIR}
++        DESTINATION bin
 +      )
 +    endif()
    endif()
@@ -63,3 +63,128 @@ index 6454d91..c919185 100644
      set(PACKAGE_VERSION_UNSUITABLE TRUE)
  endif()
 +endif()
+diff --git a/src/alloc.c b/src/alloc.c
+index 5703452..fe29050 100644
+--- a/src/alloc.c
++++ b/src/alloc.c
+@@ -404,13 +404,13 @@ static inline mi_segment_t* mi_checked_ptr_segment(const void* p, const char* ms
+   if (mi_unlikely(segment == NULL)) return NULL;  // checks also for (p==NULL)
+ 
+ #if (MI_DEBUG>0)
+-  if (mi_unlikely(!mi_is_in_heap_region(p))) {
+-    _mi_warning_message("%s: pointer might not point to a valid heap region: %p\n"
+-      "(this may still be a valid very large allocation (over 64MiB))\n", msg, p);
+-    if (mi_likely(_mi_ptr_cookie(segment) == segment->cookie)) {
+-      _mi_warning_message("(yes, the previous pointer %p was valid after all)\n", p);
+-    }
+-  }
++//  if (mi_unlikely(!mi_is_in_heap_region(p))) {
++//    _mi_warning_message("%s: pointer might not point to a valid heap region: %p\n"
++//      "(this may still be a valid very large allocation (over 64MiB))\n", msg, p);
++//    if (mi_likely(_mi_ptr_cookie(segment) == segment->cookie)) {
++//      _mi_warning_message("(yes, the previous pointer %p was valid after all)\n", p);
++//    }
++//  }
+ #endif
+ #if (MI_DEBUG>0 || MI_SECURE>=4)
+   if (mi_unlikely(_mi_ptr_cookie(segment) != segment->cookie)) {
+diff --git a/src/os.c b/src/os.c
+index fe30cf4..8d050fc 100644
+--- a/src/os.c
++++ b/src/os.c
+@@ -721,7 +721,7 @@ static bool mi_os_commitx(void* addr, size_t size, bool commit, bool conservativ
+     _mi_warning_message("%s error: start: %p, csize: 0x%x, err: %i\n", commit ? "commit" : "decommit", start, csize, err);
+     mi_mprotect_hint(err);
+   }
+-  mi_assert_internal(err == 0);
++  //mi_assert_internal(err == 0);
+   return (err == 0);
+ }
+ 
+diff --git a/src/region.c b/src/region.c
+index ae3a799..f50aee7 100644
+--- a/src/region.c
++++ b/src/region.c
+@@ -297,8 +297,12 @@ static void* mi_region_try_alloc(size_t blocks, bool* commit, bool* is_large, bo
+     mi_bitmap_claim(&region->commit, 1, blocks, bit_idx, &any_uncommitted);
+     if (any_uncommitted) {
+       mi_assert_internal(!info.x.is_large);
+-      bool commit_zero;
+-      _mi_mem_commit(p, blocks * MI_SEGMENT_SIZE, &commit_zero, tld);
++      bool commit_zero = false;
++      if (!_mi_mem_commit(p, blocks * MI_SEGMENT_SIZE, &commit_zero, tld)) {
++        // failed to commit! unclaim and return
++        mi_bitmap_unclaim(&region->in_use, 1, blocks, bit_idx);
++        return NULL;
++      }
+       if (commit_zero) *is_zero = true;
+     }
+   }
+@@ -327,7 +331,7 @@ static void* mi_region_try_alloc(size_t blocks, bool* commit, bool* is_large, bo
+   #endif
+   
+   // and return the allocation  
+-  mi_assert_internal(p != NULL);  
++  //mi_assert_internal(p != NULL);
+   return p;
+ }
+ 
+diff --git a/src/segment.c b/src/segment.c
+index 8a5ba8c..a358bd7 100644
+--- a/src/segment.c
++++ b/src/segment.c
+@@ -198,26 +198,32 @@ static void mi_segment_protect(mi_segment_t* segment, bool protect, mi_os_tld_t*
+   // add/remove guard pages
+   if (MI_SECURE != 0) {
+     // in secure mode, we set up a protected page in between the segment info and the page data
+-    const size_t os_page_size = _mi_os_page_size();
+-    mi_assert_internal((segment->segment_info_size - os_page_size) >= (sizeof(mi_segment_t) + ((segment->capacity - 1) * sizeof(mi_page_t))));
+-    mi_assert_internal(((uintptr_t)segment + segment->segment_info_size) % os_page_size == 0);
+-    mi_segment_protect_range((uint8_t*)segment + segment->segment_info_size - os_page_size, os_page_size, protect);
++    const size_t os_psize = _mi_os_page_size();
++    mi_assert_internal((segment->segment_info_size - os_psize) >= (sizeof(mi_segment_t) + ((segment->capacity - 1) * sizeof(mi_page_t))));
++    mi_assert_internal(((uintptr_t)segment + segment->segment_info_size) % os_psize == 0);
++    mi_segment_protect_range((uint8_t*)segment + segment->segment_info_size - os_psize, os_psize, protect);
+     if (MI_SECURE <= 1 || segment->capacity == 1) {
+       // and protect the last (or only) page too
+       mi_assert_internal(MI_SECURE <= 1 || segment->page_kind >= MI_PAGE_LARGE);
+-      uint8_t* start = (uint8_t*)segment + segment->segment_size - os_page_size;
++      uint8_t* start = (uint8_t*)segment + segment->segment_size - os_psize;
+       if (protect && !segment->mem_is_committed) {
+-        // ensure secure page is committed
+-        _mi_mem_commit(start, os_page_size, NULL, tld);
++        if (protect) {
++          // ensure secure page is committed
++          if (_mi_mem_commit(start, os_psize, NULL, tld)) {  // if this fails that is ok (as it is an unaccessible page)
++            mi_segment_protect_range(start, os_psize, protect);
++          }
++        }
++      }
++      else {
++        mi_segment_protect_range(start, os_psize, protect);
+       }
+-      mi_segment_protect_range(start, os_page_size, protect);
+     }
+     else {
+       // or protect every page
+       const size_t page_size = mi_segment_page_size(segment);
+       for (size_t i = 0; i < segment->capacity; i++) {
+         if (segment->pages[i].is_committed) {
+-          mi_segment_protect_range((uint8_t*)segment + (i+1)*page_size - os_page_size, os_page_size, protect);
++          mi_segment_protect_range((uint8_t*)segment + (i+1)*page_size - os_psize, os_psize, protect);
+         }
+       }
+     }
+@@ -607,8 +613,11 @@ static mi_segment_t* mi_segment_init(mi_segment_t* segment, size_t required, mi_
+       // ensure the initial info is committed
+       if (segment->capacity < capacity) {
+         bool commit_zero = false;
+-        _mi_mem_commit(segment, pre_size, &commit_zero, tld->os);
++        bool ok = _mi_mem_commit(segment, pre_size, &commit_zero, tld->os);
+         if (commit_zero) is_zero = true;
++        if (!ok) {
++          return NULL;
++        }
+       }
+     }
+   }

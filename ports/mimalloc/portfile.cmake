@@ -23,7 +23,7 @@ vcpkg_configure_cmake(
         -DMI_DEBUG_FULL=ON
     OPTIONS
         -DMI_INTERPOSE=ON
-        -DMI_USE_CXX=OFF
+        -DMI_USE_CXX=ON
         -DMI_BUILD_TESTS=OFF
         ${FEATURE_OPTIONS}
 )
