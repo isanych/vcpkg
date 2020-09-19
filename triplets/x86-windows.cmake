@@ -3,7 +3,7 @@ set(VCPKG_CRT_LINKAGE dynamic)
 set(VCPKG_LIBRARY_LINKAGE dynamic)
 
 set(IS_LTO TRUE)
-if(PORT STREQUAL icu OR PORT STREQUAL abseil)
+if(PORT STREQUAL icu OR PORT STREQUAL abseil OR PORT STREQUAL re2)
     set(IS_LTO FALSE)
 endif()
 
