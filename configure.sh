@@ -23,6 +23,13 @@ if [[ "${VCPKG_BASE}" = centos7 ]]; then
   ln -s $vcpkgRootDir/installed/x64-linux/lib /usr/local/lib64
 fi
 v="$vcpkgRootDir/vcpkg install --feature-flags=-compilertracking --editable"
+$v zstd
+cd installed/x64-linux/debug/lib
+if [[ ! -f libzstd.so.1 ]]; then
+  ln -s libzstdd.so.1 libzstd.so.1
+  ln -s libzstdd.so libzstd.so
+fi
+cd $vcpkgRootDir
 $v glib libjpeg-turbo
 $v icu qt5-base qt5-script
 [[ ! "${VCPKG_BASE}" = opensuse ]] || VCPKG_SKIP_EXTRA=1
