@@ -56,5 +56,10 @@ fi
 $v protobuf grpc hdf5 boost rapidjson cryptopp xerces-c xalan-c mimalloc[override]
 cd installed/x64-linux
 chmod 777 tools/protobuf/*
+cd lib
+ln -sf libmimalloc.so.1.6 libmimalloc.so
+cd ../debug/lib
+ln -sf libmimalloc-debug.so.1.6 libmimalloc-debug.so
+cd ../..
 ../../postinstall.py
 [[ -z "${VCPKG_BASE}" || ! -d /deploy/vcpkg ]] || tar cJf /deploy/vcpkg/vcpkg-2020-${VCPKG_BASE}-x64-gcc10${VCPKG_SUFFIX}.txz -C "$vcpkgRootDir/.." vcpkg/installed/x64-linux vcpkg/scripts vcpkg/triplets/x64-linux.cmake vcpkg/.vcpkg-root
