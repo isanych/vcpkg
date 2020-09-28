@@ -1,5 +1,5 @@
 Source: mimalloc
-Version: 1.6.4
+Version: 1.6.7
 Description: Compact general purpose allocator with excellent performance
 Homepage: https://github.com/microsoft/mimalloc
 Supports: !(arm|uwp)
