@@ -51,6 +51,7 @@ if [[ -z "${VCPKG_SKIP_EXTRA}" ]]; then
     ln -s libwebpmuxd.so.3.5.0 libwebpmux.so.3.5.0
   fi
   cd $vcpkgRootDir
+  rm -f installed/x64-linux/lib/pkgconfig/freetype2.pc installed/x64-linux/debug/lib/pkgconfig/freetype2.pc
   $v qt5-xmlpatterns qt5-webengine
 fi
 $v protobuf grpc hdf5 boost rapidjson cryptopp xerces-c xalan-c mimalloc[override]
