@@ -59,9 +59,11 @@ cd installed/x64-linux
 chmod 777 tools/protobuf/*
 cd lib
 ln -sf libmimalloc.so.1.6 libmimalloc.so
+ln -sf libbz2.so.1.0 libbz2.so.1
+ln -sf libpcre.so libpcre.so.1
 cd ../debug/lib
 ln -sf libmimalloc-debug.so.1.6 libmimalloc-debug.so
 cd ../..
-curl -Ss http://mist.prqa.co.uk/igor_kostenko/vcpkg-add/-/archive/linux/vcpkg-add-linux.tar.gz | tar xz
+curl -Ss http://mist.prqa.co.uk/igor_kostenko/vcpkg-add/-/archive/linux/vcpkg-add-linux.tar.gz | tar xz --strip-components=1
 ../../postinstall.py
 [[ -z "${VCPKG_BASE}" || ! -d /deploy/vcpkg ]] || tar cJf /deploy/vcpkg/vcpkg-2020-${VCPKG_BASE}-x64-gcc10${VCPKG_SUFFIX}.txz -C "$vcpkgRootDir/.." vcpkg/installed/x64-linux vcpkg/scripts vcpkg/triplets/x64-linux.cmake vcpkg/.vcpkg-root
