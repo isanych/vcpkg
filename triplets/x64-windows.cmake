@@ -9,6 +9,9 @@ if(PORT IN_LIST NO_LTO)
     set(IS_LTO FALSE)
 endif()
 
+set(VCPKG_C_FLAGS "-vmg")
+set(VCPKG_CXX_FLAGS "-vmg")
+
 if(IS_LTO)
     set(VCPKG_CXX_FLAGS_RELEASE "-GL -Gw -GS-")
     set(VCPKG_C_FLAGS_RELEASE "-GL -Gw -GS-")
