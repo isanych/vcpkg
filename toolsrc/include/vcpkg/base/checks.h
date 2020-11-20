@@ -1,7 +1,6 @@
 #pragma once
 
 #include <vcpkg/base/cstringview.h>
-#include <vcpkg/base/lineinfo.h>
 #include <vcpkg/base/strings.h>
 
 #ifdef SUPPORTS_BACKTRACE

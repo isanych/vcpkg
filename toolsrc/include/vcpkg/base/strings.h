@@ -94,6 +94,13 @@ namespace vcpkg::Strings
         return ret;
     }
 
+    template<class... Args>
+    [[nodiscard]] std::string concat(std::string&& first, const Args&... args)
+    {
+        append(first, args...);
+        return std::move(first);
+    }
+
     template<class... Args, class = void>
     std::string concat_or_view(const Args&... args)
     {
@@ -290,4 +297,8 @@ namespace vcpkg::Strings
     std::string b32_encode(std::uint64_t x) noexcept;
 
     std::string clean_shell_string(std::string s);
+
+    // Implements https://en.wikipedia.org/wiki/Levenshtein_distance with a "give-up" clause for large strings
+    // Guarantees 0 for equal strings and nonzero for inequal strings.
+    size_t byte_edit_distance(StringView a, StringView b);
 }

@@ -72,8 +72,8 @@ vcpkg_fixup_cmake_targets()
 vcpkg_fixup_pkgconfig() # Probably requires more fixing for static builds. See qt5-3d and the config changes below
 vcpkg_copy_pdbs()
 
-file(READ ${CURRENT_PACKAGES_DIR}/share/assimp/AssimpConfig.cmake ASSIMP_CONFIG)
-file(WRITE ${CURRENT_PACKAGES_DIR}/share/assimp/AssimpConfig.cmake "
+file(READ ${CURRENT_PACKAGES_DIR}/share/assimp/assimpConfig.cmake ASSIMP_CONFIG)
+file(WRITE ${CURRENT_PACKAGES_DIR}/share/assimp/assimpConfig.cmake "
 include(CMakeFindDependencyMacro)
 find_dependency(ZLIB)
 find_dependency(irrlicht CONFIG)
@@ -81,6 +81,7 @@ find_dependency(polyclipping CONFIG)
 find_dependency(minizip CONFIG)
 find_dependency(kubazip CONFIG)
 find_dependency(poly2tri CONFIG)
+find_dependency(utf8cpp CONFIG)
 ${ASSIMP_CONFIG}")
 
 file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/include)
