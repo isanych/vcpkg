@@ -21,7 +21,7 @@ elseif(EXISTS /etc/debian_version)
 endif()
 
 set(IS_LTO TRUE)
-set(NO_LTO abseil brotli cryptopp double-conversion hdf5 libffi upb)
+set(NO_LTO abseil brotli cryptopp double-conversion hdf5 libffi libuuid upb)
 if(PORT IN_LIST NO_LTO)
     set(IS_LTO FALSE)
 endif()

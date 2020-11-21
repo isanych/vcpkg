@@ -6,7 +6,6 @@ Default-Features: fontconfig, freetype, jpeg, png, tiff, webp
 
 Feature: fontconfig
 Description: Support for fontconfig
-Build-Depends: fontconfig
 
 Feature: freetype
 Description: Support for freetype
