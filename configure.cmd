@@ -3,7 +3,10 @@ if not exist "%~dp0vcpkg.exe" call "%~dp0bootstrap-vcpkg"
 set VCPKG_DEFAULT_TRIPLET=%x%-windows
 set PATH=%~dp0installed\%VCPKG_DEFAULT_TRIPLET%\lib;%~dp0installed\%VCPKG_DEFAULT_TRIPLET%\debug\lib;%PATH%
 set v="%~dp0vcpkg" install --feature-flags=-compilertracking --editable
-%v% pcre icu qt5-base qt5-script qt5-xmlpatterns qt5-webengine
+%v% pcre icu qt5-base qt5-script qt5-xmlpatterns
+if %errorlevel% neq 0 exit /b %errorlevel%
+rem internal compiler error for 32 bit, so build qt5-webengine in 64 bit mode only
+if [%x%] == [x64] %v% qt5-webengine
 if %errorlevel% neq 0 exit /b %errorlevel%
 %v% protobuf hdf5 boost rapidjson cryptopp xerces-c xalan-c grpc mimalloc[override]
 if %errorlevel% neq 0 exit /b %errorlevel%
