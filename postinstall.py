@@ -273,7 +273,8 @@ ensure_links("share/qt5/debug", "debug/doc")
 ensure_links("tools/qt5/debug", "debug/mkspecs")
 ensure_link_full("tools/qt5/bin", "bin")
 ensure_link_full("tools/qt5/debug/bin", "debug/bin")
-is_linux = sys.platform != "win32"
+is_windows = sys.platform == "win32"
+is_linux = not is_windows
 try:
     is_rpath = is_linux and bool(which("patchelf")) and bool(which("chrpath"))
     if is_rpath and not os.path.exists("bin/runpath2rpath"):
@@ -292,3 +293,6 @@ ensure_link("bin", f"tools/bzip2/bzip2{exe}")
 ensure_link("bin", f"tools/liblzma/xz{exe}")
 ensure_link("bin", f"tools/grpc/grpc_cpp_plugin{exe}")
 ensure_link("bin", f"tools/protobuf/protoc{exe}")
+if is_windows:
+    ensure_link("debug/bin", "d3dcompiler_47.dll")
+    ensure_link("debug/bin", "opengl32sw.dll")
