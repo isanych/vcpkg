@@ -33,6 +33,7 @@ fi
 cd $vcpkgRootDir
 $v glib libjpeg-turbo
 $v icu qt5-base
+$v qt5-script qt5-xmlpatterns
 [[ ! "${VCPKG_BASE}" = opensuse ]] || VCPKG_SKIP_EXTRA=1
 if [[ -z "${VCPKG_SKIP_EXTRA}" ]]; then
   $v libwebp
@@ -53,7 +54,7 @@ if [[ -z "${VCPKG_SKIP_EXTRA}" ]]; then
   fi
   cd $vcpkgRootDir
   rm -f installed/${VCPKG_TRIPLET}/lib/pkgconfig/freetype2.pc installed/${VCPKG_TRIPLET}/debug/lib/pkgconfig/freetype2.pc
-  $v qt5-script qt5-xmlpatterns qt5-webengine
+  $v qt5-webengine
 fi
 $v protobuf grpc hdf5 boost rapidjson cryptopp xerces-c xalan-c mimalloc[override]
 cd installed/${VCPKG_TRIPLET}
