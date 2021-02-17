@@ -1,8 +1,10 @@
+vcpkg_fail_port_install( ON_TARGET "uwp" "linux" "osx")
+
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO libimobiledevice-win32/libusbmuxd
-    REF b9643ca81b8274fbb2411d3c66c4edf103f6a711 # v1.2.137
-    SHA512 f4c9537349bfac2140c809be24cc573d92087a57f20d90e2abd46d0a2098e31ccd283ab776302b61470fb08d45f8dc2cfb8bd8678cba7db5b2a9b51c270a3cc8
+    REF ac86b23f57879b8b702f3712ba66729008d059a3 # v1.2.219
+    SHA512 ced85088bc6ebb416ccb635d6b4e79662fb34f427d869b64b61847e5fde7b4ae094cebb1f7916d9387c314aeb84106a618fbd7497dc4b36151b236dcb55bd0e4
     HEAD_REF msvc-master
     PATCHES fix-win-build.patch
 )
@@ -16,6 +18,7 @@ vcpkg_configure_cmake(
 
 vcpkg_install_cmake()
 vcpkg_copy_pdbs()
+vcpkg_fixup_pkgconfig()
 
 file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/include)
 

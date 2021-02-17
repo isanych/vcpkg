@@ -1,8 +1,8 @@
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO libimobiledevice-win32/libimobiledevice
-    REF 7cf5cb4b9675ddcaed5ea3d7ee2c8848da18d691 # v1.2.137
-    SHA512 cfc32d3414af333d3410c292660b526f2339d210bc2cc3ddf1de87c951bff526c731c4d61609441b3c1ce8e2d1398e6d4c35fdae3e7434bfd5050e5975047a11
+    REF 348aec1f714f77c717141f70869ac7c996c3c6fb # v1.3.6 + patches
+    SHA512 fc7924667c3cb07025fd25ff94610ae57a90a8fd4502393e89993bfcd13c5e0c609efbf0343f344f59a8520ba4f7805925fea4c06d20ac1680f63f16aac12542
     HEAD_REF msvc-master
 )
 
@@ -15,6 +15,7 @@ vcpkg_configure_cmake(
 
 vcpkg_install_cmake()
 vcpkg_copy_pdbs()
+vcpkg_fixup_pkgconfig()
 
 file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/include)
 
