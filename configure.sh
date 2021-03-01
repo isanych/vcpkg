@@ -66,7 +66,8 @@ ln -sf libpcre.so libpcre.so.1
 cd ../debug/lib
 ln -sf libmimalloc-debug.so.1.6 libmimalloc-debug.so
 cd ../..
-curl -Ss http://mist.prqa.co.uk/igor_kostenko/vcpkg-add/-/archive/linux/vcpkg-add-linux.tar.gz | tar xz --strip-components=1
+[[ "${VCPKG_BASE}" = ubuntu20.04 ]] && branch=ubuntu20.04 || branch=linux
+curl -Ss http://mist.prqa.co.uk/igor_kostenko/vcpkg-add/-/archive/$branch/vcpkg-add-linux.tar.gz | tar xz --strip-components=1
 r=$vcpkgRootDir/../reprise/x64_l1
 if [[ -e $r ]]; then
   make -C $r
