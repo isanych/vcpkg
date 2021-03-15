@@ -56,7 +56,7 @@ if [[ -z "${VCPKG_SKIP_EXTRA}" ]]; then
   rm -f installed/${VCPKG_TRIPLET}/lib/pkgconfig/freetype2.pc installed/${VCPKG_TRIPLET}/debug/lib/pkgconfig/freetype2.pc
   $v qt5-webengine
 fi
-$v protobuf grpc hdf5 boost rapidjson cryptopp xerces-c xalan-c mimalloc[override]
+$v protobuf grpc hdf5 boost rapidjson cryptopp xerces-c xalan-c mimalloc[override] quazip
 cd installed/${VCPKG_TRIPLET}
 chmod 777 tools/protobuf/*
 cd lib
