@@ -990,6 +990,15 @@ namespace vcpkg::Build
         }
 
         abi_tag_entries.emplace_back("post_build_checks", "2");
+        if (action.source_control_file_location)
+        {
+          auto& l = *action.source_control_file_location.get();
+          if (l.source_control_file)
+          {
+              auto& scf = *l.source_control_file.get();
+              abi_tag_entries.emplace_back("version", scf.core_paragraph->version);
+          }
+        }
         std::vector<std::string> sorted_feature_list = action.feature_list;
         Util::sort(sorted_feature_list);
         abi_tag_entries.emplace_back("features", Strings::join(";", sorted_feature_list));
