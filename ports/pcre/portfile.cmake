@@ -127,7 +127,7 @@ file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/share/doc)
 vcpkg_copy_pdbs()
 configure_file(${CMAKE_CURRENT_LIST_DIR}/unofficial-pcre-config.cmake ${CURRENT_PACKAGES_DIR}/share/unofficial-pcre/unofficial-pcre-config.cmake @ONLY)
 
-file(INSTALL ${SOURCE_PATH}/COPYING DESTINATION ${CURRENT_PACKAGES_DIR}/share/${PORT} RENAME copyright)
+file(INSTALL ${SOURCE_PATH}/LICENCE DESTINATION ${CURRENT_PACKAGES_DIR}/share/${PORT} RENAME copyright)
 
 vcpkg_pkgconfig(NAME libpcre COMMON -lpcre -lpthread -pthread)
 vcpkg_pkgconfig(NAME libpcre-16 COMMON -lpcre-16 -pthread)

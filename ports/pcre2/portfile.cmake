@@ -72,7 +72,7 @@ if(VCPKG_LIBRARY_LINKAGE STREQUAL "static")
     file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/bin" "${CURRENT_PACKAGES_DIR}/debug/bin")
 endif()
 
-file(INSTALL ${SOURCE_PATH}/COPYING DESTINATION ${CURRENT_PACKAGES_DIR}/share/${PORT} RENAME copyright)
+file(INSTALL ${SOURCE_PATH}/LICENCE DESTINATION ${CURRENT_PACKAGES_DIR}/share/${PORT} RENAME copyright)
 vcpkg_pkgconfig(NAME libpcre2-8 COMMON -lpcre2-8)
 vcpkg_pkgconfig(NAME libpcre2-16 COMMON -lpcre2-16)
 vcpkg_pkgconfig(NAME libpcre2-32 COMMON -lpcre2-32)
