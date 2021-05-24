@@ -15,7 +15,7 @@ vcpkg_install_qmake()
 vcpkg_copy_pdbs()
 
 #Install the header files
-file(GLOB HEADER_FILES ${SOURCE_PATH}/src/*.h)
+file(GLOB HEADER_FILES ${SOURCE_PATH}/src/*.h ${SOURCE_PATH}/src/SmtpMime)
 file(INSTALL ${HEADER_FILES} DESTINATION ${CURRENT_PACKAGES_DIR}/include/${PORT})
 
 # Handle copyright
