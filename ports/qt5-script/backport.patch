@@ -1,0 +1,456 @@
+diff --git a/src/3rdparty/javascriptcore/JavaScriptCore/parser/Nodes.h b/src/3rdparty/javascriptcore/JavaScriptCore/parser/Nodes.h
+index c216ea8..ea93b50 100644
+--- a/src/3rdparty/javascriptcore/JavaScriptCore/parser/Nodes.h
++++ b/src/3rdparty/javascriptcore/JavaScriptCore/parser/Nodes.h
+@@ -1385,11 +1385,11 @@ namespace JSC {
+ 
+         using ParserArenaRefCounted::operator new;
+ 
+-        void adoptData(std::auto_ptr<ScopeNodeData> data)
++        void adoptData(std::unique_ptr<ScopeNodeData> data)
+         {
+             ASSERT(!data->m_arena.contains(this));
+             ASSERT(!m_data);
+-            m_data.adopt(data);
++            m_data.adopt(std::move(data));
+         }
+         ScopeNodeData* data() const { return m_data.get(); }
+         void destroyData() { m_data.clear(); }
+diff --git a/src/3rdparty/javascriptcore/JavaScriptCore/parser/Parser.cpp b/src/3rdparty/javascriptcore/JavaScriptCore/parser/Parser.cpp
+index 4c046d0..5a68703 100644
+--- a/src/3rdparty/javascriptcore/JavaScriptCore/parser/Parser.cpp
++++ b/src/3rdparty/javascriptcore/JavaScriptCore/parser/Parser.cpp
+@@ -29,8 +29,6 @@
+ #include <wtf/Vector.h>
+ #include <memory>
+ 
+-using std::auto_ptr;
+-
+ #ifndef yyparse
+ extern int jscyyparse(void*);
+ #endif
+diff --git a/src/3rdparty/javascriptcore/JavaScriptCore/wtf/MathExtras.h b/src/3rdparty/javascriptcore/JavaScriptCore/wtf/MathExtras.h
+index bea5896..0336376 100644
+--- a/src/3rdparty/javascriptcore/JavaScriptCore/wtf/MathExtras.h
++++ b/src/3rdparty/javascriptcore/JavaScriptCore/wtf/MathExtras.h
+@@ -71,9 +71,7 @@ const float piOverFourFloat = static_cast<float>(M_PI_4);
+ #if OS(DARWIN)
+ 
+ // Work around a bug in the Mac OS X libc where ceil(-0.1) return +0.
+-inline double wtf_ceil(double x) { return copysign(ceil(x), x); }
+-
+-#define ceil(x) wtf_ceil(x)
++inline double ceil(double x) { return copysign(ceil(x), x); }
+ 
+ #endif
+ 
+diff --git a/src/3rdparty/javascriptcore/JavaScriptCore/wtf/OwnPtr.h b/src/3rdparty/javascriptcore/JavaScriptCore/wtf/OwnPtr.h
+index b7e62b1..9507ab4 100644
+--- a/src/3rdparty/javascriptcore/JavaScriptCore/wtf/OwnPtr.h
++++ b/src/3rdparty/javascriptcore/JavaScriptCore/wtf/OwnPtr.h
+@@ -40,7 +40,7 @@ namespace WTF {
+         typedef ValueType* PtrType;
+ 
+         explicit OwnPtr(PtrType ptr = 0) : m_ptr(ptr) { }
+-        OwnPtr(std::auto_ptr<ValueType> autoPtr) : m_ptr(autoPtr.release()) { }
++        OwnPtr(std::unique_ptr<ValueType> autoPtr) : m_ptr(autoPtr.release()) { }
+         // See comment in PassOwnPtr.h for why this takes a const reference.
+         template <typename U> OwnPtr(const PassOwnPtr<U>& o);
+ 
+@@ -58,7 +58,7 @@ namespace WTF {
+         // FIXME: This should be renamed to adopt. 
+         void set(PtrType ptr) { ASSERT(!ptr || m_ptr != ptr); deleteOwnedPtr(m_ptr); m_ptr = ptr; }
+ 
+-        void adopt(std::auto_ptr<ValueType> autoPtr) { ASSERT(!autoPtr.get() || m_ptr != autoPtr.get()); deleteOwnedPtr(m_ptr); m_ptr = autoPtr.release(); }
++        void adopt(std::unique_ptr<ValueType> autoPtr) { ASSERT(!autoPtr.get() || m_ptr != autoPtr.get()); deleteOwnedPtr(m_ptr); m_ptr = autoPtr.release(); }
+ 
+         void clear() { deleteOwnedPtr(m_ptr); m_ptr = 0; }
+ 
+diff --git a/src/3rdparty/javascriptcore/JavaScriptCore/wtf/VectorTraits.h b/src/3rdparty/javascriptcore/JavaScriptCore/wtf/VectorTraits.h
+index bf77878..36ab76b 100644
+--- a/src/3rdparty/javascriptcore/JavaScriptCore/wtf/VectorTraits.h
++++ b/src/3rdparty/javascriptcore/JavaScriptCore/wtf/VectorTraits.h
+@@ -81,7 +81,7 @@ namespace WTF {
+     struct VectorTraits<OwnPtr<P> > : SimpleClassVectorTraits { };
+ 
+     template<typename P>
+-    struct VectorTraits<std::auto_ptr<P> > : SimpleClassVectorTraits { };
++    struct VectorTraits<std::unique_ptr<P> > : SimpleClassVectorTraits { };
+ 
+     template<typename First, typename Second>
+     struct VectorTraits<pair<First, Second> >
+diff --git a/src/3rdparty/javascriptcore/JavaScriptCore/wtf/unicode/Collator.h b/src/3rdparty/javascriptcore/JavaScriptCore/wtf/unicode/Collator.h
+index 51e8a06..ed38598 100644
+--- a/src/3rdparty/javascriptcore/JavaScriptCore/wtf/unicode/Collator.h
++++ b/src/3rdparty/javascriptcore/JavaScriptCore/wtf/unicode/Collator.h
+@@ -47,7 +47,7 @@ namespace WTF {
+         ~Collator();
+         void setOrderLowerFirst(bool);
+ 
+-        static std::auto_ptr<Collator> userDefault();
++        static std::unique_ptr<Collator> userDefault();
+ 
+         Result collate(const ::UChar*, size_t, const ::UChar*, size_t) const;
+ 
+diff --git a/src/3rdparty/javascriptcore/JavaScriptCore/wtf/unicode/CollatorDefault.cpp b/src/3rdparty/javascriptcore/JavaScriptCore/wtf/unicode/CollatorDefault.cpp
+index eddbe53..1362e74 100644
+--- a/src/3rdparty/javascriptcore/JavaScriptCore/wtf/unicode/CollatorDefault.cpp
++++ b/src/3rdparty/javascriptcore/JavaScriptCore/wtf/unicode/CollatorDefault.cpp
+@@ -45,9 +45,9 @@ void Collator::setOrderLowerFirst(bool)
+ {
+ }
+ 
+-std::auto_ptr<Collator> Collator::userDefault()
++std::unique_ptr<Collator> Collator::userDefault()
+ {
+-    return std::auto_ptr<Collator>(new Collator(0));
++    return std::unique_ptr<Collator>(new Collator(nullptr));
+ }
+ 
+ // A default implementation for platforms that lack Unicode-aware collation.
+diff --git a/src/3rdparty/javascriptcore/JavaScriptCore/wtf/unicode/icu/CollatorICU.cpp b/src/3rdparty/javascriptcore/JavaScriptCore/wtf/unicode/icu/CollatorICU.cpp
+index a1753a4..1042843 100644
+--- a/src/3rdparty/javascriptcore/JavaScriptCore/wtf/unicode/icu/CollatorICU.cpp
++++ b/src/3rdparty/javascriptcore/JavaScriptCore/wtf/unicode/icu/CollatorICU.cpp
+@@ -57,7 +57,7 @@ Collator::Collator(const char* locale)
+ {
+ }
+ 
+-std::auto_ptr<Collator> Collator::userDefault()
++std::unique_ptr<Collator> Collator::userDefault()
+ {
+ #if OS(DARWIN) && PLATFORM(CF)
+     // Mac OS X doesn't set UNIX locale to match user-selected one, so ICU default doesn't work.
+@@ -71,11 +71,11 @@ std::auto_ptr<Collator> Collator::userDefault()
+     char buf[256];
+     if (collationOrder) {
+         CFStringGetCString(collationOrder, buf, sizeof(buf), kCFStringEncodingASCII);
+-        return std::auto_ptr<Collator>(new Collator(buf));
++        return std::unique_ptr<Collator>(new Collator(buf));
+     } else
+-        return std::auto_ptr<Collator>(new Collator(""));
++        return std::unique_ptr<Collator>(new Collator(""));
+ #else
+-    return std::auto_ptr<Collator>(new Collator(0));
++    return std::unique_ptr<Collator>(new Collator(nullptr))
+ #endif
+ }
+ 
+diff --git a/src/script/api/qscriptengine.cpp b/src/script/api/qscriptengine.cpp
+index a18c2fe..fa664a2 100644
+--- a/src/script/api/qscriptengine.cpp
++++ b/src/script/api/qscriptengine.cpp
+@@ -83,6 +83,7 @@
+ #include "bridge/qscriptglobalobject_p.h"
+ #include "bridge/qscriptactivationobject_p.h"
+ #include "bridge/qscriptstaticscopeobject_p.h"
++#include "bridge/qscriptvariant_p.h"
+ 
+ #ifndef QT_NO_QOBJECT
+ #include <QtCore/qcoreapplication.h>
+@@ -1069,7 +1070,7 @@ QVariant QScriptEnginePrivate::jscValueToVariant(JSC::ExecState *exec, JSC::JSVa
+ {
+     if (targetType == QMetaType::QVariant || uint(targetType) == QVariant::LastType)
+         return toVariant(exec, value);
+-    QVariant v(targetType, (void *)0);
++    QVariant v = QScript::createQVariant(targetType, nullptr);
+     if (convertValue(exec, value, targetType, v.data()))
+         return v;
+     if (isVariant(value)) {
+@@ -1081,7 +1082,7 @@ QVariant QScriptEnginePrivate::jscValueToVariant(JSC::ExecState *exec, JSC::JSVa
+         QByteArray typeName = v.typeName();
+         if (typeName.endsWith('*')
+             && (QMetaType::type(typeName.left(typeName.size()-1)) == targetType)) {
+-            return QVariant(targetType, *reinterpret_cast<void* *>(v.data()));
++            return QScript::createQVariant(targetType, *reinterpret_cast<void* *>(v.data()));
+         }
+     }
+     return QVariant();
+@@ -3146,13 +3147,8 @@ JSC::JSValue QScriptEnginePrivate::create(JSC::ExecState *exec, int type, const
+             result = newDate(exec, *reinterpret_cast<const QDateTime *>(ptr));
+             break;
+         case QMetaType::QDate:
+-            result = newDate(exec, QDateTime(*reinterpret_cast<const QDate *>(ptr)));
+-            break;
+-#ifndef QT_NO_REGEXP
+-        case QMetaType::QRegExp:
+-            result = newRegExp(exec, *reinterpret_cast<const QRegExp *>(ptr));
++            result = newDate(exec, reinterpret_cast<const QDate *>(ptr)->startOfDay());
+             break;
+-#endif
+ #ifndef QT_NO_QOBJECT
+         case QMetaType::QObjectStar:
+             result = eng->newQObject(*reinterpret_cast<QObject* const *>(ptr));
+@@ -3162,6 +3158,12 @@ JSC::JSValue QScriptEnginePrivate::create(JSC::ExecState *exec, int type, const
+             result = eng->newVariant(*reinterpret_cast<const QVariant*>(ptr));
+             break;
+         default:
++#ifndef QT_NO_REGEXP
++            if (type == qMetaTypeId<QRegExp>()) {
++                result = newRegExp(exec, *reinterpret_cast<const QRegExp *>(ptr));
++                break;
++            }
++#endif
+             if (QMetaType::typeFlags(type) & QMetaType::PointerToQObject) {
+                 result = eng->newQObject(*reinterpret_cast<QObject* const *>(ptr));
+                 break;
+@@ -3190,7 +3192,7 @@ JSC::JSValue QScriptEnginePrivate::create(JSC::ExecState *exec, int type, const
+                 if (typeName.endsWith('*') && !*reinterpret_cast<void* const *>(ptr))
+                     return JSC::jsNull();
+                 else
+-                    result = eng->newVariant(QVariant(type, ptr));
++                    result = eng->newVariant(QScript::createQVariant(type, ptr));
+             }
+         }
+     }
+@@ -3278,13 +3280,6 @@ bool QScriptEnginePrivate::convertValue(JSC::ExecState *exec, JSC::JSValue value
+             *reinterpret_cast<QDate *>(ptr) = toDateTime(exec, value).date();
+             return true;
+         } break;
+-#ifndef QT_NO_REGEXP
+-    case QMetaType::QRegExp:
+-        if (isRegExp(value)) {
+-            *reinterpret_cast<QRegExp *>(ptr) = toRegExp(exec, value);
+-            return true;
+-        } break;
+-#endif
+ #ifndef QT_NO_QOBJECT
+     case QMetaType::QObjectStar:
+         if (isQObject(value) || value.isNull()) {
+@@ -3311,7 +3306,16 @@ bool QScriptEnginePrivate::convertValue(JSC::ExecState *exec, JSC::JSValue value
+         *reinterpret_cast<QVariant*>(ptr) = toVariant(exec, value);
+         return true;
+     default:
+-    ;
++#ifndef QT_NO_REGEXP
++        if (type == qMetaTypeId<QRegExp>()) {
++            if (isRegExp(value)) {
++                *reinterpret_cast<QRegExp *>(ptr) = toRegExp(exec, value);
++                return true;
++            }
++            break;
++        }
++#endif
++        break;
+     }
+ 
+     QByteArray name = QMetaType::typeName(type);
+diff --git a/src/script/api/qscriptengine.h b/src/script/api/qscriptengine.h
+index 7aa639b..1d79c94 100644
+--- a/src/script/api/qscriptengine.h
++++ b/src/script/api/qscriptengine.h
+@@ -315,7 +315,7 @@ template <class T> QScriptValue QScriptEngine::scriptValueFromQMetaObject()
+ 
+ #ifdef QT_DEPRECATED
+ template <class T>
+-inline QT_DEPRECATED QScriptValue qScriptValueFromQMetaObject(
++QT_DEPRECATED inline QScriptValue qScriptValueFromQMetaObject(
+     QScriptEngine *engine
+ #ifndef qdoc
+     , T * /* dummy */ = 0
+@@ -375,7 +375,7 @@ inline QVariant qscriptvalue_cast<QVariant>(const QScriptValue &value)
+ 
+ #ifdef QT_DEPRECATED
+ template <typename T>
+-inline QT_DEPRECATED T qScriptValueToValue(const QScriptValue &value)
++QT_DEPRECATED inline T qScriptValueToValue(const QScriptValue &value)
+ {
+     return qscriptvalue_cast<T>(value);
+ }
+diff --git a/src/script/api/qscriptengine_p.h b/src/script/api/qscriptengine_p.h
+index 73387e5..a793583 100644
+--- a/src/script/api/qscriptengine_p.h
++++ b/src/script/api/qscriptengine_p.h
+@@ -56,9 +56,15 @@
+ #include <QtCore/qdatetime.h>
+ #include <QtCore/qhash.h>
+ #include <QtCore/qnumeric.h>
+-#include <QtCore/qregexp.h>
+ #include <QtCore/qset.h>
+ #include <QtCore/qstringlist.h>
++
++#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
++#include <QtCore5Compat/qregexp.h>
++#else
++#include <QtCore/qregexp.h>
++#endif
++
+ #include "qscriptvalue_p.h"
+ #include "qscriptstring_p.h"
+ #include "bridge/qscriptclassobject_p.h"
+diff --git a/src/script/api/qscriptstring.cpp b/src/script/api/qscriptstring.cpp
+index 0107c52..1623d92 100644
+--- a/src/script/api/qscriptstring.cpp
++++ b/src/script/api/qscriptstring.cpp
+@@ -87,9 +87,9 @@ QScriptString::QScriptString(const QScriptString &other)
+     : d_ptr(other.d_ptr)
+ {
+     if (d_func() && (d_func()->type == QScriptStringPrivate::StackAllocated)) {
+-        Q_ASSERT(d_func()->ref.load() != 1);
++        Q_ASSERT(d_func()->ref.loadRelaxed() != 1);
+         d_ptr.detach();
+-        d_func()->ref.store(1);
++        d_func()->ref.storeRelaxed(1);
+         d_func()->type = QScriptStringPrivate::HeapAllocated;
+         d_func()->engine->registerScriptString(d_func());
+     }
+@@ -104,11 +104,11 @@ QScriptString::~QScriptString()
+     if (d) {
+         switch (d->type) {
+         case QScriptStringPrivate::StackAllocated:
+-            Q_ASSERT(d->ref.load() == 1);
++            Q_ASSERT(d->ref.loadRelaxed() == 1);
+             d->ref.ref(); // avoid deletion
+             break;
+         case QScriptStringPrivate::HeapAllocated:
+-            if (d->engine && (d->ref.load() == 1)) {
++            if (d->engine && (d->ref.loadRelaxed() == 1)) {
+                 // Make sure the identifier is removed from the correct engine.
+                 QScript::APIShim shim(d->engine);
+                 d->identifier = JSC::Identifier();
+@@ -124,15 +124,15 @@ QScriptString::~QScriptString()
+ */
+ QScriptString &QScriptString::operator=(const QScriptString &other)
+ {
+-    if (d_func() && d_func()->engine && (d_func()->ref.load() == 1) && (d_func()->type == QScriptStringPrivate::HeapAllocated)) {
++    if (d_func() && d_func()->engine && (d_func()->ref.loadRelaxed() == 1) && (d_func()->type == QScriptStringPrivate::HeapAllocated)) {
+         // current d_ptr will be deleted at the assignment below, so unregister it first
+         d_func()->engine->unregisterScriptString(d_func());
+     }
+     d_ptr = other.d_ptr;
+     if (d_func() && (d_func()->type == QScriptStringPrivate::StackAllocated)) {
+-        Q_ASSERT(d_func()->ref.load() != 1);
++        Q_ASSERT(d_func()->ref.loadRelaxed() != 1);
+         d_ptr.detach();
+-        d_func()->ref.store(1);
++        d_func()->ref.storeRelaxed(1);
+         d_func()->type = QScriptStringPrivate::HeapAllocated;
+         d_func()->engine->registerScriptString(d_func());
+     }
+diff --git a/src/script/bridge/qscriptclassobject.cpp b/src/script/bridge/qscriptclassobject.cpp
+index 88a3fc3..65a4196 100644
+--- a/src/script/bridge/qscriptclassobject.cpp
++++ b/src/script/bridge/qscriptclassobject.cpp
+@@ -86,8 +86,8 @@ bool ClassObjectDelegate::getOwnPropertySlot(QScriptObject* object,
+         return true;
+ 
+     QScriptValue scriptObject = engine->scriptValueFromJSCValue(object);
+-    QScriptString scriptName;
+     QScriptStringPrivate scriptName_d(engine, propertyName, QScriptStringPrivate::StackAllocated);
++    QScriptString scriptName;
+     QScriptStringPrivate::init(scriptName, &scriptName_d);
+     uint id = 0;
+     QScriptClass::QueryFlags flags = m_scriptClass->queryProperty(
+@@ -160,8 +160,8 @@ void ClassObjectDelegate::put(QScriptObject* object, JSC::ExecState *exec,
+     QScriptEnginePrivate *engine = scriptEngineFromExec(exec);
+     QScript::SaveFrameHelper saveFrame(engine, exec);
+     QScriptValue scriptObject = engine->scriptValueFromJSCValue(object);
+-    QScriptString scriptName;
+     QScriptStringPrivate scriptName_d(engine, propertyName, QScriptStringPrivate::StackAllocated);
++    QScriptString scriptName;
+     QScriptStringPrivate::init(scriptName, &scriptName_d);
+     uint id = 0;
+     QScriptClass::QueryFlags flags = m_scriptClass->queryProperty(
+@@ -180,8 +180,8 @@ bool ClassObjectDelegate::deleteProperty(QScriptObject* object, JSC::ExecState *
+     QScriptEnginePrivate *engine = scriptEngineFromExec(exec);
+     QScript::SaveFrameHelper saveFrame(engine, exec);
+     QScriptValue scriptObject = engine->scriptValueFromJSCValue(object);
+-    QScriptString scriptName;
+     QScriptStringPrivate scriptName_d(engine, propertyName, QScriptStringPrivate::StackAllocated);
++    QScriptString scriptName;
+     QScriptStringPrivate::init(scriptName, &scriptName_d);
+     uint id = 0;
+     QScriptClass::QueryFlags flags = m_scriptClass->queryProperty(
+diff --git a/src/script/bridge/qscriptqobject.cpp b/src/script/bridge/qscriptqobject.cpp
+index 44568d6..17e4524 100644
+--- a/src/script/bridge/qscriptqobject.cpp
++++ b/src/script/bridge/qscriptqobject.cpp
+@@ -49,6 +49,7 @@
+ #include "../api/qscriptcontext_p.h"
+ #include "qscriptfunction_p.h"
+ #include "qscriptactivationobject_p.h"
++#include "qscriptvariant_p.h"
+ 
+ #include "Error.h"
+ #include "PrototypeFunction.h"
+@@ -551,7 +552,7 @@ static JSC::JSValue delegateQtMethod(JSC::ExecState *exec, QMetaMethod::MethodTy
+ 
+         if (rtype != QMetaType::Void) {
+             // initialize the result
+-            args[0] = QVariant(rtype, (void *)0);
++            args[0] = createQVariant(rtype, nullptr);
+         }
+ 
+         // try to convert arguments
+@@ -567,7 +568,7 @@ static JSC::JSValue delegateQtMethod(JSC::ExecState *exec, QMetaMethod::MethodTy
+             int tid = -1;
+             QVariant v;
+             if (argType.isUnresolved()) {
+-                v = QVariant(QMetaType::QObjectStar, (void *)0);
++                v = createQVariant(QMetaType::QObjectStar, nullptr);
+                 converted = QScriptEnginePrivate::convertToNativeQObject(
+                     exec, actual, argType.name(), reinterpret_cast<void* *>(v.data()));
+             } else if (argType.isVariant()) {
+@@ -579,7 +580,7 @@ static JSC::JSValue delegateQtMethod(JSC::ExecState *exec, QMetaMethod::MethodTy
+                 }
+             } else {
+                 tid = argType.typeId();
+-                v = QVariant(tid, (void *)0);
++                v = createQVariant(tid, nullptr);
+                 converted = QScriptEnginePrivate::convertValue(exec, actual, tid, v.data());
+                 if (exec->hadException())
+                     return exec->exception();
+@@ -599,7 +600,7 @@ static JSC::JSValue delegateQtMethod(JSC::ExecState *exec, QMetaMethod::MethodTy
+                         QByteArray vvTypeName = vv.typeName();
+                         if (vvTypeName.endsWith('*')
+                             && (vvTypeName.left(vvTypeName.size()-1) == argType.name())) {
+-                            v = QVariant(tid, *reinterpret_cast<void* *>(vv.data()));
++                            v = createQVariant(tid, *reinterpret_cast<void* *>(vv.data()));
+                             converted = true;
+                             matchDistance += 10;
+                         }
+@@ -701,13 +702,10 @@ static JSC::JSValue delegateQtMethod(JSC::ExecState *exec, QMetaMethod::MethodTy
+                         break;
+                     }
+                 } else if (QScriptEnginePrivate::isRegExp(actual)) {
+-                    switch (tid) {
+-                    case QMetaType::QRegExp:
++                    if (tid == qMetaTypeId<QRegExp>()) {
+                         // perfect
+-                        break;
+-                    default:
++                    } else {
+                         matchDistance += 10;
+-                        break;
+                     }
+                 } else if (QScriptEnginePrivate::isVariant(actual)) {
+                     if (argType.isVariant()
+@@ -939,7 +937,7 @@ struct QtMethodCaller
+             } else if (retType.typeId() != QMetaType::Void) {
+                 result = QScriptEnginePrivate::create(exec, retType.typeId(), params[0]);
+                 if (!result)
+-                    result = engine->newVariant(QVariant(retType.typeId(), params[0]));
++                    result = engine->newVariant(createQVariant((retType.typeId()), params[0]));
+             } else {
+                 result = JSC::jsUndefined();
+             }
+diff --git a/src/script/bridge/qscriptvariant_p.h b/src/script/bridge/qscriptvariant_p.h
+index 0a99916..f19406e 100644
+--- a/src/script/bridge/qscriptvariant_p.h
++++ b/src/script/bridge/qscriptvariant_p.h
+@@ -84,6 +84,15 @@ public:
+                       JSC::Structure* prototypeFunctionStructure);
+ };
+ 
++inline QVariant createQVariant(int type, const void *copy)
++{
++#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
++    return QVariant(QMetaType(type), copy);
++#else
++    return QVariant(type, copy);
++#endif
++}
++
+ } // namespace QScript
+ 
+ QT_END_NAMESPACE

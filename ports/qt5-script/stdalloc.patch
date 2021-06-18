@@ -1,0 +1,12 @@
+diff --git a/src/3rdparty/javascriptcore/JavaScriptCore/wtf/Platform.h b/src/3rdparty/javascriptcore/JavaScriptCore/wtf/Platform.h
+index a4695a2..560ddfa 100644
+--- a/src/3rdparty/javascriptcore/JavaScriptCore/wtf/Platform.h
++++ b/src/3rdparty/javascriptcore/JavaScriptCore/wtf/Platform.h
+@@ -95,6 +95,7 @@
+ 
+ /* Specific compiler features */
+ #if COMPILER(GCC) && !COMPILER(CLANG)
++#define USE_SYSTEM_MALLOC 1
+ #if GCC_VERSION_AT_LEAST(4, 8, 0)
+ #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
+ #endif
