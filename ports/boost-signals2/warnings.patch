@@ -1,0 +1,13 @@
+diff --git a/include/boost/signals2/detail/null_output_iterator.hpp b/include/boost/signals2/detail/null_output_iterator.hpp
+index 9e98695..dee4373 100644
+--- a/include/boost/signals2/detail/null_output_iterator.hpp
++++ b/include/boost/signals2/detail/null_output_iterator.hpp
+@@ -11,7 +11,7 @@
+ #ifndef BOOST_SIGNALS2_NULL_OUTPUT_ITERATOR_HPP
+ #define BOOST_SIGNALS2_NULL_OUTPUT_ITERATOR_HPP
+ 
+-#include <boost/function_output_iterator.hpp>
++#include <boost/iterator/function_output_iterator.hpp>
+ 
+ namespace boost
+ {
