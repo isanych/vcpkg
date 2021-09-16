@@ -15,7 +15,9 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 echo on
 cd "%~dp0installed\%VCPKG_DEFAULT_TRIPLET%"
 copy "%~dp0postinstall.py" "%~dp0installed\%VCPKG_DEFAULT_TRIPLET%\"
-curl -Ss http://mist.prqa.co.uk/igor_kostenko/vcpkg-add/-/archive/windows%x32%_2021/vcpkg-add-windows%x32%.tar.gz | tar xzf - --strip-components=1
+if not [%VCPKG_ADD%] == [] (
+curl -Ss %VCPKG_ADD%/-/archive/windows%x32%_2021/vcpkg-add-windows%x32%.tar.gz | tar xzf - --strip-components=1
 del .gitignore
+)
 tar czf "%~dp0..\vcpkg-2021-windows-%x%-vs2019.tgz" -C "%~dp0.." vcpkg/installed/%VCPKG_DEFAULT_TRIPLET% vcpkg/scripts vcpkg/triplets/%VCPKG_DEFAULT_TRIPLET%.cmake vcpkg/.vcpkg-root
-curl -Ss -u build:buildpass --upload-file "%~dp0..\vcpkg-2021-windows-%x%-vs2019.tgz" https://nexus.qac.perforce.com/repository/raw/vcpkg/vcpkg-2021-windows-%x%-vs2019.tgz
+if not [%VCPKG_UPLOAD%] == [] curl -Ss %VCPKG_UPLOAD_CRED% --upload-file "%~dp0..\vcpkg-2021-windows-%x%-vs2019.tgz" %VCPKG_UPLOAD%/vcpkg-2021-windows-%x%-vs2019.tgz

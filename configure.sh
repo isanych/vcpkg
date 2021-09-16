@@ -68,7 +68,7 @@ cd ../debug/lib
 ln -sf libmimalloc-debug.so.1.6 libmimalloc-debug.so
 cd ../..
 [[ "${VCPKG_BASE}" = ubuntu20.04 ]] && branch=ubuntu20.04_2021 || branch=linux_2021
-curl -Ss http://mist.prqa.co.uk/igor_kostenko/vcpkg-add/-/archive/$branch/vcpkg-add-linux.tar.gz | tar xz --strip-components=1
+[[ -z "${VCPKG_ADD}" ]] || curl -Ss ${VCPKG_ADD}/-/archive/$branch/vcpkg-add-linux.tar.gz | tar xz --strip-components=1
 r=$vcpkgRootDir/../reprise/x64_l1
 if [[ -e $r ]]; then
   make -C $r
