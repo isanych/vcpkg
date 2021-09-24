@@ -296,3 +296,6 @@ ensure_link("bin", f"tools/protobuf/protoc{exe}")
 if is_windows:
     ensure_link("debug/bin", "d3dcompiler_47.dll")
     ensure_link("debug/bin", "opengl32sw.dll")
+else:
+    set_rpath("lib/libQt5Core.so")
+    set_rpath("lib/libQt5Network.so")
