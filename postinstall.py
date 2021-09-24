@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import glob
 import os
 import shutil
 import sys
@@ -97,7 +98,10 @@ def set_rpath(file):
         file = os.path.relpath(file)
     parts = file.split("/")
     is_debug = len(parts) > 2 and parts[-3] == "debug"
-    origin = f"$ORIGIN/{'/'.join(['..'] * (len(parts) - 1))}{'/debug' if is_debug else ''}/lib"
+    origin = "$ORIGIN"
+    is_lib = len(parts) == (3 if is_debug else 2) and parts[-2] == "lib"
+    if not is_lib:
+        origin = f"{origin}/{'/'.join(['..'] * (len(parts) - 1))}{'/debug' if is_debug else ''}/lib"
     current = get_rpath(file)
     if current == f"RPATH={origin}":
         return
@@ -297,5 +301,7 @@ if is_windows:
     ensure_link("debug/bin", "d3dcompiler_47.dll")
     ensure_link("debug/bin", "opengl32sw.dll")
 else:
-    set_rpath("lib/libQt5Core.so")
-    set_rpath("lib/libQt5Network.so")
+    for l in glob.glob("lib/lib*.so"):
+        set_rpath(l)
+    for l in glob.glob("debug/lib/lib*.so"):
+        set_rpath(l)
