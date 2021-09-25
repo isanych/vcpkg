@@ -1,0 +1,107 @@
+diff --git a/src/3rdparty/chromium/third_party/angle/src/common/mathutil.cpp b/src/3rdparty/chromium/third_party/angle/src/common/mathutil.cpp
+index 9a2c2ec86..9145cd3ea 100644
+--- a/src/3rdparty/chromium/third_party/angle/src/common/mathutil.cpp
++++ b/src/3rdparty/chromium/third_party/angle/src/common/mathutil.cpp
+@@ -31,6 +31,9 @@ constexpr int g_sharedexp_bias = 15;
+ // N is the number of mantissa bits per component (9)
+ constexpr int g_sharedexp_mantissabits = 9;
+ 
++// number of mantissa bits per component pre-biased
++constexpr int g_sharedexp_biased_mantissabits = g_sharedexp_bias + g_sharedexp_mantissabits;
++
+ // Emax is the maximum allowed biased exponent value (31)
+ constexpr int g_sharedexp_maxexponent = 31;
+ 
+@@ -51,17 +54,15 @@ unsigned int convertRGBFloatsTo999E5(float red, float green, float blue)
+     const float exp_p =
+         std::max<float>(-g_sharedexp_bias - 1, floor(log(max_c))) + 1 + g_sharedexp_bias;
+     const int max_s = static_cast<int>(
+-        floor((max_c / (pow(2.0f, exp_p - g_sharedexp_bias - g_sharedexp_mantissabits))) + 0.5f));
++        floor((max_c / (pow(2.0f, exp_p - g_sharedexp_biased_mantissabits))) + 0.5f));
+     const int exp_s =
+         static_cast<int>((max_s < pow(2.0f, g_sharedexp_mantissabits)) ? exp_p : exp_p + 1);
++    const float pow2_exp = pow(2.0f, static_cast<float>(exp_s) - g_sharedexp_biased_mantissabits);
+ 
+     RGB9E5Data output;
+-    output.R = static_cast<unsigned int>(
+-        floor((red_c / (pow(2.0f, exp_s - g_sharedexp_bias - g_sharedexp_mantissabits))) + 0.5f));
+-    output.G = static_cast<unsigned int>(
+-        floor((green_c / (pow(2.0f, exp_s - g_sharedexp_bias - g_sharedexp_mantissabits))) + 0.5f));
+-    output.B = static_cast<unsigned int>(
+-        floor((blue_c / (pow(2.0f, exp_s - g_sharedexp_bias - g_sharedexp_mantissabits))) + 0.5f));
++    output.R = static_cast<unsigned int>(floor((red_c / pow2_exp) + 0.5f));
++    output.G = static_cast<unsigned int>(floor((green_c / pow2_exp) + 0.5f));
++    output.B = static_cast<unsigned int>(floor((blue_c / pow2_exp) + 0.5f));
+     output.E = exp_s;
+ 
+     return bitCast<unsigned int>(output);
+@@ -71,12 +72,12 @@ void convert999E5toRGBFloats(unsigned int input, float *red, float *green, float
+ {
+     const RGB9E5Data *inputData = reinterpret_cast<const RGB9E5Data *>(&input);
+ 
+-    *red =
+-        inputData->R * pow(2.0f, (int)inputData->E - g_sharedexp_bias - g_sharedexp_mantissabits);
+-    *green =
+-        inputData->G * pow(2.0f, (int)inputData->E - g_sharedexp_bias - g_sharedexp_mantissabits);
+-    *blue =
+-        inputData->B * pow(2.0f, (int)inputData->E - g_sharedexp_bias - g_sharedexp_mantissabits);
++    const float pow2_exp = static_cast<float>(
++        pow(2.0f, static_cast<float>(inputData->E) - g_sharedexp_biased_mantissabits));
++
++    *red   = static_cast<float>(inputData->R * pow2_exp);
++    *green = static_cast<float>(inputData->G * pow2_exp);
++    *blue  = static_cast<float>(inputData->B * pow2_exp);
+ }
+ 
+ int BitCountPolyfill(uint32_t bits)
+diff --git a/src/3rdparty/chromium/third_party/blink/renderer/platform/graphics/lab_color_space.h b/src/3rdparty/chromium/third_party/blink/renderer/platform/graphics/lab_color_space.h
+index 78c316e04..86346da9b 100644
+--- a/src/3rdparty/chromium/third_party/blink/renderer/platform/graphics/lab_color_space.h
++++ b/src/3rdparty/chromium/third_party/blink/renderer/platform/graphics/lab_color_space.h
+@@ -138,9 +138,9 @@ class LABColorSpace {
+                       clamp(lab.Z(), -128.0f, 128.0f)};
+ 
+     return {
+-        invf((v.X() + 16.0f) / 116.0f + (v.Y() * 0.002f)) * kIlluminantD50.X(),
+-        invf((v.X() + 16.0f) / 116.0f) * kIlluminantD50.Y(),
+-        invf((v.X() + 16.0f) / 116.0f - (v.Z() * 0.005f)) * kIlluminantD50.Z()};
++        static_cast<float>(invf((v.X() + 16.0f) / 116.0f + (v.Y() * 0.002f)) * kIlluminantD50.X()),
++        static_cast<float>(invf((v.X() + 16.0f) / 116.0f) * kIlluminantD50.Y()),
++        static_cast<float>(invf((v.X() + 16.0f) / 116.0f - (v.Z() * 0.005f)) * kIlluminantD50.Z())};
+   }
+ 
+  private:
+diff --git a/src/3rdparty/chromium/third_party/perfetto/src/trace_processor/trace_sorter.cc b/src/3rdparty/chromium/third_party/perfetto/src/trace_processor/trace_sorter.cc
+index 49cd78ea0..292fcac17 100644
+--- a/src/3rdparty/chromium/third_party/perfetto/src/trace_processor/trace_sorter.cc
++++ b/src/3rdparty/chromium/third_party/perfetto/src/trace_processor/trace_sorter.cc
+@@ -32,28 +32,7 @@ TraceSorter::TraceSorter(TraceProcessorContext* context, int64_t window_size_ns)
+     PERFETTO_ELOG("TEST MODE: bypassing protobuf parsing stage");
+ }
+ 
+-void TraceSorter::Queue::Sort() {
+-  PERFETTO_DCHECK(needs_sorting());
+-  PERFETTO_DCHECK(sort_start_idx_ < events_.size());
+-
+-  // If sort_min_ts_ has been set, it will no long be max_int, and so will be
+-  // smaller than max_ts_.
+-  PERFETTO_DCHECK(sort_min_ts_ < max_ts_);
+-
+-  // We know that all events between [0, sort_start_idx_] are sorted. Within
+-  // this range, perform a bound search and find the iterator for the min
+-  // timestamp that broke the monotonicity. Re-sort from there to the end.
+-  auto sort_end = events_.begin() + static_cast<ssize_t>(sort_start_idx_);
+-  PERFETTO_DCHECK(std::is_sorted(events_.begin(), sort_end));
+-  auto sort_begin = std::lower_bound(events_.begin(), sort_end, sort_min_ts_,
+-                                     &TimestampedTracePiece::Compare);
+-  std::sort(sort_begin, events_.end());
+-  sort_start_idx_ = 0;
+-  sort_min_ts_ = 0;
+-
+-  // At this point |events_| must be fully sorted.
+-  PERFETTO_DCHECK(std::is_sorted(events_.begin(), events_.end()));
+-}
++void TraceSorter::Queue::Sort() {}
+ 
+ // Removes all the events in |queues_| that are earlier than the given window
+ // size and moves them to the next parser stages, respecting global timestamp
