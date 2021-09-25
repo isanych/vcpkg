@@ -101,7 +101,7 @@ def set_rpath(file):
     origin = "$ORIGIN"
     is_lib = len(parts) == (3 if is_debug else 2) and parts[-2] == "lib"
     if not is_lib:
-        origin = f"{origin}/{'/'.join(['..'] * (len(parts) - 1))}{'/debug' if is_debug else ''}/lib"
+        origin = f"$ORIGIN:$ORIGIN/../lib:$ORIGIN/{'/'.join(['..'] * (len(parts) - 1))}{'/debug' if is_debug else ''}/lib"
     current = get_rpath(file)
     if current == f"RPATH={origin}":
         return
