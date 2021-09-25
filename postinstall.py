@@ -101,7 +101,7 @@ def set_rpath(file):
     origin = "$ORIGIN"
     is_lib = len(parts) == (3 if is_debug else 2) and parts[-2] == "lib"
     if not is_lib:
-        origin = f"$ORIGIN:$ORIGIN/../lib:$ORIGIN/{'/'.join(['..'] * (len(parts) - 1))}{'/debug' if is_debug else ''}/lib"
+        origin = f"$ORIGIN:$ORIGIN/../lib:$ORIGIN/..:$ORIGIN/{'/'.join(['..'] * (len(parts) - 1))}{'/debug' if is_debug else ''}/lib"
     current = get_rpath(file)
     if current == f"RPATH={origin}":
         return
@@ -148,6 +148,13 @@ def qt_conf(f1, f2, content):
     content = qt_conf_one(f1, content)
     qt_conf_one(f2, content)
 
+
+def glob_rpath(mask):
+    for m in glob.glob(mask):
+        try:
+            set_rpath(m)
+        except subprocess.CalledProcessError:
+            pass
 
 cwd = os.getcwd()
 if os.path.exists("debug/lib/cmake"):
@@ -301,7 +308,7 @@ if is_windows:
     ensure_link("debug/bin", "d3dcompiler_47.dll")
     ensure_link("debug/bin", "opengl32sw.dll")
 else:
-    for l in glob.glob("lib/lib*.so"):
-        set_rpath(l)
-    for l in glob.glob("debug/lib/lib*.so"):
-        set_rpath(l)
+    glob_rpath("lib/lib*.so"):
+    glob_rpath("debug/lib/lib*.so"):
+    glob_rpath("plugins/*/lib*.so"):
+    glob_rpath("debug/plugins/*/lib*.so"):
