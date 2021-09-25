@@ -308,7 +308,7 @@ if is_windows:
     ensure_link("debug/bin", "d3dcompiler_47.dll")
     ensure_link("debug/bin", "opengl32sw.dll")
 else:
-    glob_rpath("lib/lib*.so"):
-    glob_rpath("debug/lib/lib*.so"):
-    glob_rpath("plugins/*/lib*.so"):
-    glob_rpath("debug/plugins/*/lib*.so"):
+    glob_rpath("lib/lib*.so")
+    glob_rpath("debug/lib/lib*.so")
+    glob_rpath("plugins/*/lib*.so")
+    glob_rpath("debug/plugins/*/lib*.so")
