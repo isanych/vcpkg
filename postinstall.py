@@ -151,8 +151,7 @@ def qt_conf(f1, f2, content):
 
 def glob_rpath(mask):
     for m in glob.glob(mask):
-        if m.endswith("libqevdevtouchplugin.so"):
-            continue
+        print(m):
         try:
             set_rpath(m)
         except subprocess.CalledProcessError:

@@ -76,5 +76,5 @@ if [[ -e $r ]]; then
   cp $r/rlmmains.a lib/
   cp $r/rlm_nossl.a lib/
 fi
-../../postinstall.py
+../../postinstall.py || ../../postinstall.py || true
 [[ -z "${VCPKG_BASE}" || ! -d /deploy/vcpkg ]] || LD_LIBRARY_PATH= tar cJf /deploy/vcpkg/vcpkg-2021-${VCPKG_BASE}-x64-gcc10${VCPKG_SUFFIX}.txz -C "$vcpkgRootDir/.." vcpkg/installed/${VCPKG_TRIPLET} vcpkg/scripts vcpkg/triplets/${VCPKG_TRIPLET}.cmake vcpkg/.vcpkg-root
