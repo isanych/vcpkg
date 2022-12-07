@@ -23,6 +23,7 @@ vcpkg_extract_source_archive_ex(
         disable-static-prefix.patch # https://gitlab.kitware.com/cmake/cmake/-/issues/16617; also mingw.
         fix-win-build.patch
         check-autoconf-archive.patch
+        true-false.patch
 )
 
 vcpkg_find_acquire_program(PYTHON3)

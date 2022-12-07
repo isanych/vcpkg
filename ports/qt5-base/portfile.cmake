@@ -80,9 +80,21 @@ endforeach()
 #########################
 ## Setup Configure options
 
+if(VCPKG_TARGET_IS_WINDOWS)
+    set(license_file "$ENV{USERPROFILE}/.qt-license")
+else()
+    set(license_file "$ENV{HOME}/.qt-license")
+endif()
+
+if(EXISTS ${license_file})
+    set(license_option "-commercial")
+else()
+    set(license_option "-opensource")
+endif()
+
 set(CORE_OPTIONS
     -confirm-license
-    -opensource
+    ${license_option}
     #-simulator_and_device
     #-ltcg
     #-combined-angle-lib

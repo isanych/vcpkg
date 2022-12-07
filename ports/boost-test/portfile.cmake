@@ -6,6 +6,8 @@ vcpkg_from_github(
     REF boost-1.80.0
     SHA512 0848afee0070950a2e3b1f3a4d297992cf3789d85b5cd64ac8894d629eea02d7830eda2a359567c5d2c9d1249accd934c7f9b422f14df2ccfa793f65a410ff02
     HEAD_REF master
+    PATCHES
+        leaks_off.patch
 )
 
 vcpkg_replace_string("${SOURCE_PATH}/build/Jamfile.v2"
