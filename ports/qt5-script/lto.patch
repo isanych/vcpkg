@@ -1,0 +1,28 @@
+diff --git a/src/3rdparty/javascriptcore/JavaScriptCore/jit/JIT.h b/src/3rdparty/javascriptcore/JavaScriptCore/jit/JIT.h
+index 8e0c9ac..b6b1c8e 100644
+--- a/src/3rdparty/javascriptcore/JavaScriptCore/jit/JIT.h
++++ b/src/3rdparty/javascriptcore/JavaScriptCore/jit/JIT.h
+@@ -34,8 +34,10 @@
+ // performance fluctuations.  Try forcing alignment in an attempt to stabalize this.
+ #if COMPILER(GCC)
+ #define JIT_CLASS_ALIGNMENT __attribute__ ((aligned (32)))
++#define JIT_USED_ATTRIBUTE __attribute__ ((used))
+ #else
+ #define JIT_CLASS_ALIGNMENT
++#define JIT_USED_ATTRIBUTE
+ #endif
+ 
+ #define ASSERT_JIT_OFFSET(actual, expected) ASSERT_WITH_MESSAGE(actual == expected, "JIT Offset \"%s\" should be %d, not %d.\n", #expected, static_cast<int>(actual), static_cast<int>(expected));
+diff --git a/src/3rdparty/javascriptcore/JavaScriptCore/jit/JITStubs.h b/src/3rdparty/javascriptcore/JavaScriptCore/jit/JITStubs.h
+index da80133..3ad01f3 100644
+--- a/src/3rdparty/javascriptcore/JavaScriptCore/jit/JITStubs.h
++++ b/src/3rdparty/javascriptcore/JavaScriptCore/jit/JITStubs.h
+@@ -316,7 +316,7 @@ extern "C" {
+     EncodedJSValue JIT_STUB cti_op_to_primitive(STUB_ARGS_DECLARATION);
+     EncodedJSValue JIT_STUB cti_op_typeof(STUB_ARGS_DECLARATION);
+     EncodedJSValue JIT_STUB cti_op_urshift(STUB_ARGS_DECLARATION);
+-    EncodedJSValue JIT_STUB cti_vm_throw(STUB_ARGS_DECLARATION);
++    EncodedJSValue JIT_STUB cti_vm_throw(STUB_ARGS_DECLARATION) JIT_USED_ATTRIBUTE;
+     EncodedJSValue JIT_STUB cti_to_object(STUB_ARGS_DECLARATION);
+     JSObject* JIT_STUB cti_op_construct_JSConstruct(STUB_ARGS_DECLARATION);
+     JSObject* JIT_STUB cti_op_new_array(STUB_ARGS_DECLARATION);
