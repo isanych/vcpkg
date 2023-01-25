@@ -22,7 +22,7 @@ elseif(EXISTS /etc/debian_version)
 endif()
 
 set(IS_LTO TRUE)
-set(NO_LTO abseil brotli cryptopp double-conversion ffmpeg hdf5 libffi libuuid upb grpc)
+set(NO_LTO abseil brotli cryptopp double-conversion ffmpeg glib gperf grpc hdf5 libffi libuuid upb)
 if(PORT IN_LIST NO_LTO)
     set(IS_LTO FALSE)
 endif()

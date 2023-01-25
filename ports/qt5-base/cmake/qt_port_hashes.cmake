@@ -2,7 +2,7 @@
 # So it is probably better to have a central location for these hashes and let the ports update via a script
 set(QT_MAJOR_MINOR_VER 5.15)
 set(QT_PATCH_VER 12)
-set(QT_UPDATE_VERSION 1) # Switch to update qt and not build qt. Creates a file cmake/qt_new_hashes.cmake in qt5-base with the new hashes.
+set(QT_UPDATE_VERSION 0) # Switch to update qt and not build qt. Creates a file cmake/qt_new_hashes.cmake in qt5-base with the new hashes.
 
 set(QT_PORT_LIST base 3d activeqt charts connectivity datavis3d declarative gamepad graphicaleffects imageformats location macextras mqtt multimedia networkauth
                  purchasing quickcontrols quickcontrols2 remoteobjects script scxml sensors serialport speech svg tools virtualkeyboard webchannel websockets
@@ -11,7 +11,7 @@ set(QT_PORT_LIST base 3d activeqt charts connectivity datavis3d declarative game
 set(QT_HASH_qt5-3d               1fe024e4e0052785106d88f86ae8b5a13bd9b3829f016d5c8c76cc9ca80f19861f78b3ea50084773a387be856cb990622aab154ed0f2786a131658931b432a68)
 set(QT_HASH_qt5-activeqt         2583f82e2678b643ee98c94d7f9afe0ee39a8324c5e54c96f2158e17c74597be95c65209f985f3576440c9ce836ba74528787417050a86e11c95322efb7e0411)
 set(QT_HASH_qt5-androidextras    0)
-set(QT_HASH_qt5-base             f71ef599434473f4736bbfa1f0ecee695752ee5007c6d0188b1827cd843428c1e40f269e2a1fc8dc013fb2dde7f5a446db5b5ebccf03d47179d7ef3daaad9429)
+set(QT_HASH_qt5-base             cc4ee0728e1106b32f791fc6567224a63dc8b994ff5155ef45897ae77f7276ef7f07876cd79727abbab6995c659accf030ea8b6e3a4a202eab76e82e0a1d5491)
 set(QT_HASH_qt5-charts           a30375942edf7d8ededb43a58013bf714266bfa7dd58fb6663df45020f98395b433cabe0a54e6e444d5c3277754b0c66eb6afc1f31f6e911c00c7f74e894400b)
 set(QT_HASH_qt5-connectivity     e675a9c59eb6bec0a4df3658022b01aeae7fe4474193238121f31bb3fac31b20c1fd4003733abe3e8cad1d49945d378867c81a6e8fe57af0629c1863270b6a6b)
 set(QT_HASH_qt5-datavis3d        17387c339adb7ec5d5296130293bab1415ddc78cfb306b11455888080f055d02ceff64c9a1ef60392bdf31f38b372629cf682b219f044b460693dc7b38c4f181)
