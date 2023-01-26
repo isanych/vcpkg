@@ -155,11 +155,6 @@
       "version>=": "1.81.0"
     },
     {
-      "name": "boost-fiber",
-      "platform": "!uwp & !arm & !emscripten",
-      "version>=": "1.81.0"
-    },
-    {
       "name": "boost-filesystem",
       "platform": "!uwp",
       "version>=": "1.81.0"
