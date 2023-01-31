@@ -15,6 +15,9 @@
     "harfbuzz",
     {
       "name": "icu",
+      "features": [
+        "tools"
+      ],
       "platform": "!uwp"
     },
     "libjpeg-turbo",
