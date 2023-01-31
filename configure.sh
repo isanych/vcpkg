@@ -66,7 +66,7 @@ ln -sf libmimalloc.so.2.0 libmimalloc.so
 cd ../debug/lib
 ln -sf libmimalloc-debug.so.2.0 libmimalloc-debug.so
 cd ../..
-[[ "${VCPKG_BASE}" = ubuntu* ]] && branch=ubuntu20.04_2022pts || branch=linux_2022pts
+[[ "${VCPKG_BASE}" = ubuntu* ]] && branch=ubuntu22.04_2023 || branch=linux_2023
 [[ -z "${VCPKG_ADD}" ]] || curl -Ss ${VCPKG_ADD}/-/archive/$branch/vcpkg-add-linux.tar.gz | tar xz --strip-components=1
 r=$vcpkgRootDir/../reprise/x64_l1
 if [[ -e $r ]]; then
@@ -76,4 +76,4 @@ if [[ -e $r ]]; then
   cp $r/rlm_nossl.a lib/
 fi
 ../../postinstall.py || true
-[[ -z "${VCPKG_BASE}" || ! -d /deploy/vcpkg ]] || LD_LIBRARY_PATH= tar cJf /deploy/vcpkg/vcpkg-${VCPKG_BRANCH}-${VCPKG_BASE}-x64-gcc11${VCPKG_SUFFIX}.txz -C "$vcpkgRootDir/.." vcpkg/installed/${VCPKG_TRIPLET} vcpkg/scripts vcpkg/triplets/${VCPKG_TRIPLET}.cmake vcpkg/.vcpkg-root
+[[ -z "${VCPKG_BASE}" || ! -d /deploy/vcpkg ]] || LD_LIBRARY_PATH= tar cJf /deploy/vcpkg/vcpkg-${VCPKG_BRANCH}-${VCPKG_BASE}-x64-gcc12${VCPKG_SUFFIX}.txz -C "$vcpkgRootDir/.." vcpkg/installed/${VCPKG_TRIPLET} vcpkg/scripts vcpkg/triplets/${VCPKG_TRIPLET}.cmake vcpkg/.vcpkg-root

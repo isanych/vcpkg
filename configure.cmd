@@ -16,7 +16,7 @@ cd "%~dp0installed\%VCPKG_DEFAULT_TRIPLET%"
 rmdir tools\nodejs
 copy "%~dp0postinstall.py" "%~dp0installed\%VCPKG_DEFAULT_TRIPLET%\"
 if not [%VCPKG_ADD%] == [] (
-curl -Ss %VCPKG_ADD%/-/archive/windows%x32%_2022pts/vcpkg-add-windows%x32%.tar.gz | tar xzf - --strip-components=1
+curl -Ss %VCPKG_ADD%/-/archive/windows%x32%_2023/vcpkg-add-windows%x32%.tar.gz | tar xzf - --strip-components=1
 del .gitignore
 )
 "%~dp0archive"
