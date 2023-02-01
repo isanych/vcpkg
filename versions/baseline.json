@@ -1406,7 +1406,7 @@
     },
     "chakracore": {
       "baseline": "2022-11-09",
-      "port-version": 1
+      "port-version": 2
     },
     "charls": {
       "baseline": "2.4.1",
@@ -1435,6 +1435,10 @@
     "chromium-base": {
       "baseline": "86.0.4199.1",
       "port-version": 5
+    },
+    "chronoengine": {
+      "baseline": "8.0.0",
+      "port-version": 0
     },
     "cimg": {
       "baseline": "2.9.9",
@@ -2346,7 +2350,7 @@
     },
     "ffmpeg": {
       "baseline": "5.1.2",
-      "port-version": 0
+      "port-version": 1
     },
     "ffnvcodec": {
       "baseline": "11.1.5.0",
@@ -2389,7 +2393,7 @@
       "port-version": 0
     },
     "flatbuffers": {
-      "baseline": "23.1.4",
+      "baseline": "23.1.21",
       "port-version": 0
     },
     "flecs": {
@@ -2710,7 +2714,7 @@
     },
     "glm": {
       "baseline": "0.9.9.8",
-      "port-version": 1
+      "port-version": 2
     },
     "globjects": {
       "baseline": "1.1.0",
@@ -3262,7 +3266,7 @@
     },
     "joltphysics": {
       "baseline": "2.0.1",
-      "port-version": 1
+      "port-version": 2
     },
     "josuttis-jthread": {
       "baseline": "2020-07-21",
@@ -3281,8 +3285,8 @@
       "port-version": 0
     },
     "json-schema-validator": {
-      "baseline": "2.1.0",
-      "port-version": 1
+      "baseline": "2.2.0",
+      "port-version": 0
     },
     "json-spirit": {
       "baseline": "4.1.0",
@@ -3601,7 +3605,7 @@
       "port-version": 0
     },
     "leptonica": {
-      "baseline": "1.82.0",
+      "baseline": "1.83.1",
       "port-version": 0
     },
     "lerc": {
@@ -3750,7 +3754,7 @@
     },
     "libde265": {
       "baseline": "1.0.8",
-      "port-version": 5
+      "port-version": 6
     },
     "libdisasm": {
       "baseline": "0.23",
@@ -3777,7 +3781,7 @@
       "port-version": 3
     },
     "libe57format": {
-      "baseline": "2.2.0",
+      "baseline": "2.3.0",
       "port-version": 0
     },
     "libebur128": {
@@ -3982,7 +3986,7 @@
     },
     "liblas": {
       "baseline": "1.8.1",
-      "port-version": 10
+      "port-version": 11
     },
     "liblbfgs": {
       "baseline": "1.10",
@@ -4665,7 +4669,7 @@
       "port-version": 0
     },
     "llfio": {
-      "baseline": "2022-09-18",
+      "baseline": "2023-01-27",
       "port-version": 0
     },
     "llgl": {
@@ -4862,7 +4866,7 @@
     },
     "matio": {
       "baseline": "1.5.23",
-      "port-version": 1
+      "port-version": 2
     },
     "matplotlib-cpp": {
       "baseline": "2020-08-27",
@@ -4882,7 +4886,7 @@
     },
     "mchehab-zbar": {
       "baseline": "0.23.90",
-      "port-version": 1
+      "port-version": 2
     },
     "mcpp": {
       "baseline": "2.7.2.14",
@@ -5269,8 +5273,8 @@
       "port-version": 1
     },
     "ned14-internal-quickcpplib": {
-      "baseline": "2022-09-08",
-      "port-version": 1
+      "baseline": "2023-01-27",
+      "port-version": 0
     },
     "neon2sse": {
       "baseline": "2021-09-16",
@@ -5351,6 +5355,10 @@
     "nnpack": {
       "baseline": "2021-02-21",
       "port-version": 3
+    },
+    "node-addon-api": {
+      "baseline": "5.0.0",
+      "port-version": 0
     },
     "node-api": {
       "baseline": "18.12.1",
@@ -5505,7 +5513,7 @@
       "port-version": 5
     },
     "onednn": {
-      "baseline": "2.6.1",
+      "baseline": "3.0.0",
       "port-version": 0
     },
     "oniguruma": {
@@ -5618,7 +5626,7 @@
     },
     "openimageio": {
       "baseline": "2.4.5.0",
-      "port-version": 3
+      "port-version": 4
     },
     "openjpeg": {
       "baseline": "2.5.0",
@@ -6760,6 +6768,10 @@
       "baseline": "0.2.1",
       "port-version": 0
     },
+    "rkcommon": {
+      "baseline": "1.10.0",
+      "port-version": 0
+    },
     "rmlui": {
       "baseline": "5.0",
       "port-version": 0
@@ -7381,7 +7393,7 @@
       "port-version": 0
     },
     "status-code": {
-      "baseline": "2022-09-08",
+      "baseline": "2023-01-27",
       "port-version": 0
     },
     "status-value-lite": {
@@ -7418,7 +7430,7 @@
     },
     "string-view-lite": {
       "baseline": "1.7.0",
-      "port-version": 0
+      "port-version": 1
     },
     "strong-type": {
       "baseline": "8",
@@ -8089,7 +8101,7 @@
       "port-version": 0
     },
     "vulkan-memory-allocator": {
-      "baseline": "3.0.0",
+      "baseline": "3.0.1",
       "port-version": 0
     },
     "vulkan-memory-allocator-hpp": {
@@ -8149,7 +8161,7 @@
       "port-version": 0
     },
     "wildmidi": {
-      "baseline": "0.4.4",
+      "baseline": "0.4.5",
       "port-version": 0
     },
     "wincrypt": {
@@ -8493,8 +8505,8 @@
       "port-version": 3
     },
     "zstr": {
-      "baseline": "1.0.4",
-      "port-version": 2
+      "baseline": "1.0.7",
+      "port-version": 0
     },
     "ztd-text": {
       "baseline": "2022-03-21",
