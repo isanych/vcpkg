@@ -6,8 +6,6 @@ vcpkg_from_github(
     REF boost-1.81.0
     SHA512 453e6500de87eb34d5071392d13d3643692871e37d3416e08e1f621aab03d4408fc1f1e94d5be9a2ce2eaf53272b438cc7615c7ffadfa0324e00c3d425f9143b
     HEAD_REF master
-    PATCHES
-        leaks_off.patch
 )
 
 vcpkg_replace_string("${SOURCE_PATH}/build/Jamfile.v2"
@@ -32,4 +30,3 @@ if(NOT DEFINED VCPKG_BUILD_TYPE OR VCPKG_BUILD_TYPE STREQUAL "debug")
     file(COPY ${DEBUG_MONITOR_LIBS} DESTINATION ${CURRENT_PACKAGES_DIR}/debug/lib/manual-link)
     file(REMOVE ${DEBUG_MONITOR_LIBS})
 endif()
-
