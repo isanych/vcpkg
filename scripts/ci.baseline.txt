@@ -374,7 +374,6 @@ leveldb:arm-uwp=fail
 leveldb:x64-uwp=fail
 libaiff:x64-linux=fail
 libarchive:arm-uwp=fail
-libcopp:arm64-windows=fail
 # Missing system libraries on linux to run/prepare autoconf
 libgpod:x64-linux=fail
 libgpod:x64-osx=fail
@@ -557,8 +556,6 @@ mfl:x64-linux=skip
 mfl:x64-osx=skip
 mfl:arm64-osx=skip
 milerius-sfml-imgui:x64-windows-static=fail
-minifb:arm-uwp=fail
-minifb:x64-uwp=fail
 miniupnpc:arm-uwp=fail
 miniupnpc:x64-uwp=fail
 minizip:arm-uwp=fail
@@ -730,6 +727,8 @@ openmesh:arm-uwp=fail
 openmesh:x64-uwp=fail
 openscap:x64-windows-static=fail
 openscap:x64-osx=fail
+# osx needs bison 3.4 installed
+openturns:x64-osx=fail
 # https://github.com/AcademySoftwareFoundation/openvdb/issues/1362
 # openvdb\openvdb\libopenvdb.lib : fatal error LNK1248: image size (109A36020) exceeds maximum allowable size (FFFFFFFF)
 openvdb:x64-windows-static=fail
