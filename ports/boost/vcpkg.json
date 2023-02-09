@@ -410,11 +410,6 @@
       "version>=": "1.81.0#1"
     },
     {
-      "name": "boost-python",
-      "platform": "!uwp & !emscripten & !ios & !android",
-      "version>=": "1.81.0#1"
-    },
-    {
       "name": "boost-qvm",
       "version>=": "1.81.0#1"
     },
