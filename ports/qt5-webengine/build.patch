@@ -1,3 +1,17 @@
+diff --git a/src/3rdparty/chromium/build/config/compiler/BUILD.gn b/src/3rdparty/chromium/build/config/compiler/BUILD.gn
+index b511a58c5..0e681d58a 100644
+--- a/src/3rdparty/chromium/build/config/compiler/BUILD.gn
++++ b/src/3rdparty/chromium/build/config/compiler/BUILD.gn
+@@ -1284,9 +1284,6 @@ config("default_warnings") {
+     if (treat_warnings_as_errors) {
+       cflags += [ "/WX" ]
+     }
+-    if (fatal_linker_warnings) {
+-      ldflags = [ "/WX" ]
+-    }
+ 
+     cflags += [
+       # Warnings permanently disabled:
 diff --git a/src/3rdparty/chromium/third_party/angle/BUILD.gn b/src/3rdparty/chromium/third_party/angle/BUILD.gn
 index fb5717665..7bad972ca 100644
 --- a/src/3rdparty/chromium/third_party/angle/BUILD.gn
@@ -11,6 +25,21 @@ index fb5717665..7bad972ca 100644
        "/we4456",  # Variable shadowing.
        "/we4458",  # declaration hides class member.
        "/we4715",  # not all control paths return a value
+diff --git a/src/3rdparty/chromium/third_party/libxml/linux/config.h b/src/3rdparty/chromium/third_party/libxml/linux/config.h
+index c702e7980..247d77149 100644
+--- a/src/3rdparty/chromium/third_party/libxml/linux/config.h
++++ b/src/3rdparty/chromium/third_party/libxml/linux/config.h
+@@ -205,3 +205,10 @@
+ /* Define to the type of an unsigned integer type of width exactly 32 bits if
+    such a type exists and the standard includes do not define it. */
+ /* #undef uint32_t */
++
++#if !defined(FALSE)
++#define FALSE 0
++#endif
++#if !defined(TRUE)
++#define TRUE (!(FALSE))
++#endif
 diff --git a/src/3rdparty/chromium/third_party/perfetto/include/perfetto/ext/base/circular_queue.h b/src/3rdparty/chromium/third_party/perfetto/include/perfetto/ext/base/circular_queue.h
 index 18ca77026..a1bbd5880 100644
 --- a/src/3rdparty/chromium/third_party/perfetto/include/perfetto/ext/base/circular_queue.h
@@ -30,6 +59,18 @@ index 18ca77026..a1bbd5880 100644
  
      value_type& operator[](difference_type i) { return *(*this + i); }
  
+diff --git a/src/3rdparty/chromium/ui/accessibility/ax_table_info.h b/src/3rdparty/chromium/ui/accessibility/ax_table_info.h
+index 3bfb24626..cc3d51b27 100644
+--- a/src/3rdparty/chromium/ui/accessibility/ax_table_info.h
++++ b/src/3rdparty/chromium/ui/accessibility/ax_table_info.h
+@@ -9,6 +9,7 @@
+ #include <set>
+ #include <unordered_map>
+ #include <vector>
++#include <string>
+ 
+ #include "base/optional.h"
+ #include "ui/accessibility/ax_export.h"
 diff --git a/src/3rdparty/chromium/ui/gl/gl_bindings_autogen_gl.h b/src/3rdparty/chromium/ui/gl/gl_bindings_autogen_gl.h
 index e28fa4864..88ddc9138 100644
 --- a/src/3rdparty/chromium/ui/gl/gl_bindings_autogen_gl.h
