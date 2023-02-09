@@ -59,6 +59,20 @@ index 18ca77026..a1bbd5880 100644
  
      value_type& operator[](difference_type i) { return *(*this + i); }
  
+diff --git a/src/3rdparty/chromium/third_party/skia/src/utils/SkParseColor.cpp b/src/3rdparty/chromium/third_party/skia/src/utils/SkParseColor.cpp
+index 7260365b2..0dc349706 100644
+--- a/src/3rdparty/chromium/third_party/skia/src/utils/SkParseColor.cpp
++++ b/src/3rdparty/chromium/third_party/skia/src/utils/SkParseColor.cpp
+@@ -8,6 +8,9 @@
+ 
+ #include "include/utils/SkParse.h"
+ 
++#include <algorithm> // std::lower_bound
++#include <iterator>
++
+ static constexpr const char* gColorNames[] = {
+     "aliceblue",
+     "antiquewhite",
 diff --git a/src/3rdparty/chromium/ui/accessibility/ax_table_info.h b/src/3rdparty/chromium/ui/accessibility/ax_table_info.h
 index 3bfb24626..cc3d51b27 100644
 --- a/src/3rdparty/chromium/ui/accessibility/ax_table_info.h
