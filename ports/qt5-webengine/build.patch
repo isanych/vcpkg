@@ -497,6 +497,19 @@ index 404396900..73fc38448 100644
    }
  
    const CreateClosureParameters& Parameters() const {
+diff --git a/src/3rdparty/chromium/v8/src/compiler/node.h b/src/3rdparty/chromium/v8/src/compiler/node.h
+index 1936f0645..83ff9e256 100644
+--- a/src/3rdparty/chromium/v8/src/compiler/node.h
++++ b/src/3rdparty/chromium/v8/src/compiler/node.h
+@@ -50,7 +50,7 @@ class V8_EXPORT_PRIVATE Node final {
+ 
+   const Operator* op() const { return op_; }
+ 
+-  IrOpcode::Value opcode() const {
++  constexpr IrOpcode::Value opcode() const {
+     DCHECK_GE(IrOpcode::kLast, op_->opcode());
+     return static_cast<IrOpcode::Value>(op_->opcode());
+   }
 diff --git a/src/3rdparty/chromium/v8/src/compiler/simplified-operator.h b/src/3rdparty/chromium/v8/src/compiler/simplified-operator.h
 index eab865fd5..ce4789ea6 100644
 --- a/src/3rdparty/chromium/v8/src/compiler/simplified-operator.h
