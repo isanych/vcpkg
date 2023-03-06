@@ -35,7 +35,20 @@ if [[ "${VCPKG_BASE}" = centos7 ]]; then
   ln -s "$vcpkgRootDir/installed/${VCPKG_TRIPLET}/lib/pkgconfig/libpng.pc" /usr/lib64/pkgconfig/libpng.pc
   ln -s "$vcpkgRootDir/installed/${VCPKG_TRIPLET}/lib/pkgconfig/libpng16.pc" /usr/lib64/pkgconfig/libpng16.pc
 fi
-$v icu qt5-base
+$v icu harfbuzz
+cd installed/${VCPKG_TRIPLET}
+../../postinstall.py || true
+cd ../..
+if [[ "$EUID" = 0 ]]; then
+  cd /usr/local
+  rm -rf bin lib lib64 include
+  ln -s "$vcpkgRootDir/installed/${VCPKG_TRIPLET}/bin"
+  ln -s "$vcpkgRootDir/installed/${VCPKG_TRIPLET}/lib"
+  ln -s "$vcpkgRootDir/installed/${VCPKG_TRIPLET}/lib" lib64
+  ln -s "$vcpkgRootDir/installed/${VCPKG_TRIPLET}/include"
+  cd "$vcpkgRootDir"
+fi
+$v qt5-base
 cd installed/${VCPKG_TRIPLET}
 ../../postinstall.py || true
 cd ../..
@@ -55,7 +68,7 @@ if [[ -z "${VCPKG_SKIP_EXTRA}" ]]; then
   ln -sf libwebpmux.so libwebpmuxd.so
   ln -sf libwebpmux.so.3 libwebpmuxd.so.3
   cd "$vcpkgRootDir"
-  $v qt5-webengine || true
+  PKG_CONFIG_PATH="$vcpkgRootDir/installed/${VCPKG_TRIPLET}/lib/pkgconfig" $v qt5-webengine || true
 fi
 $v smtpclient-for-qt
 $v protobuf grpc hdf5[zlib,tools] boost rapidjson cryptopp xerces-c xalan-c mimalloc[override] quazip libzip lua[cpp] sol2
@@ -76,4 +89,5 @@ if [[ -e $r ]]; then
   cp $r/rlm_nossl.a lib/
 fi
 ../../postinstall.py || true
+rm -f "$vcpkgRootDir/installed/${VCPKG_TRIPLET}/bin/pkgconf"
 [[ -z "${VCPKG_BASE}" || ! -d /deploy/vcpkg ]] || LD_LIBRARY_PATH= tar cJf /deploy/vcpkg/vcpkg-${VCPKG_BRANCH}-${VCPKG_BASE}-x64-gcc12${VCPKG_SUFFIX}.txz -C "$vcpkgRootDir/.." vcpkg/installed/${VCPKG_TRIPLET} vcpkg/scripts vcpkg/triplets/${VCPKG_TRIPLET}.cmake vcpkg/.vcpkg-root

@@ -276,6 +276,12 @@ elseif(VCPKG_TARGET_IS_LINUX)
     if (NOT EXISTS "/usr/include/GL/glu.h")
         message(FATAL_ERROR "qt5 requires libgl1-mesa-dev and libglu1-mesa-dev, please use your distribution's package manager to install them.\nExample: \"apt-get install libgl1-mesa-dev libglu1-mesa-dev\"")
     endif()
+    if (NOT harfbuzz_LIBRARIES_RELEASE AND EXISTS "${CURRENT_INSTALLED_DIR}/lib/libharfbuzz.so")
+      set(harfbuzz_LIBRARIES_RELEASE "${CURRENT_INSTALLED_DIR}/lib/libharfbuzz.so")
+    endif()
+    if (NOT harfbuzz_LIBRARIES_DEBUG AND EXISTS "${CURRENT_INSTALLED_DIR}/debug/lib/libharfbuzz.so")
+      set(harfbuzz_LIBRARIES_DEBUG "${CURRENT_INSTALLED_DIR}/debug/lib/libharfbuzz.so")
+    endif()
     list(APPEND RELEASE_OPTIONS
             "SQLITE_LIBS=${SQLITE_RELEASE} -ldl -lpthread"
             "HARFBUZZ_LIBS=${harfbuzz_LIBRARIES_RELEASE}"
