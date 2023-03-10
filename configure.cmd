@@ -8,8 +8,10 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 rem internal compiler error for 32 bit, so build qt5-webengine in 64 bit mode only
 if [%x%] == [x64] %v% atlmfc qt5-graphicaleffects qt5-location qt5-quickcontrols qt5-quickcontrols2 qt5-serialport qt5-webchannel
 if %errorlevel% neq 0 exit /b %errorlevel%
+if not [%VCPKG_SUBST%] == [] pushd %VCPKG_SUBST%
 if [%x%] == [x64] %v% qt5-webengine
 if %errorlevel% neq 0 exit /b %errorlevel%
+if not [%VCPKG_SUBST%] == [] popd
 %v% smtpclient-for-qt protobuf hdf5[zlib,tools] boost rapidjson cryptopp xerces-c xalan-c grpc mimalloc[override] quazip libzip lua[cpp] sol2
 if %errorlevel% neq 0 exit /b %errorlevel%
 cd "%~dp0installed\%VCPKG_DEFAULT_TRIPLET%"
