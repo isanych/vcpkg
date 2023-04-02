@@ -45,7 +45,7 @@ vcpkg_add_to_path(PREPEND "${GPERF_DIR}")
 vcpkg_add_to_path(PREPEND "${NINJA_DIR}")
 vcpkg_add_to_path(PREPEND "${NODEJS_DIR}")
 
-set(PATCHES build.patch build_3.patch)
+set(PATCHES build.patch)
 
 set(OPTIONS)
 if("proprietary-codecs" IN_LIST FEATURES)
