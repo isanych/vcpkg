@@ -48,7 +48,7 @@ if [[ "$EUID" = 0 ]]; then
   ln -s "$vcpkgRootDir/installed/${VCPKG_TRIPLET}/include"
   cd "$vcpkgRootDir"
 fi
-$v qt5-base
+$v qt5-base[icu]
 cd installed/${VCPKG_TRIPLET}
 ../../postinstall.py || true
 cd ../..
