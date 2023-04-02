@@ -13,10 +13,6 @@
     },
     "freetype",
     "harfbuzz",
-    {
-      "name": "icu",
-      "platform": "!uwp"
-    },
     "libjpeg-turbo",
     "libpng",
     {
@@ -43,6 +39,15 @@
     "zstd"
   ],
   "features": {
+    "icu": {
+      "description": "Enable ICU support",
+      "dependencies": [
+        {
+          "name": "icu",
+          "platform": "!uwp"
+        }
+      ]
+    },
     "latest": {
       "description": "(deprecated)"
     },
