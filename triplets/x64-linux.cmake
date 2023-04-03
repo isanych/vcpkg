@@ -32,6 +32,10 @@ if(PORT MATCHES "^boost.*" AND EXISTS /opt/vcpkg/.boost_static)
     set(IS_LTO FALSE)
 endif()
 
+if(PORT STREQUAL pkgconf)
+    set(VCPKG_LIBRARY_LINKAGE static)
+endif()
+
 if(IS_LTO)
     set(VCPKG_CXX_FLAGS_RELEASE -flto)
     set(VCPKG_C_FLAGS_RELEASE -flto)
