@@ -304,9 +304,6 @@ ensure_link("bin", f"tools/protobuf/protoc{exe}")
 if is_windows:
     ensure_link("debug/bin", "bin/d3dcompiler_47.dll")
     ensure_link("debug/bin", "bin/opengl32sw.dll")
-    ensure_link("debug/bin", "bin/libgmp-10.dll")
     ensure_link("debug/bin", "bin/libwinpthread-1.dll")
-    ensure_link("debug/bin", "bin/libyices.dll")
-    ensure_link("debug/lib", "lib/libyices.lib")
 else:
     glob_rpath()
