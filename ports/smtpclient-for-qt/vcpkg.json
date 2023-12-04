@@ -1,0 +1,13 @@
+{
+  "name": "smtpclient-for-qt",
+  "version": "1.1",
+  "description": "Qt library that allows application to send complex emails using SMTP",
+  "homepage": "https://github.com/bluetiger9/SmtpClient-for-Qt",
+  "dependencies": [
+    {
+      "name": "qt5-base",
+      "default-features": false
+    },
+    "qt5-tools"
+  ]
+}

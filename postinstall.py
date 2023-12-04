@@ -301,9 +301,5 @@ ensure_link("bin", f"tools/bzip2/bzip2{exe}")
 ensure_link("bin", f"tools/liblzma/xz{exe}")
 ensure_link("bin", f"tools/grpc/grpc_cpp_plugin{exe}")
 ensure_link("bin", f"tools/protobuf/protoc{exe}")
-if is_windows:
-    ensure_link("debug/bin", "bin/d3dcompiler_47.dll")
-    ensure_link("debug/bin", "bin/opengl32sw.dll")
-    ensure_link("debug/bin", "bin/libwinpthread-1.dll")
-else:
+if not is_windows:
     glob_rpath()

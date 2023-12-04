@@ -1,842 +1,170 @@
 diff --git a/src/3rdparty/chromium/build/config/compiler/BUILD.gn b/src/3rdparty/chromium/build/config/compiler/BUILD.gn
-index b511a58c5..0e681d58a 100644
+index b511a58c5..a27a45d2e 100644
 --- a/src/3rdparty/chromium/build/config/compiler/BUILD.gn
 +++ b/src/3rdparty/chromium/build/config/compiler/BUILD.gn
-@@ -1284,9 +1284,6 @@ config("default_warnings") {
-     if (treat_warnings_as_errors) {
-       cflags += [ "/WX" ]
-     }
--    if (fatal_linker_warnings) {
--      ldflags = [ "/WX" ]
+@@ -64,7 +64,7 @@ declare_args() {
+ 
+   # Enable fatal linker warnings. Building Chromium with certain versions
+   # of binutils can cause linker warning.
+-  fatal_linker_warnings = true
++  fatal_linker_warnings = false
+ 
+   # Build with C++ RTTI enabled. Chromium builds without RTTI by default,
+   # but some sanitizers are known to require it, like CFI diagnostics
+@@ -1502,6 +1502,7 @@ config("default_warnings") {
+       # Disable a number of GCC warnings caused by a mix
+       # of Chromium and GCC bugs.
+       cflags += [ "-Wno-dangling-else" ]
++      cflags += [ "-fpermissive" ]
+       cflags_cc += [ "-Wno-attributes" ]
+       cflags_cc += [ "-Wno-class-memaccess" ]
+       cflags_cc += [ "-Wno-subobject-linkage" ]
+diff --git a/src/3rdparty/chromium/build/config/pch.gni b/src/3rdparty/chromium/build/config/pch.gni
+index 93bd2fedc..a55fbaecd 100644
+--- a/src/3rdparty/chromium/build/config/pch.gni
++++ b/src/3rdparty/chromium/build/config/pch.gni
+@@ -8,5 +8,5 @@ declare_args() {
+   # Precompiled header file support is by default available,
+   # but for distributed build system uses (like goma) or when
+   # doing official builds.
+-  enable_precompiled_headers = !is_official_build && !use_goma
++  enable_precompiled_headers = false
+ }
+diff --git a/src/3rdparty/chromium/gpu/command_buffer/service/program_manager.cc b/src/3rdparty/chromium/gpu/command_buffer/service/program_manager.cc
+index 021530c7e..5db4135ae 100644
+--- a/src/3rdparty/chromium/gpu/command_buffer/service/program_manager.cc
++++ b/src/3rdparty/chromium/gpu/command_buffer/service/program_manager.cc
+@@ -620,7 +620,7 @@ std::string Program::ProcessLogInfo(const std::string& log) {
+       output += hashed_name;
+   }
+ 
+-  return output + input.as_string();
++  return output + static_cast<std::string>(input);
+ }
+ 
+ void Program::UpdateLogInfo() {
+diff --git a/src/3rdparty/chromium/third_party/blink/renderer/core/BUILD.gn b/src/3rdparty/chromium/third_party/blink/renderer/core/BUILD.gn
+index 5dc17a425..0047a2796 100644
+--- a/src/3rdparty/chromium/third_party/blink/renderer/core/BUILD.gn
++++ b/src/3rdparty/chromium/third_party/blink/renderer/core/BUILD.gn
+@@ -37,27 +37,6 @@ config("core_include_dirs") {
+ import("//build/config/pch.gni")
+ 
+ config("blink_core_pch") {
+-  # Add precompiled header (pch) support when enabled, possible and
+-  # making sense.
+-  if (enable_precompiled_headers) {
+-    if (is_win) {
+-      # This is a string rather than a file GN knows about. It has to match
+-      # exactly what's in the /FI flag below, and what might appear in the
+-      # source code in quotes for an #include directive.
+-      precompiled_header = rebase_path("precompile_core.h", root_build_dir)
+-
+-      # This is a file that GN will compile with the above header. It will be
+-      # implicitly added to the sources (potentially multiple times, with one
+-      # variant for each language used in the target).
+-      precompiled_source =
+-          "//third_party/blink/renderer/core/win/precompile_core.cc"
+-
+-      # Force include the header.
+-      cflags = [ "/FI$precompiled_header" ]
+-    } else if (is_mac) {
+-      precompiled_source = "//third_party/blink/renderer/core/precompile_core.h"
 -    }
+-  }
+ }
  
-     cflags += [
-       # Warnings permanently disabled:
-diff --git a/src/3rdparty/chromium/third_party/angle/BUILD.gn b/src/3rdparty/chromium/third_party/angle/BUILD.gn
-index fb5717665..7bad972ca 100644
---- a/src/3rdparty/chromium/third_party/angle/BUILD.gn
-+++ b/src/3rdparty/chromium/third_party/angle/BUILD.gn
-@@ -131,8 +131,6 @@ config("extra_warnings") {
-   # Enable more default warnings on Windows.
-   if (is_win) {
-     cflags += [
--      "/we4244",  # Conversion: possible loss of data.
--      "/we4312",  # Conversion: greater size.
-       "/we4456",  # Variable shadowing.
-       "/we4458",  # declaration hides class member.
-       "/we4715",  # not all control paths return a value
-diff --git a/src/3rdparty/chromium/third_party/libxml/linux/config.h b/src/3rdparty/chromium/third_party/libxml/linux/config.h
-index 62bfa6b69..c3d68c9b9 100644
---- a/src/3rdparty/chromium/third_party/libxml/linux/config.h
-+++ b/src/3rdparty/chromium/third_party/libxml/linux/config.h
-@@ -184,3 +184,10 @@
- /* Define to the type of an unsigned integer type of width exactly 32 bits if
-    such a type exists and the standard includes do not define it. */
- /* #undef uint32_t */
-+
-+#if !defined(FALSE)
-+#define FALSE 0
-+#endif
-+#if !defined(TRUE)
-+#define TRUE (!(FALSE))
-+#endif
-diff --git a/src/3rdparty/chromium/third_party/perfetto/include/perfetto/ext/base/circular_queue.h b/src/3rdparty/chromium/third_party/perfetto/include/perfetto/ext/base/circular_queue.h
-index 18ca77026..a1bbd5880 100644
---- a/src/3rdparty/chromium/third_party/perfetto/include/perfetto/ext/base/circular_queue.h
-+++ b/src/3rdparty/chromium/third_party/perfetto/include/perfetto/ext/base/circular_queue.h
-@@ -74,12 +74,12 @@ class CircularQueue {
-       return queue_->Get(pos_);
-     }
+ core_config_add += [
+diff --git a/src/3rdparty/chromium/third_party/blink/renderer/platform/BUILD.gn b/src/3rdparty/chromium/third_party/blink/renderer/platform/BUILD.gn
+index 2e0d575a9..d1acfa8b5 100644
+--- a/src/3rdparty/chromium/third_party/blink/renderer/platform/BUILD.gn
++++ b/src/3rdparty/chromium/third_party/blink/renderer/platform/BUILD.gn
+@@ -218,28 +218,6 @@ config("blink_platform_implementation") {
+ }
  
--    const T* operator->() const {
-+    T* operator->() const {
-       return const_cast<CircularQueue<T>::Iterator*>(this)->operator->();
-     }
- 
-     T& operator*() { return *(operator->()); }
--    const T& operator*() const { return *(operator->()); }
-+    T& operator*() const { return *(operator->()); }
- 
-     value_type& operator[](difference_type i) { return *(*this + i); }
- 
-diff --git a/src/3rdparty/chromium/ui/accessibility/ax_table_info.h b/src/3rdparty/chromium/ui/accessibility/ax_table_info.h
-index cb0cf99b8..9dfd48c20 100644
---- a/src/3rdparty/chromium/ui/accessibility/ax_table_info.h
-+++ b/src/3rdparty/chromium/ui/accessibility/ax_table_info.h
-@@ -10,6 +10,7 @@
- #include <string>
- #include <unordered_map>
- #include <vector>
-+#include <string>
- 
- #include "base/optional.h"
- #include "ui/accessibility/ax_export.h"
-diff --git a/src/3rdparty/chromium/ui/gl/gl_bindings_autogen_gl.h b/src/3rdparty/chromium/ui/gl/gl_bindings_autogen_gl.h
-index e28fa4864..88ddc9138 100644
---- a/src/3rdparty/chromium/ui/gl/gl_bindings_autogen_gl.h
-+++ b/src/3rdparty/chromium/ui/gl/gl_bindings_autogen_gl.h
-@@ -16,7 +16,7 @@
- namespace gl {
- 
- class GLContext;
+ config("blink_platform_pch") {
+-  visibility = []
+-  visibility = [ "./*" ]
+-  if (enable_precompiled_headers) {
+-    if (is_win) {
+-      # This is a string rather than a file GN knows about. It has to match
+-      # exactly what's in the /FI flag below, and what might appear in the
+-      # source code in quotes for an #include directive.
+-      precompiled_header = rebase_path("precompile_platform.h", root_build_dir)
 -
-+typedef void *GLeglImageOES;
- typedef void(GL_BINDING_CALL* glActiveShaderProgramProc)(GLuint pipeline,
-                                                          GLuint program);
- typedef void(GL_BINDING_CALL* glActiveTextureProc)(GLenum texture);
-diff --git a/src/3rdparty/chromium/v8/src/base/bit-field.h b/src/3rdparty/chromium/v8/src/base/bit-field.h
-index ca5fb4592..7b2796e3d 100644
---- a/src/3rdparty/chromium/v8/src/base/bit-field.h
-+++ b/src/3rdparty/chromium/v8/src/base/bit-field.h
-@@ -52,7 +52,7 @@ class BitField final {
- 
-   // Returns a type U with the bit field value encoded.
-   static constexpr U encode(T value) {
--    CONSTEXPR_DCHECK(is_valid(value));
-+    DCHECK(is_valid(value));
-     return static_cast<U>(value) << kShift;
-   }
- 
-diff --git a/src/3rdparty/chromium/v8/src/base/bits.h b/src/3rdparty/chromium/v8/src/base/bits.h
-index cf4b77fa1..4849f4ae5 100644
---- a/src/3rdparty/chromium/v8/src/base/bits.h
-+++ b/src/3rdparty/chromium/v8/src/base/bits.h
-@@ -145,7 +145,7 @@ constexpr inline bool IsPowerOfTwo(T value) {
- template <typename T,
-           typename = typename std::enable_if<std::is_integral<T>::value>::type>
- inline constexpr int WhichPowerOfTwo(T value) {
--  CONSTEXPR_DCHECK(IsPowerOfTwo(value));
-+  DCHECK(IsPowerOfTwo(value));
- #if V8_HAS_BUILTIN_CTZ
-   STATIC_ASSERT(sizeof(T) <= 8);
-   return sizeof(T) == 8 ? __builtin_ctzll(static_cast<uint64_t>(value))
-diff --git a/src/3rdparty/chromium/v8/src/base/bounds.h b/src/3rdparty/chromium/v8/src/base/bounds.h
-index fb8c968d6..9d57ed114 100644
---- a/src/3rdparty/chromium/v8/src/base/bounds.h
-+++ b/src/3rdparty/chromium/v8/src/base/bounds.h
-@@ -15,7 +15,7 @@ namespace base {
- // branch.
- template <typename T, typename U>
- inline constexpr bool IsInRange(T value, U lower_limit, U higher_limit) {
--  CONSTEXPR_DCHECK(lower_limit <= higher_limit);
-+  DCHECK(lower_limit <= higher_limit);
-   STATIC_ASSERT(sizeof(U) <= sizeof(T));
-   using unsigned_T = typename std::make_unsigned<T>::type;
-   // Use static_cast to support enum classes.
-diff --git a/src/3rdparty/chromium/v8/src/base/enum-set.h b/src/3rdparty/chromium/v8/src/base/enum-set.h
-index 2415f1c50..b04593194 100644
---- a/src/3rdparty/chromium/v8/src/base/enum-set.h
-+++ b/src/3rdparty/chromium/v8/src/base/enum-set.h
-@@ -63,7 +63,7 @@ class EnumSet {
-   explicit constexpr EnumSet(T bits) : bits_(bits) {}
- 
-   static constexpr T Mask(E element) {
--    CONSTEXPR_DCHECK(sizeof(T) * 8 > static_cast<size_t>(element));
-+    DCHECK(sizeof(T) * 8 > static_cast<size_t>(element));
-     return T{1} << static_cast<typename std::underlying_type<E>::type>(element);
-   }
- 
-diff --git a/src/3rdparty/chromium/v8/src/base/logging.h b/src/3rdparty/chromium/v8/src/base/logging.h
-index fe39f9882..790018c98 100644
---- a/src/3rdparty/chromium/v8/src/base/logging.h
-+++ b/src/3rdparty/chromium/v8/src/base/logging.h
-@@ -134,12 +134,6 @@ V8_BASE_EXPORT void SetDcheckFunction(void (*dcheck_Function)(const char*, int,
- 
- #endif
- 
--#if V8_HAS_CXX14_CONSTEXPR
--#define CONSTEXPR_DCHECK(cond) DCHECK(cond)
--#else
--#define CONSTEXPR_DCHECK(cond)
--#endif
+-      # This is a file that GN will compile with the above header. It will be
+-      # implicitly added to the sources (potentially multiple times, with one
+-      # variant for each language used in the target).
+-      precompiled_source =
+-          "//third_party/blink/renderer/platform/win/precompile_platform.cc"
 -
- // Define PrintCheckOperand<T> for each T which defines operator<< for ostream.
- template <typename T>
- typename std::enable_if<
-diff --git a/src/3rdparty/chromium/v8/src/base/optional.h b/src/3rdparty/chromium/v8/src/base/optional.h
-index 3c13e654c..77e9bb896 100644
---- a/src/3rdparty/chromium/v8/src/base/optional.h
-+++ b/src/3rdparty/chromium/v8/src/base/optional.h
-@@ -558,32 +558,32 @@ class OPTIONAL_DECLSPEC_EMPTY_BASES Optional
-   }
- 
-   constexpr const T* operator->() const {
--    CONSTEXPR_DCHECK(storage_.is_populated_);
-+    DCHECK(storage_.is_populated_);
-     return &storage_.value_;
-   }
- 
-   constexpr T* operator->() {
--    CONSTEXPR_DCHECK(storage_.is_populated_);
-+    DCHECK(storage_.is_populated_);
-     return &storage_.value_;
-   }
- 
-   constexpr const T& operator*() const& {
--    CONSTEXPR_DCHECK(storage_.is_populated_);
-+    DCHECK(storage_.is_populated_);
-     return storage_.value_;
-   }
- 
-   constexpr T& operator*() & {
--    CONSTEXPR_DCHECK(storage_.is_populated_);
-+    DCHECK(storage_.is_populated_);
-     return storage_.value_;
-   }
- 
-   constexpr const T&& operator*() const&& {
--    CONSTEXPR_DCHECK(storage_.is_populated_);
-+    DCHECK(storage_.is_populated_);
-     return std::move(storage_.value_);
-   }
- 
-   constexpr T&& operator*() && {
--    CONSTEXPR_DCHECK(storage_.is_populated_);
-+    DCHECK(storage_.is_populated_);
-     return std::move(storage_.value_);
-   }
- 
-diff --git a/src/3rdparty/chromium/v8/src/codegen/arm64/register-arm64.h b/src/3rdparty/chromium/v8/src/codegen/arm64/register-arm64.h
-index fbbb0a18d..54fc0583b 100644
---- a/src/3rdparty/chromium/v8/src/codegen/arm64/register-arm64.h
-+++ b/src/3rdparty/chromium/v8/src/codegen/arm64/register-arm64.h
-@@ -92,7 +92,7 @@ class CPURegister : public RegisterBase<CPURegister, kRegAfterLast> {
-   }
- 
-   static constexpr CPURegister Create(int code, int size, RegisterType type) {
--    CONSTEXPR_DCHECK(IsValid(code, size, type));
-+    DCHECK(IsValid(code, size, type));
-     return CPURegister{code, size, type};
-   }
- 
-@@ -303,7 +303,7 @@ class VRegister : public CPURegister {
-   }
- 
-   static constexpr VRegister Create(int code, int size, int lane_count = 1) {
--    CONSTEXPR_DCHECK(IsValidLaneCount(lane_count));
-+    DCHECK(IsValidLaneCount(lane_count));
-     return VRegister(CPURegister::Create(code, size, CPURegister::kVRegister),
-                      lane_count);
-   }
-diff --git a/src/3rdparty/chromium/v8/src/codegen/register.h b/src/3rdparty/chromium/v8/src/codegen/register.h
-index 2dcf0fbe8..a243584f1 100644
---- a/src/3rdparty/chromium/v8/src/codegen/register.h
-+++ b/src/3rdparty/chromium/v8/src/codegen/register.h
-@@ -33,7 +33,7 @@ class RegisterBase {
-   static constexpr SubType no_reg() { return SubType{kCode_no_reg}; }
- 
-   static constexpr SubType from_code(int code) {
--    CONSTEXPR_DCHECK(base::IsInRange(code, 0, kNumRegisters - 1));
-+    DCHECK(base::IsInRange(code, 0, kNumRegisters - 1));
-     return SubType{code};
-   }
- 
-@@ -45,7 +45,7 @@ class RegisterBase {
-   constexpr bool is_valid() const { return reg_code_ != kCode_no_reg; }
- 
-   constexpr int code() const {
--    CONSTEXPR_DCHECK(is_valid());
-+    DCHECK(is_valid());
-     return reg_code_;
-   }
- 
-diff --git a/src/3rdparty/chromium/v8/src/compiler/common-operator.h b/src/3rdparty/chromium/v8/src/compiler/common-operator.h
-index f68780394..de9e198e5 100644
---- a/src/3rdparty/chromium/v8/src/compiler/common-operator.h
-+++ b/src/3rdparty/chromium/v8/src/compiler/common-operator.h
-@@ -596,7 +596,7 @@ class CommonNodeWrapperBase : public NodeWrapper {
- class StartNode final : public CommonNodeWrapperBase {
-  public:
-   explicit constexpr StartNode(Node* node) : CommonNodeWrapperBase(node) {
--    CONSTEXPR_DCHECK(node->opcode() == IrOpcode::kStart);
-+    DCHECK(node->opcode() == IrOpcode::kStart);
-   }
- 
-   // The receiver is counted as part of formal parameters.
-@@ -615,10 +615,10 @@ class StartNode final : public CommonNodeWrapperBase {
-                   kExtraOutputCount);
-     // Checking related linkage methods here since they rely on Start node
-     // layout.
--    CONSTEXPR_DCHECK(Linkage::kJSCallClosureParamIndex == -1);
--    CONSTEXPR_DCHECK(Linkage::GetJSCallNewTargetParamIndex(argc) == argc + 0);
--    CONSTEXPR_DCHECK(Linkage::GetJSCallArgCountParamIndex(argc) == argc + 1);
--    CONSTEXPR_DCHECK(Linkage::GetJSCallContextParamIndex(argc) == argc + 2);
-+    DCHECK(Linkage::kJSCallClosureParamIndex == -1);
-+    DCHECK(Linkage::GetJSCallNewTargetParamIndex(argc) == argc + 0);
-+    DCHECK(Linkage::GetJSCallArgCountParamIndex(argc) == argc + 1);
-+    DCHECK(Linkage::GetJSCallContextParamIndex(argc) == argc + 2);
-     return argc + kClosure + kNewTarget + kArgCount + kContext;
-   }
- 
-diff --git a/src/3rdparty/chromium/v8/src/compiler/js-operator.cc b/src/3rdparty/chromium/v8/src/compiler/js-operator.cc
-index dccc9558b..fa7599a21 100644
---- a/src/3rdparty/chromium/v8/src/compiler/js-operator.cc
-+++ b/src/3rdparty/chromium/v8/src/compiler/js-operator.cc
-@@ -22,7 +22,7 @@ namespace {
- 
- // Returns properties for the given binary op.
- constexpr Operator::Properties BinopProperties(Operator::Opcode opcode) {
--  CONSTEXPR_DCHECK(JSOperator::IsBinaryWithFeedback(opcode));
-+  DCHECK(JSOperator::IsBinaryWithFeedback(opcode));
-   return opcode == IrOpcode::kJSStrictEqual ? Operator::kPure
-                                             : Operator::kNoProperties;
- }
-diff --git a/src/3rdparty/chromium/v8/src/compiler/js-operator.h b/src/3rdparty/chromium/v8/src/compiler/js-operator.h
-index 404396900..73fc38448 100644
---- a/src/3rdparty/chromium/v8/src/compiler/js-operator.h
-+++ b/src/3rdparty/chromium/v8/src/compiler/js-operator.h
-@@ -1055,7 +1055,7 @@ class JSNodeWrapperBase : public NodeWrapper {
- class JSUnaryOpNode final : public JSNodeWrapperBase {
-  public:
-   explicit constexpr JSUnaryOpNode(Node* node) : JSNodeWrapperBase(node) {
--    CONSTEXPR_DCHECK(JSOperator::IsUnaryWithFeedback(node->opcode()));
-+    DCHECK(JSOperator::IsUnaryWithFeedback(node->opcode()));
-   }
- 
- #define INPUTS(V)            \
-@@ -1072,7 +1072,7 @@ JS_UNOP_WITH_FEEDBACK(V)
- class JSBinaryOpNode final : public JSNodeWrapperBase {
-  public:
-   explicit constexpr JSBinaryOpNode(Node* node) : JSNodeWrapperBase(node) {
--    CONSTEXPR_DCHECK(JSOperator::IsBinaryWithFeedback(node->opcode()));
-+    DCHECK(JSOperator::IsBinaryWithFeedback(node->opcode()));
-   }
- 
-   const FeedbackParameter& Parameters() const {
-@@ -1094,7 +1094,7 @@ JS_BINOP_WITH_FEEDBACK(V)
- class JSGetIteratorNode final : public JSNodeWrapperBase {
-  public:
-   explicit constexpr JSGetIteratorNode(Node* node) : JSNodeWrapperBase(node) {
--    CONSTEXPR_DCHECK(node->opcode() == IrOpcode::kJSGetIterator);
-+    DCHECK(node->opcode() == IrOpcode::kJSGetIterator);
-   }
- 
-   const GetIteratorParameters& Parameters() const {
-@@ -1111,7 +1111,7 @@ class JSGetIteratorNode final : public JSNodeWrapperBase {
- class JSCloneObjectNode final : public JSNodeWrapperBase {
-  public:
-   explicit constexpr JSCloneObjectNode(Node* node) : JSNodeWrapperBase(node) {
--    CONSTEXPR_DCHECK(node->opcode() == IrOpcode::kJSCloneObject);
-+    DCHECK(node->opcode() == IrOpcode::kJSCloneObject);
-   }
- 
-   const CloneObjectParameters& Parameters() const {
-@@ -1129,7 +1129,7 @@ class JSGetTemplateObjectNode final : public JSNodeWrapperBase {
-  public:
-   explicit constexpr JSGetTemplateObjectNode(Node* node)
-       : JSNodeWrapperBase(node) {
--    CONSTEXPR_DCHECK(node->opcode() == IrOpcode::kJSGetTemplateObject);
-+    DCHECK(node->opcode() == IrOpcode::kJSGetTemplateObject);
-   }
- 
-   const GetTemplateObjectParameters& Parameters() const {
-@@ -1145,7 +1145,7 @@ class JSCreateLiteralOpNode final : public JSNodeWrapperBase {
-  public:
-   explicit constexpr JSCreateLiteralOpNode(Node* node)
-       : JSNodeWrapperBase(node) {
--    CONSTEXPR_DCHECK(node->opcode() == IrOpcode::kJSCreateLiteralArray ||
-+    DCHECK(node->opcode() == IrOpcode::kJSCreateLiteralArray ||
-                      node->opcode() == IrOpcode::kJSCreateLiteralObject ||
-                      node->opcode() == IrOpcode::kJSCreateLiteralRegExp);
-   }
-@@ -1166,7 +1166,7 @@ using JSCreateLiteralRegExpNode = JSCreateLiteralOpNode;
- class JSHasPropertyNode final : public JSNodeWrapperBase {
-  public:
-   explicit constexpr JSHasPropertyNode(Node* node) : JSNodeWrapperBase(node) {
--    CONSTEXPR_DCHECK(node->opcode() == IrOpcode::kJSHasProperty);
-+    DCHECK(node->opcode() == IrOpcode::kJSHasProperty);
-   }
- 
-   const PropertyAccess& Parameters() const {
-@@ -1184,7 +1184,7 @@ class JSHasPropertyNode final : public JSNodeWrapperBase {
- class JSLoadPropertyNode final : public JSNodeWrapperBase {
-  public:
-   explicit constexpr JSLoadPropertyNode(Node* node) : JSNodeWrapperBase(node) {
--    CONSTEXPR_DCHECK(node->opcode() == IrOpcode::kJSLoadProperty);
-+    DCHECK(node->opcode() == IrOpcode::kJSLoadProperty);
-   }
- 
-   const PropertyAccess& Parameters() const {
-@@ -1202,7 +1202,7 @@ class JSLoadPropertyNode final : public JSNodeWrapperBase {
- class JSStorePropertyNode final : public JSNodeWrapperBase {
-  public:
-   explicit constexpr JSStorePropertyNode(Node* node) : JSNodeWrapperBase(node) {
--    CONSTEXPR_DCHECK(node->opcode() == IrOpcode::kJSStoreProperty);
-+    DCHECK(node->opcode() == IrOpcode::kJSStoreProperty);
-   }
- 
-   const PropertyAccess& Parameters() const {
-@@ -1227,7 +1227,7 @@ class JSCallOrConstructNode : public JSNodeWrapperBase {
-  public:
-   explicit constexpr JSCallOrConstructNode(Node* node)
-       : JSNodeWrapperBase(node) {
--    CONSTEXPR_DCHECK(node->opcode() == IrOpcode::kJSCall ||
-+    DCHECK(node->opcode() == IrOpcode::kJSCall ||
-                      node->opcode() == IrOpcode::kJSCallWithArrayLike ||
-                      node->opcode() == IrOpcode::kJSCallWithSpread ||
-                      node->opcode() == IrOpcode::kJSConstruct ||
-@@ -1312,7 +1312,7 @@ template <int kOpcode>
- class JSCallNodeBase final : public JSCallOrConstructNode {
-  public:
-   explicit constexpr JSCallNodeBase(Node* node) : JSCallOrConstructNode(node) {
--    CONSTEXPR_DCHECK(node->opcode() == kOpcode);
-+    DCHECK(node->opcode() == kOpcode);
-   }
- 
-   const CallParameters& Parameters() const {
-@@ -1345,7 +1345,7 @@ class JSConstructNodeBase final : public JSCallOrConstructNode {
-  public:
-   explicit constexpr JSConstructNodeBase(Node* node)
-       : JSCallOrConstructNode(node) {
--    CONSTEXPR_DCHECK(node->opcode() == kOpcode);
-+    DCHECK(node->opcode() == kOpcode);
-   }
- 
-   const ConstructParameters& Parameters() const {
-@@ -1378,7 +1378,7 @@ using JSConstructWithArrayLikeNode =
- class JSLoadNamedNode final : public JSNodeWrapperBase {
-  public:
-   explicit constexpr JSLoadNamedNode(Node* node) : JSNodeWrapperBase(node) {
--    CONSTEXPR_DCHECK(node->opcode() == IrOpcode::kJSLoadNamed);
-+    DCHECK(node->opcode() == IrOpcode::kJSLoadNamed);
-   }
- 
-   const NamedAccess& Parameters() const { return NamedAccessOf(node()->op()); }
-@@ -1394,7 +1394,7 @@ class JSLoadNamedFromSuperNode final : public JSNodeWrapperBase {
-  public:
-   explicit constexpr JSLoadNamedFromSuperNode(Node* node)
-       : JSNodeWrapperBase(node) {
--    CONSTEXPR_DCHECK(node->opcode() == IrOpcode::kJSLoadNamedFromSuper);
-+    DCHECK(node->opcode() == IrOpcode::kJSLoadNamedFromSuper);
-   }
- 
-   const NamedAccess& Parameters() const { return NamedAccessOf(node()->op()); }
-@@ -1409,7 +1409,7 @@ class JSLoadNamedFromSuperNode final : public JSNodeWrapperBase {
- class JSStoreNamedNode final : public JSNodeWrapperBase {
-  public:
-   explicit constexpr JSStoreNamedNode(Node* node) : JSNodeWrapperBase(node) {
--    CONSTEXPR_DCHECK(node->opcode() == IrOpcode::kJSStoreNamed);
-+    DCHECK(node->opcode() == IrOpcode::kJSStoreNamed);
-   }
- 
-   const NamedAccess& Parameters() const { return NamedAccessOf(node()->op()); }
-@@ -1425,7 +1425,7 @@ class JSStoreNamedNode final : public JSNodeWrapperBase {
- class JSStoreNamedOwnNode final : public JSNodeWrapperBase {
-  public:
-   explicit constexpr JSStoreNamedOwnNode(Node* node) : JSNodeWrapperBase(node) {
--    CONSTEXPR_DCHECK(node->opcode() == IrOpcode::kJSStoreNamedOwn);
-+    DCHECK(node->opcode() == IrOpcode::kJSStoreNamedOwn);
-   }
- 
-   const StoreNamedOwnParameters& Parameters() const {
-@@ -1443,7 +1443,7 @@ class JSStoreNamedOwnNode final : public JSNodeWrapperBase {
- class JSStoreGlobalNode final : public JSNodeWrapperBase {
-  public:
-   explicit constexpr JSStoreGlobalNode(Node* node) : JSNodeWrapperBase(node) {
--    CONSTEXPR_DCHECK(node->opcode() == IrOpcode::kJSStoreGlobal);
-+    DCHECK(node->opcode() == IrOpcode::kJSStoreGlobal);
-   }
- 
-   const StoreGlobalParameters& Parameters() const {
-@@ -1460,7 +1460,7 @@ class JSStoreGlobalNode final : public JSNodeWrapperBase {
- class JSLoadGlobalNode final : public JSNodeWrapperBase {
-  public:
-   explicit constexpr JSLoadGlobalNode(Node* node) : JSNodeWrapperBase(node) {
--    CONSTEXPR_DCHECK(node->opcode() == IrOpcode::kJSLoadGlobal);
-+    DCHECK(node->opcode() == IrOpcode::kJSLoadGlobal);
-   }
- 
-   const LoadGlobalParameters& Parameters() const {
-@@ -1476,7 +1476,7 @@ class JSCreateEmptyLiteralArrayNode final : public JSNodeWrapperBase {
-  public:
-   explicit constexpr JSCreateEmptyLiteralArrayNode(Node* node)
-       : JSNodeWrapperBase(node) {
--    CONSTEXPR_DCHECK(node->opcode() == IrOpcode::kJSCreateEmptyLiteralArray);
-+    DCHECK(node->opcode() == IrOpcode::kJSCreateEmptyLiteralArray);
-   }
- 
-   const FeedbackParameter& Parameters() const {
-@@ -1492,7 +1492,7 @@ class JSStoreDataPropertyInLiteralNode final : public JSNodeWrapperBase {
-  public:
-   explicit constexpr JSStoreDataPropertyInLiteralNode(Node* node)
-       : JSNodeWrapperBase(node) {
--    CONSTEXPR_DCHECK(node->opcode() == IrOpcode::kJSStoreDataPropertyInLiteral);
-+    DCHECK(node->opcode() == IrOpcode::kJSStoreDataPropertyInLiteral);
-   }
- 
-   const FeedbackParameter& Parameters() const {
-@@ -1513,7 +1513,7 @@ class JSStoreInArrayLiteralNode final : public JSNodeWrapperBase {
-  public:
-   explicit constexpr JSStoreInArrayLiteralNode(Node* node)
-       : JSNodeWrapperBase(node) {
--    CONSTEXPR_DCHECK(node->opcode() == IrOpcode::kJSStoreInArrayLiteral);
-+    DCHECK(node->opcode() == IrOpcode::kJSStoreInArrayLiteral);
-   }
- 
-   const FeedbackParameter& Parameters() const {
-@@ -1532,7 +1532,7 @@ class JSStoreInArrayLiteralNode final : public JSNodeWrapperBase {
- class JSCreateClosureNode final : public JSNodeWrapperBase {
-  public:
-   explicit constexpr JSCreateClosureNode(Node* node) : JSNodeWrapperBase(node) {
--    CONSTEXPR_DCHECK(node->opcode() == IrOpcode::kJSCreateClosure);
-+    DCHECK(node->opcode() == IrOpcode::kJSCreateClosure);
-   }
- 
-   const CreateClosureParameters& Parameters() const {
-diff --git a/src/3rdparty/chromium/v8/src/compiler/simplified-operator.h b/src/3rdparty/chromium/v8/src/compiler/simplified-operator.h
-index eab865fd5..ce4789ea6 100644
---- a/src/3rdparty/chromium/v8/src/compiler/simplified-operator.h
-+++ b/src/3rdparty/chromium/v8/src/compiler/simplified-operator.h
-@@ -1102,7 +1102,7 @@ class FastApiCallNode final : public SimplifiedNodeWrapperBase {
-  public:
-   explicit constexpr FastApiCallNode(Node* node)
-       : SimplifiedNodeWrapperBase(node) {
--    CONSTEXPR_DCHECK(node->opcode() == IrOpcode::kFastApiCall);
-+    DCHECK(node->opcode() == IrOpcode::kFastApiCall);
-   }
- 
-   const FastApiCallParameters& Parameters() const {
-@@ -1174,7 +1174,7 @@ class TierUpCheckNode final : public SimplifiedNodeWrapperBase {
-  public:
-   explicit constexpr TierUpCheckNode(Node* node)
-       : SimplifiedNodeWrapperBase(node) {
--    CONSTEXPR_DCHECK(node->opcode() == IrOpcode::kTierUpCheck);
-+    DCHECK(node->opcode() == IrOpcode::kTierUpCheck);
-   }
- 
- #define INPUTS(V) V(FeedbackVector, feedback_vector, 0, FeedbackVector)
-@@ -1186,7 +1186,7 @@ class UpdateInterruptBudgetNode final : public SimplifiedNodeWrapperBase {
-  public:
-   explicit constexpr UpdateInterruptBudgetNode(Node* node)
-       : SimplifiedNodeWrapperBase(node) {
--    CONSTEXPR_DCHECK(node->opcode() == IrOpcode::kUpdateInterruptBudget);
-+    DCHECK(node->opcode() == IrOpcode::kUpdateInterruptBudget);
-   }
- 
-   int delta() const { return OpParameter<int>(node()->op()); }
-diff --git a/src/3rdparty/chromium/v8/src/objects/instance-type-inl.h b/src/3rdparty/chromium/v8/src/objects/instance-type-inl.h
-index 8edb73d66..c384f5544 100644
---- a/src/3rdparty/chromium/v8/src/objects/instance-type-inl.h
-+++ b/src/3rdparty/chromium/v8/src/objects/instance-type-inl.h
-@@ -31,14 +31,14 @@ struct InstanceRangeChecker {
- template <InstanceType upper_limit>
- struct InstanceRangeChecker<FIRST_TYPE, upper_limit> {
-   static constexpr bool Check(InstanceType value) {
--    CONSTEXPR_DCHECK(FIRST_TYPE <= value);
-+    DCHECK(FIRST_TYPE <= value);
-     return value <= upper_limit;
-   }
- };
- template <InstanceType lower_limit>
- struct InstanceRangeChecker<lower_limit, LAST_TYPE> {
-   static constexpr bool Check(InstanceType value) {
--    CONSTEXPR_DCHECK(LAST_TYPE >= value);
-+    DCHECK(LAST_TYPE >= value);
-     return value >= lower_limit;
-   }
- };
-diff --git a/src/3rdparty/chromium/v8/src/objects/internal-index.h b/src/3rdparty/chromium/v8/src/objects/internal-index.h
-index bd1b96d4f..997adb9bc 100644
---- a/src/3rdparty/chromium/v8/src/objects/internal-index.h
-+++ b/src/3rdparty/chromium/v8/src/objects/internal-index.h
-@@ -40,8 +40,7 @@ class InternalIndex {
-     return static_cast<uint32_t>(entry_);
-   }
-   constexpr int as_int() const {
--    CONSTEXPR_DCHECK(entry_ <=
--                     static_cast<size_t>(std::numeric_limits<int>::max()));
-+    DCHECK(entry_ <= static_cast<size_t>(std::numeric_limits<int>::max()));
-     return static_cast<int>(entry_);
-   }
- 
-diff --git a/src/3rdparty/chromium/v8/src/objects/intl-objects.cc b/src/3rdparty/chromium/v8/src/objects/intl-objects.cc
-index e1cee9042..4ff33ea9f 100644
---- a/src/3rdparty/chromium/v8/src/objects/intl-objects.cc
-+++ b/src/3rdparty/chromium/v8/src/objects/intl-objects.cc
-@@ -89,7 +89,7 @@ inline constexpr uint16_t ToLatin1Lower(uint16_t ch) {
- 
- // Does not work for U+00DF (sharp-s), U+00B5 (micron), U+00FF.
- inline constexpr uint16_t ToLatin1Upper(uint16_t ch) {
--  CONSTEXPR_DCHECK(ch != 0xDF && ch != 0xB5 && ch != 0xFF);
-+  DCHECK(ch != 0xDF && ch != 0xB5 && ch != 0xFF);
-   return ch &
-          ~((IsAsciiLower(ch) || (((ch & 0xE0) == 0xE0) && ch != 0xF7)) << 5);
- }
-diff --git a/src/3rdparty/chromium/v8/src/objects/smi.h b/src/3rdparty/chromium/v8/src/objects/smi.h
-index 44cd5f744..be30552c9 100644
---- a/src/3rdparty/chromium/v8/src/objects/smi.h
-+++ b/src/3rdparty/chromium/v8/src/objects/smi.h
-@@ -26,7 +26,7 @@ class Smi : public Object {
-   // in that we want them to be constexprs.
-   constexpr Smi() : Object() {}
-   explicit constexpr Smi(Address ptr) : Object(ptr) {
--    CONSTEXPR_DCHECK(HAS_SMI_TAG(ptr));
-+    DCHECK(HAS_SMI_TAG(ptr));
-   }
- 
-   // Returns the integer value.
-@@ -43,7 +43,7 @@ class Smi : public Object {
- 
-   // Convert a value to a Smi object.
-   static inline constexpr Smi FromInt(int value) {
--    CONSTEXPR_DCHECK(Smi::IsValid(value));
-+    DCHECK(Smi::IsValid(value));
-     return Smi(Internals::IntToSmi(value));
-   }
- 
-@@ -69,7 +69,7 @@ class Smi : public Object {
- 
-   // Returns whether value can be represented in a Smi.
-   static inline bool constexpr IsValid(intptr_t value) {
--    CONSTEXPR_DCHECK(Internals::IsValidSmi(value) ==
-+    DCHECK(Internals::IsValidSmi(value) ==
-                      (value >= kMinValue && value <= kMaxValue));
-     return Internals::IsValidSmi(value);
-   }
-diff --git a/src/3rdparty/chromium/v8/src/objects/tagged-impl.h b/src/3rdparty/chromium/v8/src/objects/tagged-impl.h
-index 9ef8b58d9..e7278a124 100644
---- a/src/3rdparty/chromium/v8/src/objects/tagged-impl.h
-+++ b/src/3rdparty/chromium/v8/src/objects/tagged-impl.h
-@@ -88,8 +88,7 @@ class TaggedImpl {
- 
-   // Returns true if this tagged value is a strong pointer to a HeapObject.
-   constexpr inline bool IsStrong() const {
--    CONSTEXPR_DCHECK(kCanBeWeak ||
--                     (!IsSmi() == HAS_STRONG_HEAP_OBJECT_TAG(ptr_)));
-+    DCHECK(kCanBeWeak || (!IsSmi() == HAS_STRONG_HEAP_OBJECT_TAG(ptr_)));
-     return kCanBeWeak ? HAS_STRONG_HEAP_OBJECT_TAG(ptr_) : !IsSmi();
-   }
- 
-diff --git a/src/3rdparty/chromium/v8/src/objects/tagged-index.h b/src/3rdparty/chromium/v8/src/objects/tagged-index.h
-index e8cfbc760..19812877c 100644
---- a/src/3rdparty/chromium/v8/src/objects/tagged-index.h
-+++ b/src/3rdparty/chromium/v8/src/objects/tagged-index.h
-@@ -38,7 +38,7 @@ class TaggedIndex : public Object {
-   // special in that we want them to be constexprs.
-   constexpr TaggedIndex() : Object() {}
-   explicit constexpr TaggedIndex(Address ptr) : Object(ptr) {
--    CONSTEXPR_DCHECK(HAS_SMI_TAG(ptr));
-+    DCHECK(HAS_SMI_TAG(ptr));
-   }
- 
-   // Returns the integer value.
-@@ -49,7 +49,7 @@ class TaggedIndex : public Object {
- 
-   // Convert a value to a TaggedIndex object.
-   static inline TaggedIndex FromIntptr(intptr_t value) {
--    CONSTEXPR_DCHECK(TaggedIndex::IsValid(value));
-+    DCHECK(TaggedIndex::IsValid(value));
-     return TaggedIndex((static_cast<Address>(value) << kSmiTagSize) | kSmiTag);
-   }
- 
-diff --git a/src/3rdparty/chromium/v8/src/regexp/regexp-bytecodes.h b/src/3rdparty/chromium/v8/src/regexp/regexp-bytecodes.h
-index e3248d7b8..088fd93b2 100644
---- a/src/3rdparty/chromium/v8/src/regexp/regexp-bytecodes.h
-+++ b/src/3rdparty/chromium/v8/src/regexp/regexp-bytecodes.h
-@@ -231,7 +231,7 @@ static constexpr int kRegExpBytecodeLengths[] = {
- };
- 
- inline constexpr int RegExpBytecodeLength(int bytecode) {
--  CONSTEXPR_DCHECK(base::IsInRange(bytecode, 0, kRegExpBytecodeCount - 1));
-+  DCHECK(base::IsInRange(bytecode, 0, kRegExpBytecodeCount - 1));
-   return kRegExpBytecodeLengths[bytecode];
+-      # Force include the header.
+-      cflags = [ "/FI$precompiled_header" ]
+-    } else if (is_mac) {
+-      precompiled_source =
+-          "//third_party/blink/renderer/platform/precompile_platform.h"
+-    }
+-  }
  }
  
-@@ -242,7 +242,7 @@ static constexpr const char* const kRegExpBytecodeNames[] = {
- };
- 
- inline constexpr const char* RegExpBytecodeName(int bytecode) {
--  CONSTEXPR_DCHECK(base::IsInRange(bytecode, 0, kRegExpBytecodeCount - 1));
-+  DCHECK(base::IsInRange(bytecode, 0, kRegExpBytecodeCount - 1));
-   return kRegExpBytecodeNames[bytecode];
+ source_set("platform_export") {
+diff --git a/src/3rdparty/chromium/third_party/ffmpeg/libavcodec/x86/mathops.h b/src/3rdparty/chromium/third_party/ffmpeg/libavcodec/x86/mathops.h
+index 6298f5ed1..ca7e2dffc 100644
+--- a/src/3rdparty/chromium/third_party/ffmpeg/libavcodec/x86/mathops.h
++++ b/src/3rdparty/chromium/third_party/ffmpeg/libavcodec/x86/mathops.h
+@@ -35,12 +35,20 @@
+ static av_always_inline av_const int MULL(int a, int b, unsigned shift)
+ {
+     int rt, dummy;
++    if (__builtin_constant_p(shift))
+     __asm__ (
+         "imull %3               \n\t"
+         "shrdl %4, %%edx, %%eax \n\t"
+         :"=a"(rt), "=d"(dummy)
+-        :"a"(a), "rm"(b), "ci"((uint8_t)shift)
++        :"a"(a), "rm"(b), "i"(shift & 0x1F)
+     );
++    else
++        __asm__ (
++            "imull %3               \n\t"
++            "shrdl %4, %%edx, %%eax \n\t"
++            :"=a"(rt), "=d"(dummy)
++            :"a"(a), "rm"(b), "c"((uint8_t)shift)
++        );
+     return rt;
  }
  
-diff --git a/src/3rdparty/chromium/v8/src/snapshot/serializer-deserializer.h b/src/3rdparty/chromium/v8/src/snapshot/serializer-deserializer.h
-index c6c381192..f2ea8e28a 100644
---- a/src/3rdparty/chromium/v8/src/snapshot/serializer-deserializer.h
-+++ b/src/3rdparty/chromium/v8/src/snapshot/serializer-deserializer.h
-@@ -234,12 +234,12 @@ class SerializerDeserializer : public RootVisitor {
-     }
- 
-     static constexpr byte Encode(TValue value) {
--      CONSTEXPR_DCHECK(IsEncodable(value));
-+      DCHECK(IsEncodable(value));
-       return static_cast<byte>(kBytecode + static_cast<int>(value) - kMinValue);
-     }
- 
-     static constexpr TValue Decode(byte bytecode) {
--      CONSTEXPR_DCHECK(base::IsInRange(bytecode,
-+      DCHECK(base::IsInRange(bytecode,
-                                        Encode(static_cast<TValue>(kMinValue)),
-                                        Encode(static_cast<TValue>(kMaxValue))));
-       return static_cast<TValue>(bytecode - kBytecode + kMinValue);
-@@ -289,7 +289,7 @@ class SerializerDeserializer : public RootVisitor {
-     }
- 
-     static constexpr int Encode(int repeat_count) {
--      CONSTEXPR_DCHECK(IsEncodable(repeat_count));
-+      DCHECK(IsEncodable(repeat_count));
-       return repeat_count - kFirstEncodableVariableRepeatCount;
-     }
- 
-diff --git a/src/3rdparty/chromium/v8/src/utils/vector.h b/src/3rdparty/chromium/v8/src/utils/vector.h
-index 506221748..ad0b7add8 100644
---- a/src/3rdparty/chromium/v8/src/utils/vector.h
-+++ b/src/3rdparty/chromium/v8/src/utils/vector.h
-@@ -28,7 +28,7 @@ class Vector {
-   constexpr Vector() : start_(nullptr), length_(0) {}
- 
-   constexpr Vector(T* data, size_t length) : start_(data), length_(length) {
--    CONSTEXPR_DCHECK(length == 0 || data != nullptr);
-+    DCHECK(length == 0 || data != nullptr);
-   }
- 
-   static Vector<T> New(size_t length) {
-diff --git a/src/3rdparty/chromium/v8/src/wasm/value-type.h b/src/3rdparty/chromium/v8/src/wasm/value-type.h
-index 2e9a2a8d0..a1b56b15d 100644
---- a/src/3rdparty/chromium/v8/src/wasm/value-type.h
-+++ b/src/3rdparty/chromium/v8/src/wasm/value-type.h
-@@ -84,7 +84,7 @@ class HeapType {
-   }
- 
-   explicit constexpr HeapType(Representation repr) : representation_(repr) {
--    CONSTEXPR_DCHECK(is_bottom() || is_valid());
-+    DCHECK(is_bottom() || is_valid());
-   }
-   explicit constexpr HeapType(uint32_t repr)
-       : HeapType(static_cast<Representation>(repr)) {}
-@@ -106,7 +106,7 @@ class HeapType {
- 
-   constexpr Representation representation() const { return representation_; }
-   constexpr uint32_t ref_index() const {
--    CONSTEXPR_DCHECK(is_index());
-+    DCHECK(is_index());
-     return representation_;
-   }
- 
-@@ -196,7 +196,7 @@ class ValueType {
-   }
- 
-   constexpr bool is_defaultable() const {
--    CONSTEXPR_DCHECK(kind() != kBottom && kind() != kStmt);
-+    DCHECK(kind() != kBottom && kind() != kStmt);
-     return kind() != kRef && kind() != kRtt;
-   }
- 
-@@ -212,11 +212,11 @@ class ValueType {
- 
-   constexpr ValueType() : bit_field_(KindField::encode(kStmt)) {}
-   static constexpr ValueType Primitive(Kind kind) {
--    CONSTEXPR_DCHECK(kind == kBottom || kind <= kI16);
-+    DCHECK(kind == kBottom || kind <= kI16);
-     return ValueType(KindField::encode(kind));
-   }
-   static constexpr ValueType Ref(uint32_t heap_type, Nullability nullability) {
--    CONSTEXPR_DCHECK(HeapType(heap_type).is_valid());
-+    DCHECK(HeapType(heap_type).is_valid());
-     return ValueType(
-         KindField::encode(nullability == kNullable ? kOptRef : kRef) |
-         HeapTypeField::encode(heap_type));
-@@ -227,7 +227,7 @@ class ValueType {
- 
-   static constexpr ValueType Rtt(uint32_t heap_type,
-                                  uint8_t inheritance_depth) {
--    CONSTEXPR_DCHECK(HeapType(heap_type).is_valid());
-+    DCHECK(HeapType(heap_type).is_valid());
-     return ValueType(KindField::encode(kRtt) |
-                      HeapTypeField::encode(heap_type) |
-                      DepthField::encode(inheritance_depth));
-@@ -244,7 +244,7 @@ class ValueType {
- 
-   constexpr Kind kind() const { return KindField::decode(bit_field_); }
-   constexpr HeapType::Representation heap_representation() const {
--    CONSTEXPR_DCHECK(is_reference_type());
-+    DCHECK(is_reference_type());
-     return static_cast<HeapType::Representation>(
-         HeapTypeField::decode(bit_field_));
-   }
-@@ -252,11 +252,11 @@ class ValueType {
-     return HeapType(heap_representation());
-   }
-   constexpr uint8_t depth() const {
--    CONSTEXPR_DCHECK(has_depth());
-+    DCHECK(has_depth());
-     return DepthField::decode(bit_field_);
-   }
-   constexpr uint32_t ref_index() const {
--    CONSTEXPR_DCHECK(has_index());
-+    DCHECK(has_index());
-     return heap_type().ref_index();
-   }
- 
-@@ -275,7 +275,7 @@ class ValueType {
-     };
- 
-     int size_log_2 = kElementSizeLog2[kind()];
--    CONSTEXPR_DCHECK(size_log_2 >= 0);
-+    DCHECK(size_log_2 >= 0);
-     return size_log_2;
-   }
- 
-@@ -288,7 +288,7 @@ class ValueType {
-     };
- 
-     int size = kElementSize[kind()];
--    CONSTEXPR_DCHECK(size > 0);
-+    DCHECK(size > 0);
-     return size;
-   }
- 
-@@ -300,7 +300,7 @@ class ValueType {
-   }
- 
-   constexpr MachineType machine_type() const {
--    CONSTEXPR_DCHECK(kBottom != kind());
-+    DCHECK(kBottom != kind());
- 
-     constexpr MachineType kMachineType[] = {
- #define MACH_TYPE(kind, log2Size, code, machineType, ...) \
-@@ -323,7 +323,7 @@ class ValueType {
-   // (e.g., Ref(HeapType::kFunc, kNullable).value_type_code will return
-   // kFuncrefCode and not kOptRefCode).
-   constexpr ValueTypeCode value_type_code() const {
--    CONSTEXPR_DCHECK(kind() != kBottom);
-+    DCHECK(kind() != kBottom);
-     switch (kind()) {
-       case kOptRef:
-         switch (heap_representation()) {
-@@ -456,7 +456,7 @@ class ValueType {
- #undef TYPE_NAME
-     };
- 
--    CONSTEXPR_DCHECK(kind() < arraysize(kTypeName));
-+    DCHECK(kind() < arraysize(kTypeName));
-     return kTypeName[kind()];
-   }
- 
-diff --git a/src/3rdparty/chromium/v8/src/wasm/wasm-opcodes-inl.h b/src/3rdparty/chromium/v8/src/wasm/wasm-opcodes-inl.h
-index e050d1294..c88ea3c1f 100644
---- a/src/3rdparty/chromium/v8/src/wasm/wasm-opcodes-inl.h
-+++ b/src/3rdparty/chromium/v8/src/wasm/wasm-opcodes-inl.h
-@@ -607,7 +607,7 @@ constexpr const FunctionSig* WasmOpcodes::Signature(WasmOpcode opcode) {
+@@ -113,19 +121,31 @@ __asm__ volatile(\
+ // avoid +32 for shift optimization (gcc should do that ...)
+ #define NEG_SSR32 NEG_SSR32
+ static inline  int32_t NEG_SSR32( int32_t a, int8_t s){
++    if (__builtin_constant_p(s))
+     __asm__ ("sarl %1, %0\n\t"
+          : "+r" (a)
+-         : "ic" ((uint8_t)(-s))
++         : "i" (-s & 0x1F)
+     );
++    else
++        __asm__ ("sarl %1, %0\n\t"
++               : "+r" (a)
++               : "c" ((uint8_t)(-s))
++        );
+     return a;
  }
  
- constexpr const FunctionSig* WasmOpcodes::AsmjsSignature(WasmOpcode opcode) {
--  CONSTEXPR_DCHECK(opcode < impl::kSimpleAsmjsExprSigTable.size());
-+  DCHECK(opcode < impl::kSimpleAsmjsExprSigTable.size());
-   return impl::kCachedSigs[impl::kSimpleAsmjsExprSigTable[opcode]];
+ #define NEG_USR32 NEG_USR32
+ static inline uint32_t NEG_USR32(uint32_t a, int8_t s){
++    if (__builtin_constant_p(s))
+     __asm__ ("shrl %1, %0\n\t"
+          : "+r" (a)
+-         : "ic" ((uint8_t)(-s))
++         : "i" (-s & 0x1F)
+     );
++    else
++        __asm__ ("shrl %1, %0\n\t"
++               : "+r" (a)
++               : "c" ((uint8_t)(-s))
++        );
+     return a;
  }
  
-diff --git a/src/buildtools/config/common.pri b/src/buildtools/config/common.pri
-index cf990c79b..fedba4774 100644
---- a/src/buildtools/config/common.pri
-+++ b/src/buildtools/config/common.pri
-@@ -56,7 +56,7 @@ greaterThan(QMAKE_JUMBO_MERGE_LIMIT,0) {
- }
- 
- precompile_header {
--    gn_args += enable_precompiled_headers=true
-+    gn_args += enable_precompiled_headers=false
- } else {
-     gn_args += enable_precompiled_headers=false
- }

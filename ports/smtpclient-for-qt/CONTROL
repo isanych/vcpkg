@@ -1,5 +1,0 @@
-Source: smtpclient-for-qt
-Version: 1.1
-Homepage: https://github.com/bluetiger9/SmtpClient-for-Qt
-Description: Qt library that allows application to send complex emails using SMTP
-Build-Depends: qt5-base[core], qt5-tools

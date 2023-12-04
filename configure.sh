@@ -68,7 +68,7 @@ if [[ -z "${VCPKG_SKIP_EXTRA}" ]]; then
   ln -sf libwebpmux.so libwebpmuxd.so
   ln -sf libwebpmux.so.3 libwebpmuxd.so.3
   cd "$vcpkgRootDir"
-  PKG_CONFIG_PATH="$vcpkgRootDir/installed/${VCPKG_TRIPLET}/lib/pkgconfig" $v qt5-webengine || true
+  PKG_CONFIG_PATH="$vcpkgRootDir/installed/${VCPKG_TRIPLET}/lib/pkgconfig" $v qt5-webengine
 fi
 $v smtpclient-for-qt
 $v protobuf grpc hdf5[zlib,tools] boost rapidjson cryptopp xerces-c xalan-c mimalloc[override] quazip libzip lua[cpp] sol2
