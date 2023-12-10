@@ -5,7 +5,8 @@ vcpkgRootDir=`pwd`
 export CC=`which gcc`
 export CXX=`which g++`
 unset SITE_CONFIG 
-: ${VCPKG_BRANCH:=test}
+: ${VCPKG_BRANCH:=2024}
+: ${VCPKG_ADD:=https://mirror.qac.perforce.com/vcpkg/vcpkg-add-2024-centos7-x64.txz}
 [[ -n "${VCPKG_TRIPLET}" ]] || export VCPKG_TRIPLET=x64-linux
 [[ ! -d /deploy/vcpkg/downloads || -e downloads ]] || ln -s /deploy/vcpkg/downloads
 [[ -f vcpkg ]] || ./bootstrap-vcpkg.sh -disableMetrics
@@ -74,13 +75,7 @@ $v smtpclient-for-qt
 $v protobuf grpc hdf5[zlib,tools] boost rapidjson cryptopp xerces-c xalan-c mimalloc[override] quazip libzip lua[cpp] sol2
 cd installed/${VCPKG_TRIPLET}
 chmod 777 tools/protobuf/*
-cd lib
-ln -sf libmimalloc.so.2.0 libmimalloc.so
-cd ../debug/lib
-ln -sf libmimalloc-debug.so.2.0 libmimalloc-debug.so
-cd ../..
-[[ "${VCPKG_BASE}" = ubuntu* ]] && branch=ubuntu22.04_2023 || branch=linux_2023
-[[ -z "${VCPKG_ADD}" ]] || curl -Ss ${VCPKG_ADD}/-/archive/$branch/vcpkg-add-linux.tar.gz | tar xz --strip-components=1
+[[ "${VCPKG_ADD}" = - ]] || curl -Ss ${VCPKG_ADD} | tar xJ
 r=$vcpkgRootDir/../reprise/x64_l1
 if [[ -e $r ]]; then
   make -C $r
@@ -90,4 +85,4 @@ if [[ -e $r ]]; then
 fi
 ../../postinstall.py || true
 rm -f "$vcpkgRootDir/installed/${VCPKG_TRIPLET}/bin/pkgconf"
-[[ -z "${VCPKG_BASE}" || ! -d /deploy/vcpkg ]] || LD_LIBRARY_PATH= tar cJf /deploy/vcpkg/vcpkg-${VCPKG_BRANCH}-${VCPKG_BASE}-x64-gcc12${VCPKG_SUFFIX}.txz -C "$vcpkgRootDir/.." vcpkg/installed/${VCPKG_TRIPLET} vcpkg/scripts vcpkg/triplets/${VCPKG_TRIPLET}.cmake vcpkg/.vcpkg-root
+[[ -z "${VCPKG_BASE}" || ! -d /deploy/vcpkg ]] || LD_LIBRARY_PATH= tar cJf /deploy/vcpkg/vcpkg-${VCPKG_BRANCH}-${VCPKG_BASE}-x64-gcc13${VCPKG_SUFFIX}.txz -C "$vcpkgRootDir/.." vcpkg/installed/${VCPKG_TRIPLET} vcpkg/scripts vcpkg/triplets/${VCPKG_TRIPLET}.cmake vcpkg/.vcpkg-root
