@@ -4,7 +4,7 @@ set(VCPKG_CRT_LINKAGE dynamic)
 set(VCPKG_LIBRARY_LINKAGE dynamic)
 
 set(IS_LTO TRUE)
-set(NO_LTO abseil cryptopp double-conversion grpc icu re2 upb)
+set(NO_LTO abseil cryptopp double-conversion grpc icu libffi re2 upb)
 if(PORT IN_LIST NO_LTO)
     set(IS_LTO FALSE)
 endif()
