@@ -1,5 +1,6 @@
 cd "%~dp0"
 if [%x%] == [] set x=x64
+if [%VCPKG_ADD%] == [] set VCPKG_ADD=https://mirror.qac.perforce.com/vcpkg/vcpkg-add-2024-windows-%x%.tgz
 set VCPKG_DEFAULT_TRIPLET=%x%-windows
 if not exist "%~dp0vcpkg.exe" call "%~dp0bootstrap-vcpkg" -disableMetrics
 set v="%~dp0vcpkg" install --feature-flags=-compilertracking --editable --triplet=%VCPKG_DEFAULT_TRIPLET%
@@ -17,8 +18,5 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 cd "%~dp0installed\%VCPKG_DEFAULT_TRIPLET%"
 rmdir tools\nodejs
 copy "%~dp0postinstall.py" "%~dp0installed\%VCPKG_DEFAULT_TRIPLET%\"
-if not [%VCPKG_ADD%] == [] (
-curl -Ss %VCPKG_ADD%/-/archive/windows%x32%_2023/vcpkg-add-windows%x32%.tar.gz | tar xzf - --strip-components=1
-del .gitignore
-)
+if not [%VCPKG_ADD%] == [-] curl -Ss %VCPKG_ADD% | tar xzf -
 "%~dp0archive"
