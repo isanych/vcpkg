@@ -8,7 +8,7 @@ unset SITE_CONFIG
 : ${VCPKG_BRANCH:=2024}
 : ${VCPKG_ADD:=https://mirror.qac.perforce.com/vcpkg/vcpkg-add-2024-centos7-x64.txz}
 [[ -n "${VCPKG_TRIPLET}" ]] || export VCPKG_TRIPLET=x64-linux
-[[ ! -d /deploy/vcpkg/downloads || -e downloads ]] || ln -s /deploy/vcpkg/downloads
+[[ ! -d /mnt/mirror/vcpkg/downloads || -e downloads ]] || ln -s /mnt/mirror/vcpkg/downloads
 [[ -f vcpkg ]] || ./bootstrap-vcpkg.sh -disableMetrics
 if [[ "x${VCPKG_BOOST_STATIC}" = "xtrue" ]]; then
   touch $vcpkgRootDir/.boost_static
@@ -85,4 +85,4 @@ if [[ -e $r ]]; then
 fi
 ../../postinstall.py || true
 rm -f "$vcpkgRootDir/installed/${VCPKG_TRIPLET}/bin/pkgconf"
-[[ -z "${VCPKG_BASE}" || ! -d /deploy/vcpkg ]] || LD_LIBRARY_PATH= tar cJf /deploy/vcpkg/vcpkg-${VCPKG_BRANCH}-${VCPKG_BASE}-x64-gcc13${VCPKG_SUFFIX}.txz -C "$vcpkgRootDir/.." vcpkg/installed/${VCPKG_TRIPLET} vcpkg/scripts vcpkg/triplets/${VCPKG_TRIPLET}.cmake vcpkg/.vcpkg-root
+[[ -z "${VCPKG_BASE}" || ! -d /mnt/mirror/vcpkg ]] || LD_LIBRARY_PATH= tar cJf /mnt/mirror/vcpkg/vcpkg-${VCPKG_BRANCH}-${VCPKG_BASE}-x64-gcc13${VCPKG_SUFFIX}.txz -C "$vcpkgRootDir/.." vcpkg/installed/${VCPKG_TRIPLET} vcpkg/scripts vcpkg/triplets/${VCPKG_TRIPLET}.cmake vcpkg/.vcpkg-root
