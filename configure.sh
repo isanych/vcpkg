@@ -60,6 +60,7 @@ if [[ -z "${VCPKG_SKIP_EXTRA}" ]]; then
   cd installed/${VCPKG_TRIPLET}
   ../../postinstall.py || true
   cd lib
+  ln -sf libpng16d.so.16 libpng16.so.16
   ln -sf libwebp.so libwebpd.so
   ln -sf libwebp.so.7 libwebpd.so.7
   ln -sf libwebpdecoder.so libwebpdecoderd.so
