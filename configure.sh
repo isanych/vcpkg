@@ -60,7 +60,7 @@ if [[ -z "${VCPKG_SKIP_EXTRA}" ]]; then
   cd installed/${VCPKG_TRIPLET}
   ../../postinstall.py || true
   cd lib
-  ln -sf libpng16d.so.16 libpng16.so.16
+  ln -sf libpng16.so.16 libpng16d.so.16
   ln -sf libwebp.so libwebpd.so
   ln -sf libwebp.so.7 libwebpd.so.7
   ln -sf libwebpdecoder.so libwebpdecoderd.so
@@ -69,6 +69,8 @@ if [[ -z "${VCPKG_SKIP_EXTRA}" ]]; then
   ln -sf libwebpdemux.so.2 libwebpdemuxd.so.2
   ln -sf libwebpmux.so libwebpmuxd.so
   ln -sf libwebpmux.so.3 libwebpmuxd.so.3
+  cd ../debug/lib
+  ln -sf libpng16d.so.16 libpng16.so.16
   cd "$vcpkgRootDir"
   PKG_CONFIG_PATH="$vcpkgRootDir/installed/${VCPKG_TRIPLET}/lib/pkgconfig" $v qt5-webengine
 fi
