@@ -260,17 +260,6 @@ TargetSpec=linux-g++
 HostSpec=linux-g++
 """)
 
-ensure_file("share/qt5core/vcpkg-cmake-wrapper.cmake", """_find_package(${ARGS})
-
-function(add_qt_library _target)
-    foreach(_lib IN LISTS ARGN)
-        find_library(${_lib}_LIBRARY_DEBUG NAMES ${_lib}d PATH_SUFFIXES debug/plugins/platforms)
-        find_library(${_lib}_LIBRARY_RELEASE NAMES ${_lib} PATH_SUFFIXES plugins/platforms)
-        set_property(TARGET ${_target} APPEND PROPERTY INTERFACE_LINK_LIBRARIES
-        \$<\$<NOT:\$<CONFIG:DEBUG>>:${${_lib}_LIBRARY_RELEASE}>\$<\$<CONFIG:DEBUG>:${${_lib}_LIBRARY_DEBUG}>)
-    endforeach()
-endfunction()
-""")
 is_rpath = False
 ensure_link("debug", "include")
 ensure_link("", "share/qt5/doc")
