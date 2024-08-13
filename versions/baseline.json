@@ -2677,8 +2677,8 @@
       "port-version": 0
     },
     "flatbuffers": {
-      "baseline": "23.5.26",
-      "port-version": 1
+      "baseline": "24.3.25",
+      "port-version": 0
     },
     "flatbush": {
       "baseline": "1.2.0",
@@ -5269,7 +5269,7 @@
       "port-version": 2
     },
     "lmdb": {
-      "baseline": "0.9.31",
+      "baseline": "0.9.33",
       "port-version": 0
     },
     "lockpp": {
