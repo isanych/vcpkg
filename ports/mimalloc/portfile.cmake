@@ -7,6 +7,7 @@ vcpkg_from_github(
     PATCHES
         fix-cmake.patch
         template-param-types.diff
+        dataflow.patch
 )
 
 vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
