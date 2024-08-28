@@ -1,17 +1,11 @@
-string(REGEX MATCH "^([0-9]+)\\.([0-9]+)\\.([0-9]+)" _c_ares_version "${VERSION}")
-set(_c_ares_version_major "${CMAKE_MATCH_1}")
-set(_c_ares_version_minor "${CMAKE_MATCH_2}")
-set(_c_ares_version_patch "${CMAKE_MATCH_3}")
-
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO c-ares/c-ares
-    REF "cares-${_c_ares_version_major}_${_c_ares_version_minor}_${_c_ares_version_patch}"
-    SHA512 73b5ee9d7e5ada6dd95dc32606821ea1307f30552242491e738f673d1ab9de1fdb3360d7a67c66a4a801b0e81ffb7382bfd93dbca836460dae515dd631ec6b91
+    REF "v${VERSION}"
+    SHA512 5924d706341e35ad467bf48c88a8f53617d5fb94546b1d9dd24a7091cc84763e52f9bbdfa39abdf1aa55099d4b87116af56bf584b99a5c8f5e554ecf9d7bc8a8
     HEAD_REF main
     PATCHES
         avoid-docs.patch
-        fix-uwp.patch
 )
 
 string(COMPARE EQUAL "${VCPKG_LIBRARY_LINKAGE}" "static" BUILD_STATIC)
@@ -37,7 +31,7 @@ vcpkg_fixup_pkgconfig()
 if(VCPKG_LIBRARY_LINKAGE STREQUAL "static")
     vcpkg_replace_string(
         "${CURRENT_PACKAGES_DIR}/include/ares.h"
-        "#ifdef CARES_STATICLIB" "#if 1"
+        "#  ifdef CARES_STATICLIB" "#if 1"
     )
 endif()
 
@@ -47,4 +41,4 @@ endif()
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include" "${CURRENT_PACKAGES_DIR}/debug/share")
 
 file(INSTALL "${CMAKE_CURRENT_LIST_DIR}/usage" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}")
-file(INSTALL "${SOURCE_PATH}/LICENSE.md" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}" RENAME copyright)
+vcpkg_install_copyright(FILE_LIST "${SOURCE_PATH}/LICENSE.md")

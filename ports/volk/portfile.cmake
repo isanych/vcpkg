@@ -4,8 +4,8 @@ vcpkg_check_linkage(ONLY_STATIC_LIBRARY)
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO zeux/volk
-    REF "${VERSION}"
-    SHA512 a273ecbd68ade7677bd4cc2cf32d0f728ac959ad48c506beff413dc7e6b11b1d5f74ee1d213a71f1452980b291d6ef41ad8e3a4a0c4e6839e9918594d1f98715
+    REF "vulkan-sdk-${VERSION}"
+    SHA512 1af3933ab18120ab9418282069ee5a1ba86e8333b6fb1cfc04c85132f9c54ba1d21bbd833fa9e35cfd08edf2867982f19c536c0744569c6a91b0be8b54986e09
     HEAD_REF master
 )
 
