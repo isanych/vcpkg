@@ -1,0 +1,24 @@
+diff --git a/src/segment.c b/src/segment.c
+index 4e4dcb80..d722da6c 100644
+--- a/src/segment.c
++++ b/src/segment.c
+@@ -841,7 +841,7 @@ static mi_segment_t* mi_segment_os_alloc( size_t required, size_t page_alignment
+   if (memid.initially_committed) {
+     mi_commit_mask_create_full(&commit_mask);
+   }
+-  else {
++  else if (required == 0) {
+     // at least commit the info slices
+     const size_t commit_needed = _mi_divide_up((*pinfo_slices)*MI_SEGMENT_SLICE_SIZE, MI_COMMIT_SIZE);
+     mi_assert_internal(commit_needed>0);
+@@ -852,6 +852,10 @@ static mi_segment_t* mi_segment_os_alloc( size_t required, size_t page_alignment
+       return NULL;
+     }
+   }
++  else {
++    _mi_arena_free (segment, segment_size, 0, memid, tld->stats);
++    return NULL;
++  }
+   mi_assert_internal(segment != NULL && (uintptr_t)segment % MI_SEGMENT_SIZE == 0);
+ 
+   segment->memid = memid;
