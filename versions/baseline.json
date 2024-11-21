@@ -5829,8 +5829,8 @@
       "port-version": 6
     },
     "mimalloc": {
-      "baseline": "2.1.7",
-      "port-version": 0
+      "baseline": "2.1.2",
+      "port-version": 4
     },
     "minc": {
       "baseline": "2.4.03",
@@ -9793,7 +9793,7 @@
       "port-version": 0
     },
     "z3": {
-      "baseline": "4.13.0",
+      "baseline": "4.13.2",
       "port-version": 0
     },
     "z4kn4fein-semver": {
