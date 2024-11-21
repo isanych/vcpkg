@@ -10,10 +10,12 @@ vcpkg_extract_source_archive(SOURCE_PATH
     PATCHES
         use-libiconv-on-windows.patch
         libintl.patch
+        0005-pr-4133-4143-avoid-package-packaging.patch # Backport from 2.81.1
 )
 
+set(LANGUAGES C CXX)
 if(VCPKG_TARGET_IS_OSX OR VCPKG_TARGET_IS_IOS)
-    list(APPEND VCPKG_CMAKE_CONFIGURE_OPTIONS "-DVCPKG_ENABLE_OBJC=1")
+    list(APPEND LANGUAGES OBJC OBJCXX)
 endif()
 
 vcpkg_list(SET OPTIONS)
@@ -43,13 +45,14 @@ x_vcpkg_get_python_packages(PYTHON_VERSION "3" PACKAGES packaging)
 
 vcpkg_configure_meson(
     SOURCE_PATH "${SOURCE_PATH}"
-    LANGUAGES C CXX OBJC OBJCXX
+    LANGUAGES ${LANGUAGES}
     ADDITIONAL_BINARIES
         ${ADDITIONAL_BINARIES}
     OPTIONS
         ${OPTIONS}
         -Ddocumentation=false
         -Dinstalled_tests=false
+        -Dintrospection=disabled
         -Dlibelf=disabled
         -Dman-pages=disabled
         -Dtests=false
