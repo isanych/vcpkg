@@ -4,7 +4,8 @@ cd `dirname $BASH_SOURCE`
 vcpkgRootDir=`pwd`
 export CC=`which gcc`
 export CXX=`which g++`
-unset SITE_CONFIG 
+unset SITE_CONFIG
+export VCPKG_BINARY_SOURCES=clear
 : ${VCPKG_BRANCH:=2025}
 : ${VCPKG_ADD:=https://mirror.qac.perforce.com/vcpkg/vcpkg-add-2025-debian11-x64.txz}
 [[ -n "${VCPKG_TRIPLET}" ]] || export VCPKG_TRIPLET=x64-linux
@@ -50,13 +51,16 @@ if [[ "$EUID" = 0 ]]; then
   cd "$vcpkgRootDir"
 fi
 $v qt5-base[icu]
+$v qtbase
 cd installed/${VCPKG_TRIPLET}
 ../../postinstall.py || true
 cd ../..
 $v qt5-declarative
+$v qtdeclarative qt5compat
 $v qt5-script qt5-xmlpatterns
 if [[ -z "${VCPKG_SKIP_EXTRA}" ]]; then
   $v libwebp qt5-graphicaleffects qt5-location qt5-quickcontrols qt5-quickcontrols2 qt5-serialport qt5-webchannel
+  $v qtlocation qtquickcontrols2 qtserialport qtwebchannel
   cd installed/${VCPKG_TRIPLET}
   ../../postinstall.py || true
   cd lib
@@ -73,6 +77,7 @@ if [[ -z "${VCPKG_SKIP_EXTRA}" ]]; then
   ln -sf libpng16d.so.16 libpng16.so.16
   cd "$vcpkgRootDir"
   PKG_CONFIG_PATH="$vcpkgRootDir/installed/${VCPKG_TRIPLET}/lib/pkgconfig" $v qt5-webengine
+  PKG_CONFIG_PATH="$vcpkgRootDir/installed/${VCPKG_TRIPLET}/lib/pkgconfig" $v qtwebengine
 fi
 $v smtpclient-for-qt
 $v protobuf grpc boost xerces-c xalan-c mimalloc[override] quazip libzip lua[cpp] sol2 lmdb flatbuffers z3

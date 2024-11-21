@@ -1,14 +1,14 @@
-diff --git a/cmake/protobuf-config.cmake.in b/cmake/protobuf-config.cmake.in
-index 61669118c..335a37e7b 100644
---- a/cmake/protobuf-config.cmake.in
-+++ b/cmake/protobuf-config.cmake.in
-@@ -10,12 +10,12 @@ include("${CMAKE_CURRENT_LIST_DIR}/protobuf-targets.cmake")
+diff --git a/cmake/protobuf-generate.cmake b/cmake/protobuf-generate.cmake
+index 1956121f5..195a3634b 100644
+--- a/cmake/protobuf-generate.cmake
++++ b/cmake/protobuf-generate.cmake
+@@ -1,12 +1,12 @@
  function(protobuf_generate)
    include(CMakeParseArguments)
  
 -  set(_options APPEND_PATH)
 +  set(_options APPEND_PATH DESCRIPTORS)
-   set(_singleargs LANGUAGE OUT_VAR EXPORT_MACRO PROTOC_OUT_DIR PLUGIN PLUGIN_OPTIONS)
+   set(_singleargs LANGUAGE OUT_VAR EXPORT_MACRO PROTOC_OUT_DIR PLUGIN PLUGIN_OPTIONS DEPENDENCIES)
    if(COMMAND target_sources)
      list(APPEND _singleargs TARGET)
    endif()
@@ -17,7 +17,7 @@ index 61669118c..335a37e7b 100644
  
    cmake_parse_arguments(protobuf_generate "${_options}" "${_singleargs}" "${_multiargs}" "${ARGN}")
  
-@@ -57,7 +57,7 @@ function(protobuf_generate)
+@@ -48,7 +48,7 @@ function(protobuf_generate)
  
    if(NOT protobuf_generate_GENERATE_EXTENSIONS)
      if(protobuf_generate_LANGUAGE STREQUAL cpp)
@@ -26,7 +26,7 @@ index 61669118c..335a37e7b 100644
      elseif(protobuf_generate_LANGUAGE STREQUAL python)
        set(protobuf_generate_GENERATE_EXTENSIONS _pb2.py)
      else()
-@@ -83,7 +83,7 @@ function(protobuf_generate)
+@@ -74,7 +74,7 @@ function(protobuf_generate)
    if(protobuf_generate_APPEND_PATH)
      # Create an include path for each file specified
      foreach(_file ${protobuf_generate_PROTOS})
@@ -35,7 +35,7 @@ index 61669118c..335a37e7b 100644
        get_filename_component(_abs_dir ${_abs_file} DIRECTORY)
        list(FIND _protobuf_include_path ${_abs_dir} _contains_already)
        if(${_contains_already} EQUAL -1)
-@@ -93,7 +93,7 @@ function(protobuf_generate)
+@@ -84,7 +84,7 @@ function(protobuf_generate)
    endif()
  
    foreach(DIR ${protobuf_generate_IMPORT_DIRS})
@@ -44,7 +44,7 @@ index 61669118c..335a37e7b 100644
      list(FIND _protobuf_include_path ${ABS_PATH} _contains_already)
      if(${_contains_already} EQUAL -1)
          list(APPEND _protobuf_include_path -I ${ABS_PATH})
-@@ -130,10 +130,21 @@ function(protobuf_generate)
+@@ -127,10 +127,21 @@ function(protobuf_generate)
        return()
      endif()
  
@@ -67,14 +67,14 @@ index 61669118c..335a37e7b 100644
      list(APPEND _generated_srcs_all ${_generated_srcs})
  
      set(_comment "Running ${protobuf_generate_LANGUAGE} protocol buffer compiler on ${_proto}")
-@@ -147,8 +158,8 @@ function(protobuf_generate)
+@@ -144,8 +155,8 @@ function(protobuf_generate)
      add_custom_command(
        OUTPUT ${_generated_srcs}
        COMMAND protobuf::protoc
 -      ARGS ${protobuf_generate_PROTOC_OPTIONS} --${protobuf_generate_LANGUAGE}_out ${_plugin_options}:${protobuf_generate_PROTOC_OUT_DIR} ${_plugin} ${_protobuf_include_path} ${_abs_file}
--      DEPENDS ${_abs_file} protobuf::protoc
+-      DEPENDS ${_abs_file} ${protobuf_PROTOC_EXE} ${protobuf_generate_DEPENDENCIES}
 +      ARGS ${protobuf_generate_PROTOC_OPTIONS} --${protobuf_generate_LANGUAGE}_out ${_plugin_options}:${protobuf_generate_PROTOC_OUT_DIR} ${_plugin} ${_protobuf_include_path} ${_abs_file} ${protobuf_generate_ARGS_ADD}
-+      DEPENDS ${_abs_file} protobuf::protoc ${protobuf_generate_DEPENDS_ADD}
++      DEPENDS ${_abs_file} ${protobuf_PROTOC_EXE} ${protobuf_generate_DEPENDENCIES} ${protobuf_generate_DEPENDS_ADD}
        COMMENT ${_comment}
        VERBATIM )
    endforeach()

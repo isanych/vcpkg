@@ -1,0 +1,13 @@
+diff --git a/src/qml/qml/qqmljavascriptexpression.cpp b/src/qml/qml/qqmljavascriptexpression.cpp
+index d7cf3898..59d1f528 100644
+--- a/src/qml/qml/qqmljavascriptexpression.cpp
++++ b/src/qml/qml/qqmljavascriptexpression.cpp
+@@ -170,7 +170,7 @@ public:
+         ep->propertyCapture = expression->notifyOnValueChanged() ? &capture : nullptr;
+ 
+         if (expression->notifyOnValueChanged())
+-            capture.guards.copyAndClearPrepend(expression->activeGuards);
++            capture.guards.copyAndClearPrepend<QQmlJavaScriptExpression::GuardTag>(expression->activeGuards);
+     }
+ 
+     ~QQmlJavaScriptExpressionCapture()
