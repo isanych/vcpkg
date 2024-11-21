@@ -5,8 +5,8 @@ vcpkgRootDir=`pwd`
 export CC=`which gcc`
 export CXX=`which g++`
 unset SITE_CONFIG 
-: ${VCPKG_BRANCH:=2024}
-: ${VCPKG_ADD:=https://mirror.qac.perforce.com/vcpkg/vcpkg-add-2024-centos7-x64.txz}
+: ${VCPKG_BRANCH:=2025}
+: ${VCPKG_ADD:=https://mirror.qac.perforce.com/vcpkg/vcpkg-add-2025-debian11-x64.txz}
 [[ -n "${VCPKG_TRIPLET}" ]] || export VCPKG_TRIPLET=x64-linux
 [[ ! -d /mnt/mirror/vcpkg/downloads || -e downloads ]] || ln -s /mnt/mirror/vcpkg/downloads
 [[ -f vcpkg ]] || ./bootstrap-vcpkg.sh -disableMetrics
@@ -75,7 +75,7 @@ if [[ -z "${VCPKG_SKIP_EXTRA}" ]]; then
   PKG_CONFIG_PATH="$vcpkgRootDir/installed/${VCPKG_TRIPLET}/lib/pkgconfig" $v qt5-webengine
 fi
 $v smtpclient-for-qt
-$v protobuf grpc hdf5[zlib,tools] boost rapidjson cryptopp xerces-c xalan-c mimalloc[override] quazip libzip lua[cpp] sol2 lmdb flatbuffers z3
+$v protobuf grpc boost xerces-c xalan-c mimalloc[override] quazip libzip lua[cpp] sol2 lmdb flatbuffers z3
 cd installed/${VCPKG_TRIPLET}
 chmod 777 tools/protobuf/*
 [[ "${VCPKG_ADD}" = - ]] || curl -Ss ${VCPKG_ADD} | tar xJ
