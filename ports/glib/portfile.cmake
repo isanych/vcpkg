@@ -41,8 +41,6 @@ if(VCPKG_HOST_IS_WINDOWS)
     vcpkg_list(APPEND ADDITIONAL_BINARIES "sh = ['${CMAKE_COMMAND}', '-E', 'false']")
 endif()
 
-x_vcpkg_get_python_packages(PYTHON_VERSION "3" PACKAGES packaging)
-
 vcpkg_configure_meson(
     SOURCE_PATH "${SOURCE_PATH}"
     LANGUAGES ${LANGUAGES}
