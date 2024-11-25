@@ -21,6 +21,7 @@ if [%VCPKG_SUBST%] == [] (
 )
 if not [%VCPKG_SUBST%] == [] pushd %VCPKG_SUBST%
 if [%x%] == [x64] %v% qt5-webengine
+if %errorlevel% neq 0 exit /b %errorlevel%
 if [%x%] == [x64] %v% qtwebengine
 if %errorlevel% neq 0 exit /b %errorlevel%
 if not [%VCPKG_SUBST%] == [] popd
