@@ -60,7 +60,7 @@ $v qtdeclarative qt5compat
 $v qt5-script qt5-xmlpatterns
 if [[ -z "${VCPKG_SKIP_EXTRA}" ]]; then
   $v libwebp qt5-graphicaleffects qt5-location qt5-quickcontrols qt5-quickcontrols2 qt5-serialport qt5-webchannel
-  $v qtlocation qtquickcontrols2 qtserialport qtwebchannel
+  $v qtlocation qtquickcontrols2 qtserialport qtwebchannel libxml2 libxslt
   cd installed/${VCPKG_TRIPLET}
   ../../postinstall.py || true
   cd lib
@@ -73,8 +73,12 @@ if [[ -z "${VCPKG_SKIP_EXTRA}" ]]; then
   ln -sf libwebpdemux.so.2 libwebpdemuxd.so.2
   ln -sf libwebpmux.so libwebpmuxd.so
   ln -sf libwebpmux.so.3 libwebpmuxd.so.3
-  cd ../debug/lib
+  cd pkgconfig
+  ln -sf libxml-2.0.pc libxml2.pc
+  cd ../../debug/lib
   ln -sf libpng16d.so.16 libpng16.so.16
+  cd pkgconfig
+  ln -sf libxml-2.0.pc libxml2.pc
   cd "$vcpkgRootDir"
   PKG_CONFIG_PATH="$vcpkgRootDir/installed/${VCPKG_TRIPLET}/lib/pkgconfig" $v qt5-webengine
   PKG_CONFIG_PATH="$vcpkgRootDir/installed/${VCPKG_TRIPLET}/lib/pkgconfig" $v qtwebengine
