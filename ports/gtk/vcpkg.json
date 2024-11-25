@@ -51,10 +51,6 @@
       "host": true
     },
     {
-      "name": "vcpkg-get-python-packages",
-      "host": true
-    },
-    {
       "name": "vcpkg-tool-meson",
       "host": true
     }
