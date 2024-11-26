@@ -48,7 +48,6 @@ if(VCPKG_TARGET_IS_LINUX)
         list(APPEND FEATURE_OPTIONS "-DFEATURE_webengine_system_${_sys_lib}=ON")
     endforeach()
 endif()
-list(APPEND FEATURE_OPTIONS "-no-webengine-printing-and-pdf")
 
 vcpkg_find_acquire_program(FLEX)
 vcpkg_find_acquire_program(BISON)
