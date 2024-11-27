@@ -20,7 +20,7 @@ fi
 v="$vcpkgRootDir/vcpkg install --feature-flags=-compilertracking --editable"
 export LD_LIBRARY_PATH="$vcpkgRootDir/installed/${VCPKG_TRIPLET}/lib:$vcpkgRootDir/installed/${VCPKG_TRIPLET}/debug/lib"
 $v zstd
-$v glib libjpeg-turbo libpng pkgconf
+$v glib libjpeg-turbo libpng pkgconf "libxml2[core,iconv,icu,lzma,zlib]" "libxslt[core,default-features]"
 cd installed/${VCPKG_TRIPLET}
 ../../postinstall.py || true
 cd lib
