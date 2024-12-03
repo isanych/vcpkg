@@ -1,5 +1,5 @@
 diff --git a/cmake/protobuf-generate.cmake b/cmake/protobuf-generate.cmake
-index 1956121f5..195a3634b 100644
+index 244407ee2..9ae5908c9 100644
 --- a/cmake/protobuf-generate.cmake
 +++ b/cmake/protobuf-generate.cmake
 @@ -1,12 +1,12 @@
@@ -8,7 +8,7 @@ index 1956121f5..195a3634b 100644
  
 -  set(_options APPEND_PATH)
 +  set(_options APPEND_PATH DESCRIPTORS)
-   set(_singleargs LANGUAGE OUT_VAR EXPORT_MACRO PROTOC_OUT_DIR PLUGIN PLUGIN_OPTIONS DEPENDENCIES)
+   set(_singleargs LANGUAGE OUT_VAR EXPORT_MACRO PROTOC_OUT_DIR PLUGIN PLUGIN_OPTIONS DEPENDENCIES PROTOC_EXE)
    if(COMMAND target_sources)
      list(APPEND _singleargs TARGET)
    endif()
@@ -35,7 +35,7 @@ index 1956121f5..195a3634b 100644
        get_filename_component(_abs_dir ${_abs_file} DIRECTORY)
        list(FIND _protobuf_include_path ${_abs_dir} _contains_already)
        if(${_contains_already} EQUAL -1)
-@@ -84,7 +84,7 @@ function(protobuf_generate)
+@@ -89,7 +89,7 @@ function(protobuf_generate)
    endif()
  
    foreach(DIR ${protobuf_generate_IMPORT_DIRS})
@@ -44,7 +44,7 @@ index 1956121f5..195a3634b 100644
      list(FIND _protobuf_include_path ${ABS_PATH} _contains_already)
      if(${_contains_already} EQUAL -1)
          list(APPEND _protobuf_include_path -I ${ABS_PATH})
-@@ -127,10 +127,21 @@ function(protobuf_generate)
+@@ -132,10 +132,21 @@ function(protobuf_generate)
        return()
      endif()
  
@@ -67,10 +67,10 @@ index 1956121f5..195a3634b 100644
      list(APPEND _generated_srcs_all ${_generated_srcs})
  
      set(_comment "Running ${protobuf_generate_LANGUAGE} protocol buffer compiler on ${_proto}")
-@@ -144,8 +155,8 @@ function(protobuf_generate)
+@@ -149,8 +160,8 @@ function(protobuf_generate)
      add_custom_command(
        OUTPUT ${_generated_srcs}
-       COMMAND protobuf::protoc
+       COMMAND ${protobuf_generate_PROTOC_EXE}
 -      ARGS ${protobuf_generate_PROTOC_OPTIONS} --${protobuf_generate_LANGUAGE}_out ${_plugin_options}:${protobuf_generate_PROTOC_OUT_DIR} ${_plugin} ${_protobuf_include_path} ${_abs_file}
 -      DEPENDS ${_abs_file} ${protobuf_PROTOC_EXE} ${protobuf_generate_DEPENDENCIES}
 +      ARGS ${protobuf_generate_PROTOC_OPTIONS} --${protobuf_generate_LANGUAGE}_out ${_plugin_options}:${protobuf_generate_PROTOC_OUT_DIR} ${_plugin} ${_protobuf_include_path} ${_abs_file} ${protobuf_generate_ARGS_ADD}
