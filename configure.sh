@@ -87,6 +87,8 @@ $v smtpclient-for-qt
 $v protobuf grpc boost xerces-c xalan-c mimalloc[override] quazip libzip lua[cpp] sol2 lmdb flatbuffers z3
 cd installed/${VCPKG_TRIPLET}
 chmod 777 tools/protobuf/*
+rm -rf core*
+sed -i 's@;systemd;@;@' share/grpc/*.cmake
 [[ "${VCPKG_ADD}" = - ]] || curl -Ss ${VCPKG_ADD} | tar xJ
 r=$vcpkgRootDir/../reprise/x64_l1
 if [[ -e $r ]]; then
