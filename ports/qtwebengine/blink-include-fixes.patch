@@ -49,3 +49,14 @@ index c316642..d58a4e8 100644
  class ScriptPromise;
  class ScriptPromiseResolver;
  
+--- a/src/3rdparty/chromium/third_party/blink/renderer/modules/serial/serial_port_underlying_sink.h
++++ b/src/3rdparty/chromium/third_party/blink/renderer/modules/serial/serial_port_underlying_sink.h
+@@ -11,6 +11,8 @@
+ #include "third_party/blink/renderer/bindings/core/v8/v8_typedefs.h"
+ #include "third_party/blink/renderer/core/dom/abort_signal.h"
+ #include "third_party/blink/renderer/core/streams/underlying_sink_base.h"
++#include "third_party/blink/renderer/platform/heap/prefinalizer.h"
++#include "cppgc/prefinalizer.h"
+ 
+ namespace blink {
+ 

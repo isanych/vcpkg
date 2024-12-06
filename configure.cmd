@@ -15,7 +15,7 @@ rem internal compiler error for 32 bit, so build qt5-webengine in 64 bit mode on
 if [%x%] == [x64] %v% atlmfc qt5-graphicaleffects qt5-location qt5-quickcontrols qt5-quickcontrols2 qt5-serialport qt5-webchannel
 if [%x%] == [x64] %v% qtlocation qtquickcontrols2 qtserialport qtwebchannel qt5compat
 if %errorlevel% neq 0 exit /b %errorlevel%
-if [%VCPKG_SUBST%] == [] (
+if [%VCPKG_SUBST%] == [] if not [%CD%] == [C:\v] (
   subst B: %CD%
   set VCPKG_SUBST=B:\
 )
