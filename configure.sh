@@ -23,20 +23,7 @@ $v zstd
 $v glib libjpeg-turbo libpng pkgconf "libxml2[core,iconv,icu,lzma,zlib]" "libxslt"
 cd installed/${VCPKG_TRIPLET}
 ../../postinstall.py || true
-cd lib
-ln -sf libfreetype.so libfreetyped.so
-ln -sf libfreetype.so.6 libfreetyped.so.6
-ln -sf libpng16.so libpng16d.so
-ln -sf libpng16.so.16 libpng16d.so
-cd ../debug/lib
-ln -sf libfreetyped.so libfreetype.so
-ln -sf libfreetyped.so.6 libfreetype.so.6
 cd "$vcpkgRootDir"
-if [[ "${VCPKG_BASE}" = centos7 ]]; then
-  rm -f /usr/lib64/pkgconfig/libpng*
-  ln -s "$vcpkgRootDir/installed/${VCPKG_TRIPLET}/lib/pkgconfig/libpng.pc" /usr/lib64/pkgconfig/libpng.pc
-  ln -s "$vcpkgRootDir/installed/${VCPKG_TRIPLET}/lib/pkgconfig/libpng16.pc" /usr/lib64/pkgconfig/libpng16.pc
-fi
 $v icu harfbuzz
 cd installed/${VCPKG_TRIPLET}
 ../../postinstall.py || true
@@ -63,22 +50,6 @@ if [[ -z "${VCPKG_SKIP_EXTRA}" ]]; then
   $v qtlocation qtquickcontrols2 qtserialport qtwebchannel libxml2 libxslt
   cd installed/${VCPKG_TRIPLET}
   ../../postinstall.py || true
-  cd lib
-  ln -sf libpng16.so.16 libpng16d.so.16
-  ln -sf libwebp.so libwebpd.so
-  ln -sf libwebp.so.7 libwebpd.so.7
-  ln -sf libwebpdecoder.so libwebpdecoderd.so
-  ln -sf libwebpdecoder.so.3 libwebpdecoderd.so.3
-  ln -sf libwebpdemux.so libwebpdemuxd.so
-  ln -sf libwebpdemux.so.2 libwebpdemuxd.so.2
-  ln -sf libwebpmux.so libwebpmuxd.so
-  ln -sf libwebpmux.so.3 libwebpmuxd.so.3
-  cd pkgconfig
-  ln -sf libxml-2.0.pc libxml2.pc
-  cd ../../debug/lib
-  ln -sf libpng16d.so.16 libpng16.so.16
-  cd pkgconfig
-  ln -sf libxml-2.0.pc libxml2.pc
   cd "$vcpkgRootDir"
   PKG_CONFIG_PATH="$vcpkgRootDir/installed/${VCPKG_TRIPLET}/lib/pkgconfig" $v qt5-webengine
   PKG_CONFIG_PATH="$vcpkgRootDir/installed/${VCPKG_TRIPLET}/lib/pkgconfig" $v qtwebengine
@@ -90,6 +61,8 @@ chmod 777 tools/protobuf/*
 rm -rf core*
 sed -i 's@;systemd;@;@' share/grpc/*.cmake
 [[ "${VCPKG_ADD}" = - ]] || curl -Ss ${VCPKG_ADD} | tar xJ
+ln -s . debug
+ln -s ../translations/Qt6 Qt6/translations
 r=$vcpkgRootDir/../reprise/x64_l1
 if [[ -e $r ]]; then
   make -C $r
@@ -99,4 +72,4 @@ if [[ -e $r ]]; then
 fi
 ../../postinstall.py || true
 rm -f "$vcpkgRootDir/installed/${VCPKG_TRIPLET}/bin/pkgconf"
-[[ -z "${VCPKG_BASE}" || ! -d /mnt/mirror/vcpkg ]] || LD_LIBRARY_PATH= tar cJf /mnt/mirror/vcpkg/vcpkg-${VCPKG_BRANCH}-${VCPKG_BASE}-x64-gcc13${VCPKG_SUFFIX}.txz -C "$vcpkgRootDir/.." vcpkg/installed/${VCPKG_TRIPLET} vcpkg/scripts vcpkg/triplets/${VCPKG_TRIPLET}.cmake vcpkg/.vcpkg-root
+[[ -z "${VCPKG_BASE}" || ! -d /mnt/mirror/vcpkg ]] || LD_LIBRARY_PATH= tar cJf /mnt/mirror/vcpkg/vcpkg-${VCPKG_BRANCH}-${VCPKG_BASE}-x64.txz -C "$vcpkgRootDir/.." vcpkg/installed/${VCPKG_TRIPLET} vcpkg/scripts vcpkg/triplets/${VCPKG_TRIPLET}.cmake vcpkg/.vcpkg-root
