@@ -5,6 +5,7 @@ set(${PORT}_PATCHES
       "clang-cl.patch"
       "fix-error2275-2672.patch"
       "blink-include-fixes.patch"
+      "fix_another_missing_inc.patch"
       "vs.patch"
       "uglyhack.patch"
 )
