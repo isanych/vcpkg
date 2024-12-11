@@ -17,7 +17,7 @@ if [[ "x${VCPKG_BOOST_STATIC}" = "xtrue" ]]; then
 else
   : ${VCPKG_SUFFIX:=-dynamic}
 fi
-v="$vcpkgRootDir/vcpkg install --feature-flags=-compilertracking --editable"
+v="$vcpkgRootDir/vcpkg install --feature-flags=-compilertracking --editable --x-buildtrees-root=b"
 export LD_LIBRARY_PATH="$vcpkgRootDir/installed/${VCPKG_TRIPLET}/lib:$vcpkgRootDir/installed/${VCPKG_TRIPLET}/debug/lib"
 $v zstd
 $v glib libjpeg-turbo libpng pkgconf "libxml2[core,iconv,icu,lzma,zlib]" "libxslt"
@@ -54,13 +54,17 @@ if [[ -z "${VCPKG_SKIP_EXTRA}" ]]; then
   PKG_CONFIG_PATH="$vcpkgRootDir/installed/${VCPKG_TRIPLET}/lib/pkgconfig" $v qt5-webengine
   PKG_CONFIG_PATH="$vcpkgRootDir/installed/${VCPKG_TRIPLET}/lib/pkgconfig" $v qtwebengine
 fi
-$v smtpclient-for-qt
-$v protobuf grpc boost xerces-c xalan-c mimalloc[override] quazip libzip lua[cpp] sol2 lmdb flatbuffers z3
+if [[ "$EUID" = 0 ]]; then
+  cd /usr/local
+  rm -rf bin lib lib64 include
+  cd "$vcpkgRootDir"
+fi
+$v protobuf grpc boost xerces-c xalan-c mimalloc[override] quazip libzip lua[cpp] sol2 lmdb flatbuffers z3 libbacktrace
 cd installed/${VCPKG_TRIPLET}
 chmod 777 tools/protobuf/*
 sed -i 's@;systemd;@;@' share/grpc/*.cmake
 [[ "${VCPKG_ADD}" = - ]] || curl -Ss ${VCPKG_ADD} | tar xJ
-ln -s ../translations/Qt6 Qt6/translations
+[[ -e Qt6/translations ]] || ln -s ../translations/Qt6 Qt6/translations
 r=$vcpkgRootDir/../reprise/x64_l1
 if [[ -e $r ]]; then
   make -C $r
@@ -68,7 +72,7 @@ if [[ -e $r ]]; then
   cp $r/rlmmains.a lib/
   cp $r/rlm_nossl.a lib/
 fi
-../../postinstall.py || true
+../../postinstall.py > /dev/null || true
 rm -rf debug core*
 rm -f "$vcpkgRootDir/installed/${VCPKG_TRIPLET}/bin/pkgconf"
 [[ -z "${VCPKG_BASE}" || ! -d /mnt/mirror/vcpkg ]] || LD_LIBRARY_PATH= tar cJf /mnt/mirror/vcpkg/vcpkg-${VCPKG_BRANCH}-${VCPKG_BASE}-x64.txz -C "$vcpkgRootDir/.." vcpkg/installed/${VCPKG_TRIPLET} vcpkg/scripts vcpkg/triplets/${VCPKG_TRIPLET}.cmake vcpkg/.vcpkg-root

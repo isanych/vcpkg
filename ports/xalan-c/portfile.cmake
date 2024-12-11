@@ -25,6 +25,7 @@ if(EXISTS ${CURRENT_PACKAGES_DIR}/cmake)
 else()
     vcpkg_fixup_cmake_targets(CONFIG_PATH lib/cmake/XalanC TARGET_PATH share/xalanc)
 endif()
+vcpkg_fixup_pkgconfig()
 
 # cleanup
 file(REMOVE_RECURSE
