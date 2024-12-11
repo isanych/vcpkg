@@ -58,10 +58,8 @@ $v smtpclient-for-qt
 $v protobuf grpc boost xerces-c xalan-c mimalloc[override] quazip libzip lua[cpp] sol2 lmdb flatbuffers z3
 cd installed/${VCPKG_TRIPLET}
 chmod 777 tools/protobuf/*
-rm -rf core*
 sed -i 's@;systemd;@;@' share/grpc/*.cmake
 [[ "${VCPKG_ADD}" = - ]] || curl -Ss ${VCPKG_ADD} | tar xJ
-ln -s . debug
 ln -s ../translations/Qt6 Qt6/translations
 r=$vcpkgRootDir/../reprise/x64_l1
 if [[ -e $r ]]; then
@@ -71,5 +69,6 @@ if [[ -e $r ]]; then
   cp $r/rlm_nossl.a lib/
 fi
 ../../postinstall.py || true
+rm -rf debug core*
 rm -f "$vcpkgRootDir/installed/${VCPKG_TRIPLET}/bin/pkgconf"
 [[ -z "${VCPKG_BASE}" || ! -d /mnt/mirror/vcpkg ]] || LD_LIBRARY_PATH= tar cJf /mnt/mirror/vcpkg/vcpkg-${VCPKG_BRANCH}-${VCPKG_BASE}-x64.txz -C "$vcpkgRootDir/.." vcpkg/installed/${VCPKG_TRIPLET} vcpkg/scripts vcpkg/triplets/${VCPKG_TRIPLET}.cmake vcpkg/.vcpkg-root
