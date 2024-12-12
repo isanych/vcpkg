@@ -25,7 +25,8 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 if [%x%] == [x64] %v% qtwebengine
 if %errorlevel% neq 0 exit /b %errorlevel%
 if not [%VCPKG_SUBST%] == [] popd
-%v% smtpclient-for-qt protobuf boost xerces-c xalan-c grpc mimalloc[override] quazip libzip lua[cpp] sol2 lmdb flatbuffers z3
+%v% protobuf boost xerces-c xalan-c grpc libzip
+if [%x%] == [x64] %v% mimalloc[override] lua[cpp] sol2 lmdb flatbuffers z3
 if %errorlevel% neq 0 exit /b %errorlevel%
 cd "%~dp0installed\%VCPKG_DEFAULT_TRIPLET%"
 rmdir tools\nodejs
