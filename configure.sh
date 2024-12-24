@@ -73,6 +73,10 @@ if [[ -e $r ]]; then
   cp $r/rlm_nossl.a lib/
 fi
 ../../postinstall.py > /dev/null || true
-rm -rf debug core*
-rm -f "$vcpkgRootDir/installed/${VCPKG_TRIPLET}/bin/pkgconf"
-[[ -z "${VCPKG_BASE}" || ! -d /mnt/mirror/vcpkg ]] || LD_LIBRARY_PATH= tar cJf /mnt/mirror/vcpkg/vcpkg-${VCPKG_BRANCH}-${VCPKG_BASE}-x64.txz -C "$vcpkgRootDir/.." vcpkg/installed/${VCPKG_TRIPLET} vcpkg/scripts vcpkg/triplets/${VCPKG_TRIPLET}.cmake vcpkg/.vcpkg-root
+rm -rf debug core* bin/pkgconf
+unset LD_LIBRARY_PATH
+cd "$vcpkgRootDir/.."
+if [[ -n "${VCPKG_BASE}" && -d /mnt/mirror/vcpkg ]]; then
+  tar cJf /mnt/mirror/vcpkg/vcpkg-${VCPKG_BRANCH}-${VCPKG_BASE}.txz vcpkg/installed/${VCPKG_TRIPLET} vcpkg/scripts vcpkg/triplets/${VCPKG_TRIPLET}.cmake vcpkg/.vcpkg-root
+  tar cJf /mnt/mirror/vcpkg/vcpkg-${VCPKG_BRANCH}-${VCPKG_BASE}-src.txz --exclude=${VCPKG_TRIPLET}-rel --exclude=${VCPKG_TRIPLET}-dbg --exclude=${VCPKG_TRIPLET}-venv vcpkg/b
+fi
