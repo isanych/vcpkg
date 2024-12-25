@@ -17,6 +17,7 @@ if [[ "x${VCPKG_BOOST_STATIC}" = "xtrue" ]]; then
 else
   : ${VCPKG_SUFFIX:=-dynamic}
 fi
+grep Tumbleweed /etc/os-release && o=1 || true
 v="$vcpkgRootDir/vcpkg install --feature-flags=-compilertracking --editable --x-buildtrees-root=b"
 export LD_LIBRARY_PATH="$vcpkgRootDir/installed/${VCPKG_TRIPLET}/lib:$vcpkgRootDir/installed/${VCPKG_TRIPLET}/debug/lib"
 $v zstd
@@ -38,21 +39,22 @@ if [[ "$EUID" = 0 ]]; then
   cd "$vcpkgRootDir"
 fi
 $v qt5-base[icu]
-$v qtbase
+[[ -z "$o" ]] || $v qtbase
 cd installed/${VCPKG_TRIPLET}
 ../../postinstall.py || true
 cd ../..
 $v qt5-declarative
-$v qtdeclarative qt5compat
+[[ -z "$o" ]] || $v qtdeclarative qt5compat
 $v qt5-script qt5-xmlpatterns
+$v libxml2 libxslt
 if [[ -z "${VCPKG_SKIP_EXTRA}" ]]; then
   $v libwebp qt5-graphicaleffects qt5-location qt5-quickcontrols qt5-quickcontrols2 qt5-serialport qt5-webchannel
-  $v qtlocation qtquickcontrols2 qtserialport qtwebchannel libxml2 libxslt
+  [[ -z "$o" ]] || $v qtlocation qtquickcontrols2 qtserialport qtwebchannel
   cd installed/${VCPKG_TRIPLET}
   ../../postinstall.py || true
   cd "$vcpkgRootDir"
   PKG_CONFIG_PATH="$vcpkgRootDir/installed/${VCPKG_TRIPLET}/lib/pkgconfig" $v qt5-webengine
-  PKG_CONFIG_PATH="$vcpkgRootDir/installed/${VCPKG_TRIPLET}/lib/pkgconfig" $v qtwebengine
+  [[ -z "$o" ]] || PKG_CONFIG_PATH="$vcpkgRootDir/installed/${VCPKG_TRIPLET}/lib/pkgconfig" $v qtwebengine
 fi
 if [[ "$EUID" = 0 ]]; then
   cd /usr/local
