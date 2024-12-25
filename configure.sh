@@ -39,22 +39,22 @@ if [[ "$EUID" = 0 ]]; then
   cd "$vcpkgRootDir"
 fi
 $v qt5-base[icu]
-[[ -z "$o" ]] || $v qtbase
+[[ -n "$o" ]] || $v qtbase
 cd installed/${VCPKG_TRIPLET}
 ../../postinstall.py || true
 cd ../..
 $v qt5-declarative
-[[ -z "$o" ]] || $v qtdeclarative qt5compat
+[[ -n "$o" ]] || $v qtdeclarative qt5compat
 $v qt5-script qt5-xmlpatterns
 $v libxml2 libxslt
 if [[ -z "${VCPKG_SKIP_EXTRA}" ]]; then
   $v libwebp qt5-graphicaleffects qt5-location qt5-quickcontrols qt5-quickcontrols2 qt5-serialport qt5-webchannel
-  [[ -z "$o" ]] || $v qtlocation qtquickcontrols2 qtserialport qtwebchannel
+  [[ -n "$o" ]] || $v qtlocation qtquickcontrols2 qtserialport qtwebchannel
   cd installed/${VCPKG_TRIPLET}
   ../../postinstall.py || true
   cd "$vcpkgRootDir"
   PKG_CONFIG_PATH="$vcpkgRootDir/installed/${VCPKG_TRIPLET}/lib/pkgconfig" $v qt5-webengine
-  [[ -z "$o" ]] || PKG_CONFIG_PATH="$vcpkgRootDir/installed/${VCPKG_TRIPLET}/lib/pkgconfig" $v qtwebengine
+  [[ -n "$o" ]] || PKG_CONFIG_PATH="$vcpkgRootDir/installed/${VCPKG_TRIPLET}/lib/pkgconfig" $v qtwebengine
 fi
 if [[ "$EUID" = 0 ]]; then
   cd /usr/local
