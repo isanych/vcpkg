@@ -28,4 +28,3 @@ cd "%~dp0installed\%VCPKG_DEFAULT_TRIPLET%"
 rmdir tools\nodejs
 copy "%~dp0postinstall.py" "%~dp0installed\%VCPKG_DEFAULT_TRIPLET%\"
 if not [%VCPKG_ADD%] == [-] curl -Ss %VCPKG_ADD% | tar xzf -
-"%~dp0archive"
