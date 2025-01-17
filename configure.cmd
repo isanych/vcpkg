@@ -5,7 +5,7 @@ set VCPKG_DEFAULT_TRIPLET=%x%-windows
 if not exist "%~dp0vcpkg.exe" call "%~dp0bootstrap-vcpkg" -disableMetrics
 set VCPKG_BINARY_SOURCES=clear
 set v="%~dp0vcpkg" install --editable --triplet=%VCPKG_DEFAULT_TRIPLET% --x-buildtrees-root=b
-%v% pcre icu qt5-base[icu] qt5-script qt5-xmlpatterns
+%v% gmp pcre icu qt5-base[icu] qt5-script qt5-xmlpatterns
 if %errorlevel% neq 0 exit /b %errorlevel%
 %v% qtbase
 if %errorlevel% neq 0 exit /b %errorlevel%

@@ -20,7 +20,7 @@ fi
 grep Tumbleweed /etc/os-release && o=1 || true
 v="$vcpkgRootDir/vcpkg install --feature-flags=-compilertracking --editable --x-buildtrees-root=b"
 export LD_LIBRARY_PATH="$vcpkgRootDir/installed/${VCPKG_TRIPLET}/lib:$vcpkgRootDir/installed/${VCPKG_TRIPLET}/debug/lib"
-$v zstd
+$v gmp zstd
 $v glib libjpeg-turbo libpng pkgconf "libxml2[core,iconv,icu,lzma,zlib]" "libxslt"
 cd installed/${VCPKG_TRIPLET}
 ../../postinstall.py || true

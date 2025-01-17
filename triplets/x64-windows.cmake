@@ -6,7 +6,7 @@ set(VCPKG_PLATFORM_TOOLSET v143)
 list(APPEND VCPKG_CMAKE_CONFIGURE_OPTIONS "-DCMAKE_CXX_STANDARD=17")
 
 set(IS_LTO TRUE)
-set(NO_LTO abseil double-conversion grpc libffi protobuf re2 upb qtwebengine)
+set(NO_LTO abseil double-conversion gmp grpc libffi protobuf re2 upb qtwebengine)
 if(PORT IN_LIST NO_LTO)
     set(IS_LTO FALSE)
 endif()
