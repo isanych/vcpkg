@@ -2,12 +2,10 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO microsoft/mimalloc
     REF "v${VERSION}"
-    SHA512 927b046e67783b325a6e41e3a9a6d3d78306fa1c82255defd1f3a7a60a27fd809a601f65b1b27fa38f2064e124f29856d7c0e5ccc33c54c2e4b6ebb9816d74b1
+    SHA512 404a7827aea6f39bb4b9d43b5c93d5ca39e84e29bf362d597744703f7a6d0c091f55b45a070e6d61ad7f68bf7c28f541668c75db16bae1423bd318f47bf06974
     HEAD_REF master
     PATCHES
         fix-cmake.patch
-        template-param-types.diff
-        crash.patch
         stats.patch
 )
 
