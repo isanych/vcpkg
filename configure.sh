@@ -20,7 +20,7 @@ fi
 grep Tumbleweed /etc/os-release && o=1 || true
 v="$vcpkgRootDir/vcpkg install --feature-flags=-compilertracking --editable --x-buildtrees-root=b"
 export LD_LIBRARY_PATH="$vcpkgRootDir/installed/${VCPKG_TRIPLET}/lib:$vcpkgRootDir/installed/${VCPKG_TRIPLET}/debug/lib"
-$v gmp zstd
+$v zstd
 $v glib libjpeg-turbo libpng pkgconf "libxml2[core,iconv,icu,lzma,zlib]" "libxslt"
 cd installed/${VCPKG_TRIPLET}
 ../../postinstall.py || true
@@ -61,7 +61,7 @@ if [[ "$EUID" = 0 ]]; then
   rm -rf bin lib lib64 include
   cd "$vcpkgRootDir"
 fi
-$v protobuf grpc boost xerces-c xalan-c mimalloc[override] quazip libzip lua[cpp] sol2 lmdb flatbuffers z3 libbacktrace
+$v protobuf grpc boost xerces-c xalan-c mimalloc[override] quazip libzip lua[cpp] sol2 lmdb flatbuffers z3 libbacktrace gmp[fat] yices
 cd installed/${VCPKG_TRIPLET}
 chmod 777 tools/protobuf/*
 sed -i 's@;systemd;@;@' share/grpc/*.cmake

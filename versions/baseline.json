@@ -5953,8 +5953,8 @@
       "port-version": 3
     },
     "mimalloc": {
-      "baseline": "2.1.2",
-      "port-version": 4
+      "baseline": "2.1.9",
+      "port-version": 0
     },
     "mimicpp": {
       "baseline": "6",
@@ -9962,6 +9962,10 @@
     },
     "yato": {
       "baseline": "2022-03-06",
+      "port-version": 0
+    },
+    "yices": {
+      "baseline": "2.6.5",
       "port-version": 0
     },
     "yoga": {

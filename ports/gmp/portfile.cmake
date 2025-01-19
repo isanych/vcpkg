@@ -1,7 +1,3 @@
-if(EXISTS "${CURRENT_INSTALLED_DIR}/include/gmp.h" OR "${CURRENT_INSTALLED_DIR}/include/gmpxx.h")
-    message(FATAL_ERROR "Can't build ${PORT} if mpir is installed. Please remove mpir, and try install ${PORT} again if you need it.")
-endif()
-
 vcpkg_download_distfile(
     ARCHIVE
     URLS

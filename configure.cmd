@@ -5,7 +5,7 @@ set VCPKG_DEFAULT_TRIPLET=%x%-windows
 if not exist "%~dp0vcpkg.exe" call "%~dp0bootstrap-vcpkg" -disableMetrics
 set VCPKG_BINARY_SOURCES=clear
 set v="%~dp0vcpkg" install --editable --triplet=%VCPKG_DEFAULT_TRIPLET% --x-buildtrees-root=b
-%v% gmp pcre icu qt5-base[icu] qt5-script qt5-xmlpatterns
+%v% pcre icu qt5-base[icu] qt5-script qt5-xmlpatterns
 if %errorlevel% neq 0 exit /b %errorlevel%
 %v% qtbase
 if %errorlevel% neq 0 exit /b %errorlevel%
@@ -22,7 +22,7 @@ if [%x%] == [x64] %v% qtwebengine
 if %errorlevel% neq 0 exit /b %errorlevel%
 if not [%VCPKG_SUBST%] == [] popd
 %v% protobuf boost xerces-c xalan-c grpc libzip lua[cpp]
-if [%x%] == [x64] %v% mimalloc[override] sol2 lmdb flatbuffers z3
+if [%x%] == [x64] %v% mimalloc[override] sol2 lmdb flatbuffers z3 gmp yices
 if %errorlevel% neq 0 exit /b %errorlevel%
 cd "%~dp0installed\%VCPKG_DEFAULT_TRIPLET%"
 rmdir tools\nodejs
