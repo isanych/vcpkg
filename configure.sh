@@ -11,15 +11,9 @@ export VCPKG_BINARY_SOURCES=clear
 [[ -n "${VCPKG_TRIPLET}" ]] || export VCPKG_TRIPLET=x64-linux
 [[ ! -d /mnt/mirror/vcpkg/downloads || -e downloads ]] || ln -s /mnt/mirror/vcpkg/downloads
 [[ -f vcpkg ]] || ./bootstrap-vcpkg.sh -disableMetrics
-if [[ "x${VCPKG_BOOST_STATIC}" = "xtrue" ]]; then
-  touch $vcpkgRootDir/.boost_static
-  : ${VCPKG_SUFFIX:=-static}
-else
-  : ${VCPKG_SUFFIX:=-dynamic}
-fi
 grep Tumbleweed /etc/os-release && o=1 || true
-v="$vcpkgRootDir/vcpkg install --feature-flags=-compilertracking --editable --x-buildtrees-root=b"
-export LD_LIBRARY_PATH="$vcpkgRootDir/installed/${VCPKG_TRIPLET}/lib:$vcpkgRootDir/installed/${VCPKG_TRIPLET}/debug/lib"
+v="$vcpkgRootDir/vcpkg install --editable --x-buildtrees-root=b --triplet=${VCPKG_TRIPLET} --host-triplet=${VCPKG_TRIPLET}"
+export LD_LIBRARY_PATH="$vcpkgRootDir/installed/${VCPKG_TRIPLET}/lib"
 $v zstd
 $v glib libjpeg-turbo libpng pkgconf "libxml2[core,iconv,icu,lzma,zlib]" "libxslt"
 cd installed/${VCPKG_TRIPLET}
