@@ -7,6 +7,10 @@
   "license": "GPL-3.0",
   "dependencies": [
     "gmp",
+    {
+      "name": "pkgconf",
+      "host": true
+    },
     "pthreads",
     {
       "name": "vcpkg-cmake",
