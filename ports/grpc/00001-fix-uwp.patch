@@ -1,5 +1,5 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index fa5b2a0..1625a0f 100644
+index fa5b2a0..45d6b78 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -284,6 +284,9 @@ if(UNIX)
@@ -41,14 +41,14 @@ index fa5b2a0..1625a0f 100644
  add_custom_target(plugins
    DEPENDS ${_gRPC_PLUGIN_LIST}
  )
-@@ -682,6 +693,7 @@ add_custom_target(tools_cxx
- 
+@@ -683,6 +694,7 @@ add_custom_target(tools_cxx
  add_custom_target(tools
    DEPENDS tools_c tools_cxx)
-+endif()
  
++endif()
  protobuf_generate_grpc_cpp_with_import_path_correction(
    src/core/ext/transport/chaotic_good/chaotic_good_frame.proto src/core/ext/transport/chaotic_good/chaotic_good_frame.proto
+ )
 diff --git a/src/core/lib/security/credentials/alts/check_gcp_environment_windows.cc b/src/core/lib/security/credentials/alts/check_gcp_environment_windows.cc
 index 462ba6b..06e1a0c 100644
 --- a/src/core/lib/security/credentials/alts/check_gcp_environment_windows.cc
