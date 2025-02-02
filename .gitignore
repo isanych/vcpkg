@@ -290,19 +290,6 @@ __pycache__/
 /packages/
 /scripts/buildsystems/tmp/
 #ignore custom triplets
-/triplets/*
-#add vcpkg-designed triplets back in
-!/triplets/arm-uwp.cmake
-!/triplets/arm64-windows.cmake
-!/triplets/x64-linux.cmake
-!/triplets/x64-osx.cmake
-!/triplets/x64-uwp.cmake
-!/triplets/x64-windows-static.cmake
-!/triplets/x64-windows.cmake
-!/triplets/x86-windows.cmake
-
-!/triplets/community
-!/triplets/community/**
 
 *.exe
 *.zip
@@ -321,4 +308,4 @@ prefab/
 ###################
 pythonenv3.8/
 .venv/
-/b
+/b/
