@@ -217,6 +217,12 @@ set(FREETYPE_DEBUG_ALL "${FREETYPE_DEBUG} ${BZ2_DEBUG} ${LIBPNG_DEBUG} ${ZLIB_DE
 # If HarfBuzz is built with GLib enabled, it must be statically link
 x_vcpkg_pkgconfig_get_modules(PREFIX harfbuzz MODULES harfbuzz LIBRARIES)
 
+if(VCPKG_SANITIZE)
+    list(APPEND CORE_OPTIONS -sanitize address)
+    set(ZLIB_DEBUG "${ZLIB_DEBUG} -INFERASANLIBS")
+    set(ZLIB_RELEASE "${ZLIB_RELEASE} -INFERASANLIBS")
+endif()
+
 set(RELEASE_OPTIONS
             -ltcg
             "LIBJPEG_LIBS=${JPEG_RELEASE}"

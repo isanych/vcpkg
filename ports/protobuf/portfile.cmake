@@ -11,6 +11,7 @@ vcpkg_from_github(
         fix-install-dirs.patch
         support-grpc.patch
         pacify-asan.patch
+        ignore-duplicates.patch
 )
 
 string(COMPARE EQUAL "${TARGET_TRIPLET}" "${HOST_TRIPLET}" protobuf_BUILD_PROTOC_BINARIES)

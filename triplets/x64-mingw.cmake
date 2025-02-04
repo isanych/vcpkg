@@ -1,0 +1,27 @@
+set(VCPKG_TARGET_ARCHITECTURE x64)
+set(VCPKG_CRT_LINKAGE dynamic)
+set(VCPKG_ENV_PASSTHROUGH PATH MSYSTEM)
+
+set(VCPKG_CMAKE_SYSTEM_NAME MinGW)
+if(PORT STREQUAL gmp)
+set(VCPKG_LIBRARY_LINKAGE dynamic)
+else()
+set(VCPKG_LIBRARY_LINKAGE static)
+endif()
+list(APPEND VCPKG_CMAKE_CONFIGURE_OPTIONS "-DCMAKE_CXX_STANDARD=17")
+set(VCPKG_BUILD_TYPE release)
+
+set(IS_LTO TRUE)
+set(NO_LTO ) #abseil double-conversion gmp grpc libffi protobuf re2 upb)
+if(PORT IN_LIST NO_LTO)
+    set(IS_LTO FALSE)
+endif()
+
+set(VCPKG_C_FLAGS "-march=native -mavx512f -mavx512cd -mavx512bw -mavx512dq -Wno-incompatible-pointer-types")
+set(VCPKG_CXX_FLAGS "-march=native -mavx512f -mavx512cd -mavx512bw -mavx512dq")
+
+if(IS_LTO)
+    set(VCPKG_CXX_FLAGS_RELEASE -flto)
+    set(VCPKG_C_FLAGS_RELEASE -flto)
+    set(VCPKG_LINKER_FLAGS_RELEASE -flto)
+endif()

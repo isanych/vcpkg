@@ -27,16 +27,9 @@
       "default-features": false
     },
     "qt5-declarative",
-    "qt5-location",
     "qt5-quickcontrols",
     "qt5-quickcontrols2",
-    "qt5-tools",
-    "qt5-webchannel",
-    {
-      "name": "vcpkg-tool-nodejs",
-      "host": true
-    }
-  ],
+    "qt5-tools"  ],
   "features": {
     "proprietary-codecs": {
       "description": "Enable proprietary-codecs in qtwebengine"

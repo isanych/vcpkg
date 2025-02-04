@@ -42,8 +42,8 @@ $v qt5-declarative
 $v qt5-script qt5-xmlpatterns
 $v libxml2 libxslt
 if [[ -z "${VCPKG_SKIP_EXTRA}" ]]; then
-  $v libwebp qt5-graphicaleffects qt5-location qt5-quickcontrols qt5-quickcontrols2 qt5-serialport qt5-webchannel
-  [[ -n "$o" ]] || $v qtlocation qtquickcontrols2 qtserialport qtwebchannel
+  $v libwebp qt5-graphicaleffects qt5-quickcontrols qt5-quickcontrols2
+  [[ -n "$o" ]] || $v qtquickcontrols2
   cd installed/${VCPKG_TRIPLET}
   ../../postinstall.py || true
   cd "$vcpkgRootDir"

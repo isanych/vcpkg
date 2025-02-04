@@ -1,0 +1,84 @@
+diff --git a/src/google/protobuf/descriptor.cc b/src/google/protobuf/descriptor.cc
+index f194fad..6b0267f 100644
+--- a/src/google/protobuf/descriptor.cc
++++ b/src/google/protobuf/descriptor.cc
+@@ -2245,7 +2245,7 @@ void DescriptorPool::InternalAddGeneratedFile(
+   // any descriptor-based operations, since this might cause infinite recursion
+   // or deadlock.
+   absl::MutexLockMaybe lock(internal_generated_pool()->mutex_);
+-  ABSL_CHECK(GeneratedDatabase()->Add(encoded_file_descriptor, size));
++  GeneratedDatabase()->Add(encoded_file_descriptor, size);
+ }
+ 
+ 
+diff --git a/src/google/protobuf/descriptor_database.cc b/src/google/protobuf/descriptor_database.cc
+index 10ebeff..4218834 100644
+--- a/src/google/protobuf/descriptor_database.cc
++++ b/src/google/protobuf/descriptor_database.cc
+@@ -102,7 +102,7 @@ template <typename Value>
+ bool SimpleDescriptorDatabase::DescriptorIndex<Value>::AddFile(
+     const FileDescriptorProto& file, Value value) {
+   if (!by_name_.emplace(file.name(), value).second) {
+-    ABSL_LOG(ERROR) << "File already exists in database: " << file.name();
++    // Silently ignore duplicates
+     return false;
+   }
+ 
+@@ -547,8 +547,7 @@ bool EncodedDescriptorDatabase::Add(const void* encoded_file_descriptor,
+   if (file.ParseFromArray(encoded_file_descriptor, size)) {
+     return index_->AddFile(file, std::make_pair(encoded_file_descriptor, size));
+   } else {
+-    ABSL_LOG(ERROR) << "Invalid file descriptor data passed to "
+-                       "EncodedDescriptorDatabase::Add().";
++    // Silently ignore duplicates
+     return false;
+   }
+ }
+@@ -630,7 +629,7 @@ bool EncodedDescriptorDatabase::DescriptorIndex::AddFile(const FileProto& file,
+            .second ||
+       std::binary_search(by_name_flat_.begin(), by_name_flat_.end(),
+                          file.name(), by_name_.key_comp())) {
+-    ABSL_LOG(ERROR) << "File already exists in database: " << file.name();
++    // Silently ignore duplicates
+     return false;
+   }
+ 
+diff --git a/src/google/protobuf/message.cc b/src/google/protobuf/message.cc
+index 3870efc..37b8332 100644
+--- a/src/google/protobuf/message.cc
++++ b/src/google/protobuf/message.cc
+@@ -344,9 +344,8 @@ GeneratedMessageFactory* GeneratedMessageFactory::singleton() {
+ 
+ void GeneratedMessageFactory::RegisterFile(
+     const google::protobuf::internal::DescriptorTable* table) {
+-  if (!files_.insert(table).second) {
+-    ABSL_LOG(FATAL) << "File is already registered: " << table->filename;
+-  }
++  // Silently ignore duplicates
++  files_.insert(table);
+ }
+ 
+ void GeneratedMessageFactory::RegisterType(const Descriptor* descriptor,
+diff --git a/src/google/protobuf/port_def.inc b/src/google/protobuf/port_def.inc
+index 56f995e..df67a5d 100644
+--- a/src/google/protobuf/port_def.inc
++++ b/src/google/protobuf/port_def.inc
+@@ -357,6 +357,18 @@ static_assert(PROTOBUF_ABSL_MIN(20230125, 3),
+ # define PROTOC_EXPORT
+ #endif
+ 
++#if defined(_WIN32)
++# if defined(PROTOBUF_USER_EXPORTS)
++#  define PROTOBUF_USER_EXPORT __declspec(dllexport)
++# else
++#  define PROTOBUF_USER_EXPORT __declspec(dllimport)
++# endif
++#elif defined(PROTOBUF_USER_EXPORTS)
++# define PROTOBUF_USER_EXPORT __attribute__((visibility("default")))
++#else
++# define PROTOBUF_USER_EXPORT
++#endif
++
+ #if defined(PROTOBUF_PREDICT_TRUE) || defined(PROTOBUF_PREDICT_FALSE)
+ #error PROTOBUF_PREDICT_(TRUE|FALSE) was previously defined
+ #endif

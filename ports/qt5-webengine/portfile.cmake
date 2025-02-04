@@ -59,7 +59,7 @@ if(ninja_version VERSION_GREATER_EQUAL "1.12.1")
 endif()
 
 set(PATCHES build.patch
-	    fix-spellcheck-buildflags.patch
+            fix-spellcheck-buildflags.patch
 )
 
 set(OPTIONS)
