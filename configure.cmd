@@ -17,7 +17,7 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 if [%VCPKG_EXTRA%] == [1] %v% atlmfc qt5-graphicaleffects qt5-quickcontrols qt5-quickcontrols2
 if [%VCPKG_QT6%] == [1] %v% qtquickcontrols2 qt5compat
 if %errorlevel% neq 0 exit /b %errorlevel%
-if [%VCPKG_EXTRA%] == [x64] %v% qt5-webengine
+if [%VCPKG_EXTRA%] == [1] %v% qt5-webengine
 if %errorlevel% neq 0 exit /b %errorlevel%
 if [%VCPKG_EXTRA%%VCPKG_QT6%] == [11] %v% qtwebengine
 if %errorlevel% neq 0 exit /b %errorlevel%

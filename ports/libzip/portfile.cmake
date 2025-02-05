@@ -7,6 +7,7 @@ vcpkg_from_github(
     PATCHES
         fix-dependency.patch
         use-requires.patch
+        0001-fix-a-use-before-init-error-introduced-in-v1.11.3.patch
 )
 
 vcpkg_check_features(
