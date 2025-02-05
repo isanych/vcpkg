@@ -29,7 +29,8 @@
     "qt5-declarative",
     "qt5-quickcontrols",
     "qt5-quickcontrols2",
-    "qt5-tools"  ],
+    "qt5-tools"
+  ],
   "features": {
     "proprietary-codecs": {
       "description": "Enable proprietary-codecs in qtwebengine"

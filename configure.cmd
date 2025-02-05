@@ -22,7 +22,7 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 if [%VCPKG_EXTRA%%VCPKG_QT6%] == [11] %v% qtwebengine
 if %errorlevel% neq 0 exit /b %errorlevel%
 %v% protobuf boost xerces-c xalan-c grpc libzip lua[cpp]
-if [%x%] == [x64] %v% mimalloc[override] sol2 lmdb flatbuffers z3 gmp yices
+if [%x%] == [x64] %v% mimalloc[override] sol2 lmdb flatbuffers gmp yices
 if %errorlevel% neq 0 exit /b %errorlevel%
 cd "%~dp0installed\%VCPKG_DEFAULT_TRIPLET%"
 rmdir tools\nodejs
