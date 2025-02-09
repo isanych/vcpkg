@@ -1,2 +1,3 @@
 @echo off
-powershell.exe -NoProfile -ExecutionPolicy Bypass "& {& \"%~dp0scripts\bootstrap.ps1\" %*}"
+cd "%~dp0"
+curl -LO https://github.com/isanych/vcpkg-tool/releases/download/v2025/vcpkg.exe

@@ -1,3 +1,4 @@
+# zen5 native
 cmake_policy(SET CMP0057 NEW)
 set(VCPKG_TARGET_ARCHITECTURE x64)
 set(VCPKG_CRT_LINKAGE dynamic)

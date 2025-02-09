@@ -12,17 +12,3 @@ index b7a7482..a7f7194 100644
  #endif
  
   private:
-diff --git a/src/google/protobuf/extension_set.cc b/src/google/protobuf/extension_set.cc
-index bad7d59..7b7965b 100644
---- a/src/google/protobuf/extension_set.cc
-+++ b/src/google/protobuf/extension_set.cc
-@@ -1576,7 +1576,8 @@ void ExtensionSet::Extension::Free() {
-         if (is_lazy) {
-           delete ptr.lazymessage_value;
-         } else {
--          delete ptr.message_value;
-+          ptr.message_value->~MessageLite();
-+          ::operator delete(ptr.message_value);
-         }
-         break;
-       default:

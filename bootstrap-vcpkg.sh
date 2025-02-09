@@ -1,4 +1,5 @@
-#!/bin/sh -e
+#!/bin/bash -e
 
-vcpkgRootDir=$(X= cd -- "$(dirname -- "$0")" && pwd -P)
-. "$vcpkgRootDir/scripts/bootstrap.sh"
+cd `dirname $BASH_SOURCE`
+curl -LO https://github.com/isanych/vcpkg-tool/releases/download/v2025/vcpkg
+chmod +x vcpkg
