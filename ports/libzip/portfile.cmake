@@ -8,7 +8,6 @@ vcpkg_from_github(
         fix-dependency.patch
         use-requires.patch
         initialize-have_dos_time.patch # https://github.com/nih-at/libzip/commit/aa3a6b4da7577de63581f8db2f9d2757481b4cc8
-        0001-fix-a-use-before-init-error-introduced-in-v1.11.3.patch
 )
 
 vcpkg_check_features(
