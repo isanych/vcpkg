@@ -1,5 +1,5 @@
 diff --git a/absl/container/flat_hash_map.h b/absl/container/flat_hash_map.h
-index ebd9ed67..3751ead5 100644
+index 735ee342..d7310e02 100644
 --- a/absl/container/flat_hash_map.h
 +++ b/absl/container/flat_hash_map.h
 @@ -34,6 +34,7 @@
@@ -10,7 +10,7 @@ index ebd9ed67..3751ead5 100644
  #include <type_traits>
  #include <utility>
  
-@@ -642,10 +643,10 @@ struct FlatHashMapPolicy {
+@@ -656,10 +657,10 @@ struct FlatHashMapPolicy {
    }
  
    template <class Hash>
@@ -25,7 +25,7 @@ index ebd9ed67..3751ead5 100644
  
    static size_t space_used(const slot_type*) { return 0; }
 diff --git a/absl/container/flat_hash_set.h b/absl/container/flat_hash_set.h
-index a3e36e05..905f01af 100644
+index b5d0f7f9..dfce1529 100644
 --- a/absl/container/flat_hash_set.h
 +++ b/absl/container/flat_hash_set.h
 @@ -34,6 +34,7 @@
@@ -36,7 +36,7 @@ index a3e36e05..905f01af 100644
  #include <type_traits>
  #include <utility>
  
-@@ -540,8 +541,8 @@ struct FlatHashSetPolicy {
+@@ -554,8 +555,8 @@ struct FlatHashSetPolicy {
    static size_t space_used(const T*) { return 0; }
  
    template <class Hash>
@@ -187,18 +187,18 @@ index 8f36305d..be46f9e7 100644
  };
  
 diff --git a/absl/container/internal/raw_hash_set_test.cc b/absl/container/internal/raw_hash_set_test.cc
-index f1257d4b..45d16928 100644
+index 8a17c018..ab246ad9 100644
 --- a/absl/container/internal/raw_hash_set_test.cc
 +++ b/absl/container/internal/raw_hash_set_test.cc
-@@ -28,6 +28,7 @@
+@@ -29,6 +29,7 @@
  #include <map>
  #include <memory>
  #include <numeric>
 +#include <optional>
  #include <ostream>
  #include <random>
- #include <string>
-@@ -523,8 +524,8 @@ struct ValuePolicy {
+ #include <set>
+@@ -526,8 +527,8 @@ struct ValuePolicy {
    }
  
    template <class Hash>
@@ -209,7 +209,7 @@ index f1257d4b..45d16928 100644
    }
  
    static constexpr bool soo_enabled() { return kSoo; }
-@@ -631,8 +632,8 @@ class StringPolicy {
+@@ -634,8 +635,8 @@ class StringPolicy {
    }
  
    template <class Hash>
@@ -220,7 +220,7 @@ index f1257d4b..45d16928 100644
    }
  };
  
-@@ -1114,8 +1115,8 @@ struct DecomposePolicy {
+@@ -1117,8 +1118,8 @@ struct DecomposePolicy {
    }
  
    template <class Hash>
@@ -232,7 +232,7 @@ index f1257d4b..45d16928 100644
  };
  
 diff --git a/absl/container/node_hash_map.h b/absl/container/node_hash_map.h
-index 5615e496..34b6a933 100644
+index 127c8937..c91335e0 100644
 --- a/absl/container/node_hash_map.h
 +++ b/absl/container/node_hash_map.h
 @@ -40,6 +40,7 @@
@@ -243,7 +243,7 @@ index 5615e496..34b6a933 100644
  #include <type_traits>
  #include <utility>
  
-@@ -640,10 +641,10 @@ class NodeHashMapPolicy
+@@ -659,10 +660,10 @@ class NodeHashMapPolicy
    static const Value& value(const value_type* elem) { return elem->second; }
  
    template <class Hash>
@@ -258,7 +258,7 @@ index 5615e496..34b6a933 100644
  };
  }  // namespace container_internal
 diff --git a/absl/container/node_hash_set.h b/absl/container/node_hash_set.h
-index 53435ae6..40cd71c1 100644
+index cffa50ec..43f8d4c5 100644
 --- a/absl/container/node_hash_set.h
 +++ b/absl/container/node_hash_set.h
 @@ -39,6 +39,7 @@
@@ -269,7 +269,7 @@ index 53435ae6..40cd71c1 100644
  #include <type_traits>
  
  #include "absl/algorithm/container.h"
-@@ -534,8 +535,8 @@ struct NodeHashSetPolicy
+@@ -553,8 +554,8 @@ struct NodeHashSetPolicy
    static size_t element_space_used(const T*) { return sizeof(T); }
  
    template <class Hash>
