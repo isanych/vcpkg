@@ -54,7 +54,7 @@ if [[ "$EUID" = 0 ]]; then
   rm -rf bin lib lib64 include
   cd "$vcpkgRootDir"
 fi
-$v protobuf grpc boost xerces-c xalan-c mimalloc[override] quazip libzip lua[cpp] sol2 lmdb flatbuffers libbacktrace gmp[fat] yices
+$v protobuf grpc boost xerces-c xalan-c mimalloc[override] libzip lua[cpp] sol2 lmdb flatbuffers libbacktrace gmp[fat] yices
 cd installed/${VCPKG_TRIPLET}
 chmod 777 tools/protobuf/*
 sed -i 's@;systemd;@;@' share/grpc/*.cmake
