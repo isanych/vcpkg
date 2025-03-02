@@ -18,6 +18,7 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 if %VCPKG_QT6% geq 2 %v% qtwebengine
 if %errorlevel% neq 0 exit /b %errorlevel%
 %v% protobuf boost xerces-c xalan-c grpc libzip lua[cpp]
+if %errorlevel% neq 0 exit /b %errorlevel%
 if %x% == x64 %v% mimalloc[override] sol2 lmdb flatbuffers gmp yices
 if %errorlevel% neq 0 exit /b %errorlevel%
 cd "%~dp0installed\%VCPKG_DEFAULT_TRIPLET%"
