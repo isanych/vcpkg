@@ -13,7 +13,6 @@ vcpkg_from_github(
     HEAD_REF master
     PATCHES
         fix-messing-header.patch
-        fix-asio-error.patch
 )
 
 # Handle version data here to prevent issues from doing this twice in parallel
