@@ -10218,7 +10218,7 @@
     },
     "yices": {
       "baseline": "2.6.5",
-      "port-version": 0
+      "port-version": 1
     },
     "yoga": {
       "baseline": "3.2.1",
