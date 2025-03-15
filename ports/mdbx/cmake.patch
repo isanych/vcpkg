@@ -1,0 +1,154 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 7d0e3f4..ac340ff 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -17,13 +17,7 @@
+ # Apache 2.0 License. The goal of this revolution is to provide a clearer and robust API, add more features and new
+ # valuable properties of database.
+ 
+-if(CMAKE_VERSION VERSION_LESS 3.8.2)
+-  cmake_minimum_required(VERSION 3.0.2)
+-elseif(CMAKE_VERSION VERSION_LESS 3.12)
+-  cmake_minimum_required(VERSION 3.8.2)
+-else()
+-  cmake_minimum_required(VERSION 3.12)
+-endif()
++cmake_minimum_required(VERSION 3.29)
+ 
+ cmake_policy(PUSH)
+ cmake_policy(VERSION ${CMAKE_MINIMUM_REQUIRED_VERSION})
+@@ -941,7 +935,7 @@ if(MDBX_BUILD_SHARED_LIBRARY)
+ else()
+   set_target_properties(mdbx-static PROPERTIES OUTPUT_NAME mdbx)
+ endif()
+-target_include_directories(mdbx-static INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}")
++target_include_directories(mdbx-static INTERFACE $<INSTALL_INTERFACE:.> "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
+ 
+ # ######################################################################################################################
+ 
+@@ -966,7 +960,7 @@ if(MDBX_BUILD_SHARED_LIBRARY)
+     set_target_properties(mdbx PROPERTIES LINK_FLAGS "-fvisibility=hidden")
+   endif()
+   list(APPEND MDBX_BUILD_FLAGS ${CMAKE_SHARED_LINKER_FLAGS})
+-  target_include_directories(mdbx INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}")
++  target_include_directories(mdbx INTERFACE $<INSTALL_INTERFACE:.> "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
+ endif()
+ 
+ if(MDBX_BUILD_SHARED_LIBRARY AND MDBX_LINK_TOOLS_NONSTATIC)
+@@ -1034,39 +1028,8 @@ endif()
+ 
+ # ######################################################################################################################
+ 
+-# mdbx-shared-lib installation
+-if(NOT DEFINED MDBX_DLL_INSTALL_DESTINATION)
+-  if(WIN32)
+-    set(MDBX_DLL_INSTALL_DESTINATION ${CMAKE_INSTALL_BINDIR})
+-  else()
+-    set(MDBX_DLL_INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR})
+-  endif()
+-endif()
+ if(MDBX_BUILD_SHARED_LIBRARY)
+-  if(CMAKE_VERSION VERSION_LESS 3.12)
+-    install(
+-      TARGETS mdbx
+-      EXPORT libmdbx
+-      LIBRARY DESTINATION ${MDBX_DLL_INSTALL_DESTINATION} COMPONENT runtime
+-      ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT devel
+-      PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} COMPONENT devel
+-      INCLUDES
+-      DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+-      COMPONENT devel)
+-  else()
+-    install(
+-      TARGETS mdbx
+-      EXPORT libmdbx
+-      LIBRARY DESTINATION ${MDBX_DLL_INSTALL_DESTINATION}
+-              COMPONENT runtime
+-              NAMELINK_COMPONENT devel
+-      OBJECTS DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT devel
+-      ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT devel
+-      PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} COMPONENT devel
+-      INCLUDES
+-      DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+-      COMPONENT devel)
+-  endif()
++  install(TARGETS mdbx EXPORT MdbxTargets)
+ endif(MDBX_BUILD_SHARED_LIBRARY)
+ 
+ # mdbx-tools installation
+@@ -1074,8 +1037,7 @@ if(MDBX_BUILD_TOOLS)
+   if(NOT DEFINED MDBX_TOOLS_INSTALL_DESTINATION)
+     set(MDBX_TOOLS_INSTALL_DESTINATION ${CMAKE_INSTALL_BINDIR})
+   endif()
+-  install(TARGETS mdbx_chk mdbx_stat mdbx_copy mdbx_dump mdbx_load mdbx_drop
+-          RUNTIME DESTINATION ${MDBX_TOOLS_INSTALL_DESTINATION} COMPONENT runtime)
++  install(TARGETS mdbx_chk mdbx_stat mdbx_copy mdbx_dump mdbx_load mdbx_drop)
+   if(MDBX_INSTALL_MANPAGES)
+     if(NOT DEFINED MDBX_MAN_INSTALL_DESTINATION)
+       set(MDBX_MAN_INSTALL_DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+@@ -1091,33 +1053,28 @@ endif(MDBX_BUILD_TOOLS)
+ 
+ # mdbx-static-lib installation
+ if(MDBX_INSTALL_STATIC)
+-  if(CMAKE_VERSION VERSION_LESS 3.12)
+-    install(
+-      TARGETS mdbx-static
+-      EXPORT libmdbx
+-      LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT devel
+-      OBJECTS DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT devel
+-      ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT devel
+-      PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} COMPONENT devel
+-      INCLUDES
+-      DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+-      COMPONENT devel)
+-  else()
+-    install(
+-      TARGETS mdbx-static
+-      EXPORT libmdbx
+-      LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+-              COMPONENT devel
+-              NAMELINK_COMPONENT devel
+-      OBJECTS DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT devel
+-      ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT devel
+-      PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} COMPONENT devel
+-      INCLUDES
+-      DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+-      COMPONENT devel)
+-  endif()
++  install(TARGETS mdbx-static EXPORT MdbxTargets)
+ endif(MDBX_INSTALL_STATIC)
+ 
++install(EXPORT MdbxTargets
++  FILE MdbxTargets.cmake
++  NAMESPACE mdbx::
++  DESTINATION "share/mdbx")
++include(CMakePackageConfigHelpers)
++# generate the config file that includes the exports
++configure_package_config_file(Config.cmake.in
++  "${CMAKE_CURRENT_BINARY_DIR}/MdbxConfig.cmake"
++  INSTALL_DESTINATION "share/mdbx"
++  NO_SET_AND_CHECK_MACRO
++  NO_CHECK_REQUIRED_COMPONENTS_MACRO
++)
++write_basic_package_version_file(
++  "${CMAKE_CURRENT_BINARY_DIR}/MdbxVersion.cmake"
++  VERSION ${MDBX_VERSION}
++  COMPATIBILITY AnyNewerVersion
++)
++install(FILES "${CMAKE_CURRENT_BINARY_DIR}/MdbxConfig.cmake" "${CMAKE_CURRENT_BINARY_DIR}/MdbxVersion.cmake" DESTINATION "share/mdbx")
++
+ # ######################################################################################################################
+ 
+ # collect options & build info
+diff --git a/Config.cmake.in b/Config.cmake.in
+new file mode 100644
+index 0000000..24ecb7c
+--- /dev/null
++++ b/Config.cmake.in
+@@ -0,0 +1,6 @@
++@PACKAGE_INIT@
++
++set(CMAKE_THREAD_PREFER_PTHREAD ON)
++set(THREADS_PREFER_PTHREAD_FLAG ON)
++find_package(Threads REQUIRED)
++include("${CMAKE_CURRENT_LIST_DIR}/MdbxTargets.cmake")

@@ -5984,6 +5984,10 @@
       "baseline": "0.5.2",
       "port-version": 0
     },
+    "mdbx": {
+      "baseline": "0.13.4",
+      "port-version": 0
+    },
     "mdl-sdk": {
       "baseline": "2024.1",
       "port-version": 0
@@ -10218,7 +10222,7 @@
     },
     "yices": {
       "baseline": "2.6.5",
-      "port-version": 1
+      "port-version": 2
     },
     "yoga": {
       "baseline": "3.2.1",

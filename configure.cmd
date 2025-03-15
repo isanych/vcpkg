@@ -21,7 +21,7 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 if %VCPKG_QT6% geq 2 if not exist installed\%VCPKG_DEFAULT_TRIPLET%\bin\Qt6WebEngineWidgets.dll exit /b 1
 %v% protobuf boost xerces-c xalan-c grpc libzip lua[cpp]
 if %errorlevel% neq 0 exit /b %errorlevel%
-if %x% == x64 %v% mimalloc[override] sol2 lmdb flatbuffers gmp yices
+if %x% == x64 %v% mimalloc[override] sol2 lmdb mdbx flatbuffers gmp yices
 if %errorlevel% neq 0 exit /b %errorlevel%
 cd "%~dp0installed\%VCPKG_DEFAULT_TRIPLET%"
 rmdir tools\nodejs
