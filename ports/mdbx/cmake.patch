@@ -142,7 +142,7 @@ index 7d0e3f4..afa3fcc 100644
  # collect options & build info
 diff --git a/Config.cmake.in b/Config.cmake.in
 new file mode 100644
-index 0000000..24ecb7c
+index 0000000..27e5e68
 --- /dev/null
 +++ b/Config.cmake.in
 @@ -0,0 +1,6 @@
@@ -151,4 +151,4 @@ index 0000000..24ecb7c
 +set(CMAKE_THREAD_PREFER_PTHREAD ON)
 +set(THREADS_PREFER_PTHREAD_FLAG ON)
 +find_package(Threads REQUIRED)
-+include("${CMAKE_CURRENT_LIST_DIR}/MdbxTargets.cmake")
++include("${CMAKE_CURRENT_LIST_DIR}/mdbxTargets.cmake")
