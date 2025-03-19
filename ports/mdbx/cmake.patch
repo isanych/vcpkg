@@ -1,5 +1,5 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 7d0e3f4..ac340ff 100644
+index 7d0e3f4..afa3fcc 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -17,13 +17,7 @@
@@ -72,7 +72,7 @@ index 7d0e3f4..ac340ff 100644
 -      DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 -      COMPONENT devel)
 -  endif()
-+  install(TARGETS mdbx EXPORT MdbxTargets)
++  install(TARGETS mdbx EXPORT mdbxTargets)
  endif(MDBX_BUILD_SHARED_LIBRARY)
  
  # mdbx-tools installation
@@ -115,27 +115,27 @@ index 7d0e3f4..ac340ff 100644
 -      DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 -      COMPONENT devel)
 -  endif()
-+  install(TARGETS mdbx-static EXPORT MdbxTargets)
++  install(TARGETS mdbx-static EXPORT mdbxTargets)
  endif(MDBX_INSTALL_STATIC)
  
-+install(EXPORT MdbxTargets
-+  FILE MdbxTargets.cmake
++install(EXPORT mdbxTargets
++  FILE mdbxTargets.cmake
 +  NAMESPACE mdbx::
 +  DESTINATION "share/mdbx")
 +include(CMakePackageConfigHelpers)
 +# generate the config file that includes the exports
 +configure_package_config_file(Config.cmake.in
-+  "${CMAKE_CURRENT_BINARY_DIR}/MdbxConfig.cmake"
++  "${CMAKE_CURRENT_BINARY_DIR}/mdbxConfig.cmake"
 +  INSTALL_DESTINATION "share/mdbx"
 +  NO_SET_AND_CHECK_MACRO
 +  NO_CHECK_REQUIRED_COMPONENTS_MACRO
 +)
 +write_basic_package_version_file(
-+  "${CMAKE_CURRENT_BINARY_DIR}/MdbxVersion.cmake"
++  "${CMAKE_CURRENT_BINARY_DIR}/mdbxVersion.cmake"
 +  VERSION ${MDBX_VERSION}
 +  COMPATIBILITY AnyNewerVersion
 +)
-+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/MdbxConfig.cmake" "${CMAKE_CURRENT_BINARY_DIR}/MdbxVersion.cmake" DESTINATION "share/mdbx")
++install(FILES "${CMAKE_CURRENT_BINARY_DIR}/mdbxConfig.cmake" "${CMAKE_CURRENT_BINARY_DIR}/mdbxVersion.cmake" DESTINATION "share/mdbx")
 +
  # ######################################################################################################################
  
