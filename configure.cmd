@@ -13,8 +13,10 @@ if %VCPKG_QT5% geq 1 %v% qt5-base[icu] qt5-script qt5-xmlpatterns
 if %errorlevel% neq 0 exit /b %errorlevel%
 if %VCPKG_QT6% geq 1 %v% qtbase qtdeclarative qt5compat
 if %errorlevel% neq 0 exit /b %errorlevel%
+rem set VCPKG_KEEP_ENV_VARS=PATH
 if %VCPKG_QT5% geq 2 %v% atlmfc qt5-webengine
 if %errorlevel% neq 0 exit /b %errorlevel%
+rem set VCPKG_KEEP_ENV_VARS=
 if %VCPKG_QT5% geq 2 if not exist installed\%VCPKG_DEFAULT_TRIPLET%\bin\Qt5WebEngineWidgets.dll exit /b 1
 if %VCPKG_QT6% geq 2 %v% qtwebengine
 if %errorlevel% neq 0 exit /b %errorlevel%

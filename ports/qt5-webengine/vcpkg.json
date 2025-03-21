@@ -29,7 +29,11 @@
     "qt5-declarative",
     "qt5-quickcontrols",
     "qt5-quickcontrols2",
-    "qt5-tools"
+    "qt5-tools",
+    {
+      "name": "vcpkg-tool-nodejs",
+      "host": true
+    }
   ],
   "features": {
     "proprietary-codecs": {
