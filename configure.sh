@@ -48,7 +48,7 @@ cd installed/${VCPKG_TRIPLET}
 ../../postinstall.py || true
 cd "$vcpkgRootDir"
 (( ${VCPKG_QT5} < 2 )) || PKG_CONFIG_PATH="$vcpkgRootDir/installed/${VCPKG_TRIPLET}/lib/pkgconfig" $v qt5-webengine
-(( ${VCPKG_QT6} < 1 )) || PKG_CONFIG_PATH="$vcpkgRootDir/installed/${VCPKG_TRIPLET}/lib/pkgconfig" $v qtwebengine
+(( ${VCPKG_QT6} < 2 )) || PKG_CONFIG_PATH="$vcpkgRootDir/installed/${VCPKG_TRIPLET}/lib/pkgconfig" $v qtwebengine
 if [[ "$EUID" = 0 ]]; then
   cd /usr/local
   rm -rf bin lib lib64 include
