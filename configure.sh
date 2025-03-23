@@ -43,7 +43,7 @@ cd ../..
 (( ${VCPKG_QT5} < 1 )) || $v qt5-script qt5-xmlpatterns
 $v libxml2 libxslt
 (( ${VCPKG_QT5} < 1 )) || $v libwebp qt5-graphicaleffects qt5-quickcontrols qt5-quickcontrols2
-(( ${VCPKG_QT6} < 1 )) || $v qtquickcontrols2
+(( ${VCPKG_QT6} < 1 )) || $v qtquickcontrols2 qttools
 cd installed/${VCPKG_TRIPLET}
 ../../postinstall.py || true
 cd "$vcpkgRootDir"

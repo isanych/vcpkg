@@ -11,7 +11,7 @@ set VCPKG_BINARY_SOURCES=clear
 set v="%~dp0vcpkg" install --editable --triplet=%VCPKG_DEFAULT_TRIPLET% --host-triplet=%VCPKG_DEFAULT_TRIPLET% --x-buildtrees-root=b
 if %VCPKG_QT5% geq 1 %v% qt5-base[icu] qt5-script qt5-xmlpatterns
 if %errorlevel% neq 0 exit /b %errorlevel%
-if %VCPKG_QT6% geq 1 %v% qtbase qtdeclarative qt5compat
+if %VCPKG_QT6% geq 1 %v% qtbase qtdeclarative qt5compat qttools
 if %errorlevel% neq 0 exit /b %errorlevel%
 rem set VCPKG_KEEP_ENV_VARS=PATH
 if %VCPKG_QT5% geq 2 %v% atlmfc qt5-webengine
