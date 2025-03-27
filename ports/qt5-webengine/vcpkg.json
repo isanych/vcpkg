@@ -24,7 +24,10 @@
     },
     {
       "name": "qt5-base",
-      "default-features": false
+      "default-features": false,
+      "features": [
+        "openssl"
+      ]
     },
     "qt5-declarative",
     "qt5-quickcontrols",

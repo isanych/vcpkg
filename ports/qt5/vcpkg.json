@@ -93,6 +93,7 @@
           "features": [
             "icu",
             "mysqlplugin",
+            "openssl",
             "postgresqlplugin"
           ]
         }

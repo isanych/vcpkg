@@ -81,10 +81,6 @@
       "version>=": "1.87.0"
     },
     {
-      "name": "boost-compatibility",
-      "version>=": "1.86.0"
-    },
-    {
       "name": "boost-compute",
       "version>=": "1.87.0"
     },
@@ -632,7 +628,7 @@
         {
           "name": "boost-cobalt",
           "platform": "!osx & !ios & !android & !uwp",
-          "version>=": "1.86.0"
+          "version>=": "1.87.0"
         }
       ]
     },

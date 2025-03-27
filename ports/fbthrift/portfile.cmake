@@ -2,11 +2,12 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO facebook/fbthrift
     REF "v${VERSION}"
-    SHA512 b5f03b4a65333e7856c4f6f9a89e6805a4ce800820fe2a9428a902b1c5999f1f351ba751ba41aea4404a41943dc0c26c7982e0c6ed6b8cc7184040a22f949568
+    SHA512 a5344a1ee15d6a7fdcf1c6d558138d27ce5eaf51bcfefadb372d4f2cbc05828d63b00742dc936cf6b246486f180e5d1f1cd81a0fc76ff20448332d0a48195218
     HEAD_REF main
     PATCHES
         fix-deps.patch
         fix-test.patch
+        fix-bigobj.patch
 )
 
 file(REMOVE "${SOURCE_PATH}/thrift/cmake/FindGMock.cmake")
@@ -71,6 +72,7 @@ file(REMOVE_RECURSE
     "${CURRENT_PACKAGES_DIR}/include/thrift/lib/python/capi/benchmark"
     "${CURRENT_PACKAGES_DIR}/include/thrift/lib/python/conformance"
     "${CURRENT_PACKAGES_DIR}/include/thrift/lib/python/conformance/test"
+    "${CURRENT_PACKAGES_DIR}/include/thrift/lib/python/server/test"
     "${CURRENT_PACKAGES_DIR}/include/thrift/lib/python/test/adapters"
     "${CURRENT_PACKAGES_DIR}/include/thrift/lib/python/test/cpp_conversion"
     "${CURRENT_PACKAGES_DIR}/include/thrift/lib/thrift/annotation"
