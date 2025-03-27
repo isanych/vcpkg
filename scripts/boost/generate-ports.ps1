@@ -28,9 +28,11 @@ $semverVersion = ($version -replace "(\d+(\.\d+){1,3}).*", "`$1")
 # Clear this array when moving to a new boost version
 $defaultPortVersion = 0
 $portVersions = @{
-    'boost-build'           = 1;
+    'boost' = 1;
+    'boost-asio' = 1;
     'boost-atomic' = 1;
-    'boost-function'          = 1
+    'boost-cobalt' = 1;
+    'boost-compute' = 1;
     'boost-context' = 1;
     'boost-flyweight' = 1;
     'boost-interprocess' = 1;

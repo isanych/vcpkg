@@ -750,7 +750,7 @@
     },
     "boost": {
       "baseline": "1.87.0",
-      "port-version": 0
+      "port-version": 1
     },
     "boost-accumulators": {
       "baseline": "1.87.0",
@@ -826,7 +826,7 @@
     },
     "boost-cobalt": {
       "baseline": "1.87.0",
-      "port-version": 0
+      "port-version": 1
     },
     "boost-compat": {
       "baseline": "1.87.0",

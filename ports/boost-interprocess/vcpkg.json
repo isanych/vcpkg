@@ -24,10 +24,6 @@
       "version>=": "1.87.0"
     },
     {
-      "name": "boost-core",
-      "version>=": "1.87.0"
-    },
-    {
       "name": "boost-headers",
       "version>=": "1.87.0"
     },
@@ -37,14 +33,6 @@
     },
     {
       "name": "boost-move",
-      "version>=": "1.87.0"
-    },
-    {
-      "name": "boost-static-assert",
-      "version>=": "1.87.0"
-    },
-    {
-      "name": "boost-type-traits",
       "version>=": "1.87.0"
     },
     {
