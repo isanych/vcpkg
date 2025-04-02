@@ -1,6 +1,6 @@
 {
   "name": "mdbx",
-  "version": "0.13.4",
+  "version": "0.13.5",
   "description": "One of the fastest embeddable key-value ACID database without WAL. libmdbx surpasses the legendary LMDB in terms of reliability, features and performance.",
   "homepage": "https://gitflic.ru/project/erthink/libmdbx",
   "documentation": "https://libmdbx.dqdkfa.ru/",
