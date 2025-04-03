@@ -1,5 +1,5 @@
 diff --git a/include/mimalloc-stats.h b/include/mimalloc-stats.h
-index 44c4886..3aa48bb 100644
+index 44c4886f..6a8e9bad 100644
 --- a/include/mimalloc-stats.h
 +++ b/include/mimalloc-stats.h
 @@ -37,6 +37,7 @@ typedef struct mi_stat_counter_s {
@@ -10,31 +10,22 @@ index 44c4886..3aa48bb 100644
    \
    MI_STAT_COUNTER(mmap_calls) \
    MI_STAT_COUNTER(commit_calls) \
-diff --git a/include/mimalloc.h b/include/mimalloc.h
-index ae6ae26..c0ad687 100644
---- a/include/mimalloc.h
-+++ b/include/mimalloc.h
-@@ -103,6 +103,19 @@ terms of the MIT license. A copy of the license can be found in the file
- extern "C" {
- #endif
+@@ -96,6 +97,10 @@ extern "C" {
+ mi_decl_export void  mi_stats_get( size_t stats_size, mi_stats_t* stats ) mi_attr_noexcept;
+ mi_decl_export char* mi_stats_get_json( size_t buf_size, char* buf ) mi_attr_noexcept;    // use mi_free to free the result if the input buf == NULL
  
-+// ------------------------------------------------------
-+// PRQA interface
-+// ------------------------------------------------------
-+
-+typedef struct mi_prqa_stat_s {
-+    int64_t current;
-+    int64_t peak;
-+} mi_prqa_stat_t;
-+
-+mi_decl_nodiscard mi_decl_export mi_prqa_stat_t mi_get_prqa_malloc_stat(void) mi_attr_noexcept;
++mi_decl_nodiscard mi_decl_export mi_stat_count_t mi_get_prqa_malloc_stat(void) mi_attr_noexcept;
 +mi_decl_export void mi_reset_prqa_malloc_stat(void) mi_attr_noexcept;
 +mi_decl_export void mi_track_prqa_malloc_stat(bool enable) mi_attr_noexcept;
 +
- // ------------------------------------------------------
- // Standard malloc interface
- // ------------------------------------------------------
-@@ -155,6 +168,7 @@ mi_decl_export void mi_stats_merge(void)      mi_attr_noexcept;
+ #ifdef __cplusplus
+ }
+ #endif
+diff --git a/include/mimalloc.h b/include/mimalloc.h
+index ae6ae262..d165bdce 100644
+--- a/include/mimalloc.h
++++ b/include/mimalloc.h
+@@ -155,6 +155,7 @@ mi_decl_export void mi_stats_merge(void)      mi_attr_noexcept;
  mi_decl_export void mi_stats_print(void* out) mi_attr_noexcept;  // backward compatibility: `out` is ignored and should be NULL
  mi_decl_export void mi_stats_print_out(mi_output_fun* out, void* arg) mi_attr_noexcept;
  mi_decl_export void mi_options_print(void)    mi_attr_noexcept;
@@ -43,7 +34,7 @@ index ae6ae26..c0ad687 100644
  mi_decl_export void mi_process_init(void)     mi_attr_noexcept;
  mi_decl_export void mi_thread_init(void)      mi_attr_noexcept;
 diff --git a/include/mimalloc/internal.h b/include/mimalloc/internal.h
-index c53c841..6eca975 100644
+index c53c841a..6eca9755 100644
 --- a/include/mimalloc/internal.h
 +++ b/include/mimalloc/internal.h
 @@ -236,6 +236,22 @@ mi_msecs_t  _mi_clock_now(void);
@@ -81,7 +72,7 @@ index c53c841..6eca975 100644
  
  #endif
 diff --git a/include/mimalloc/types.h b/include/mimalloc/types.h
-index 1f4adc0..02ab1cb 100644
+index 1f4adc07..02ab1cb2 100644
 --- a/include/mimalloc/types.h
 +++ b/include/mimalloc/types.h
 @@ -700,5 +700,12 @@ void _mi_stat_counter_increase(mi_stat_counter_t* stat, size_t amount);
@@ -98,7 +89,7 @@ index 1f4adc0..02ab1cb 100644
  
  #endif
 diff --git a/src/alloc-aligned.c b/src/alloc-aligned.c
-index bb9e9ec..876de4e 100644
+index bb9e9ecb..876de4e8 100644
 --- a/src/alloc-aligned.c
 +++ b/src/alloc-aligned.c
 @@ -194,6 +194,9 @@ static void* mi_heap_malloc_zero_aligned_at(mi_heap_t* const heap, const size_t
@@ -112,7 +103,7 @@ index bb9e9ec..876de4e 100644
          mi_assert_internal(p != NULL);
          mi_assert_internal(((uintptr_t)p + offset) % alignment == 0);
 diff --git a/src/alloc.c b/src/alloc.c
-index 2350dc9..43f2ad4 100644
+index 2350dc9c..43f2ad42 100644
 --- a/src/alloc.c
 +++ b/src/alloc.c
 @@ -150,8 +150,17 @@ static inline mi_decl_restrict void* mi_heap_malloc_small_zero(mi_heap_t* heap,
@@ -152,7 +143,7 @@ index 2350dc9..43f2ad4 100644
      if (p != NULL && zero) {
        mi_assert_expensive(mi_mem_is_zero(p, size));
 diff --git a/src/free.c b/src/free.c
-index 3aa6e36..e5592e8 100644
+index 3aa6e369..e5592e8a 100644
 --- a/src/free.c
 +++ b/src/free.c
 @@ -520,17 +520,17 @@ static void mi_check_padding(const mi_page_t* page, const mi_block_t* block) {
@@ -204,7 +195,7 @@ index 3aa6e36..e5592e8 100644
  // Remove guard page when building with MI_GUARDED
  #if MI_GUARDED
 diff --git a/src/heap.c b/src/heap.c
-index bd3a1e2..38ede18 100644
+index bd3a1e2a..452a52a1 100644
 --- a/src/heap.c
 +++ b/src/heap.c
 @@ -354,6 +354,15 @@ static bool _mi_heap_page_destroy(mi_heap_t* heap, mi_page_queue_t* pq, mi_page_
@@ -215,7 +206,7 @@ index bd3a1e2..38ede18 100644
 +    mi_heap_prqa_stat_decrease(heap, prqa_malloc_requested, bsize * inuse);  // todo: off for aligned blocks...
 +  }
 +#else
-+  if (tls_prqa_stat) {
++  if (tls_prqa_stat && _mi_thread_id() == heap->thread_id) {
 +    _mi_page_free_collect(page, false);  // update used count
 +    const size_t inuse = page->used;
 +    mi_heap_prqa_stat_decrease(heap, prqa_malloc_requested, bsize * inuse);  // todo: off for aligned blocks...
@@ -224,7 +215,7 @@ index bd3a1e2..38ede18 100644
  
    /// pretend it is all free now
 diff --git a/src/init.c b/src/init.c
-index b0fb2e6..24fead8 100644
+index b0fb2e66..24fead8a 100644
 --- a/src/init.c
 +++ b/src/init.c
 @@ -73,7 +73,7 @@ const mi_page_t _mi_page_empty = {
@@ -237,7 +228,7 @@ index b0fb2e6..24fead8 100644
    { 0 }, { 0 }, { 0 }, { 0 }, \
    \
 diff --git a/src/stats.c b/src/stats.c
-index d6c76fa..b4bb783 100644
+index d6c76fa5..dfbcf3f7 100644
 --- a/src/stats.c
 +++ b/src/stats.c
 @@ -19,6 +19,29 @@ terms of the MIT license. A copy of the license can be found in the file
@@ -246,21 +237,21 @@ index d6c76fa..b4bb783 100644
  
 +mi_decl_thread bool tls_prqa_stat = false;
 +
-+mi_decl_nodiscard mi_decl_export mi_prqa_stat_t mi_get_prqa_malloc_stat(void) mi_attr_noexcept {
-+  mi_heap_t * heap = mi_prim_get_default_heap();
-+  mi_assert(mi_heap_is_initialized(heap));
-+  mi_stat_count_t * mc = &heap->tld->stats.prqa_malloc_requested;
-+  mi_assert(mc->current >= 0);
-+  mi_prqa_stat_t stat = { mc->current, mc->peak };
-+  return stat;
++mi_decl_nodiscard mi_decl_export mi_stat_count_t mi_get_prqa_malloc_stat(void) mi_attr_noexcept {
++  if (tls_prqa_stat) {
++    mi_heap_t* heap = mi_prim_get_default_heap();
++    mi_assert(mi_heap_is_initialized(heap));
++    return heap->tld->stats.prqa_malloc_requested;
++  }
++  return {0,0,0};
 +}
 +
 +mi_decl_export void mi_reset_prqa_malloc_stat(void) mi_attr_noexcept {
-+  mi_heap_t * heap = mi_prim_get_default_heap();
-+  mi_assert(mi_heap_is_initialized(heap));
-+  mi_stat_count_t * mc = &heap->tld->stats.prqa_malloc_requested;
-+  mc->current = 0;
-+  mc->peak = 0;
++  if (tls_prqa_stat) {
++    mi_heap_t* heap = mi_prim_get_default_heap();
++    mi_assert(mi_heap_is_initialized(heap));
++    memset(&heap->tld->stats.prqa_malloc_requested, 0, sizeof(mi_stat_count_t));
++  }
 +}
 +
 +mi_decl_export void mi_track_prqa_malloc_stat(bool enable) mi_attr_noexcept {
@@ -314,3 +305,13 @@ index d6c76fa..b4bb783 100644
  static void mi_stat_print_ex(const mi_stat_count_t* stat, const char* msg, int64_t unit, mi_output_fun* out, void* arg, const char* notok ) {
    _mi_fprintf(out, arg,"%10s:", msg);
    if (unit != 0) {
+@@ -353,7 +383,9 @@ static mi_stats_t* mi_stats_get_default(void) {
+ static void mi_stats_merge_from(mi_stats_t* stats) {
+   if (stats != &_mi_stats_main) {
+     mi_stats_add(&_mi_stats_main, stats);
++    mi_stat_count_t temp = stats->prqa_malloc_requested;
+     memset(stats, 0, sizeof(mi_stats_t));
++    stats->prqa_malloc_requested = temp;
+   }
+ }
+ 
