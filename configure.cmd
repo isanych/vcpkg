@@ -1,7 +1,7 @@
 cd "%~dp0"
 if [%x%] == [] set x=x64
 if [%VCPKG_ADD%] == [] set VCPKG_ADD=https://mirror.qac.perforce.com/vcpkg/vcpkg-add-2025-windows-%x%.tgz
-if [%VCPKG_QT5%] == [] set VCPKG_QT5=2
+if [%VCPKG_QT5%] == [] set VCPKG_QT5=0
 if [%VCPKG_QT6%] == [] set VCPKG_QT6=2
 if [%VCPKG_DEFAULT_TRIPLET%] == [] set VCPKG_DEFAULT_TRIPLET=%x%w
 set VCPKG_DEFAULT_HOST_TRIPLET=%VCPKG_DEFAULT_TRIPLET%

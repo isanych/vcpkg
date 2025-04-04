@@ -9,7 +9,7 @@ export VCPKG_BINARY_SOURCES=clear
 : ${VCPKG_BRANCH:=2025}
 : ${VCPKG_ADD:=https://mirror.qac.perforce.com/vcpkg/vcpkg-add-2025-debian11-x64.txz}
 [[ -n "${VCPKG_TRIPLET}" ]] || export VCPKG_TRIPLET=x64l
-[[ -n "${VCPKG_QT5}" ]] || export VCPKG_QT5=2
+[[ -n "${VCPKG_QT5}" ]] || export VCPKG_QT5=0
 [[ -n "${VCPKG_QT6}" ]] || export VCPKG_QT6=2
 [[ ! -d /mnt/mirror/vcpkg/downloads || -e downloads ]] || ln -s /mnt/mirror/vcpkg/downloads
 [[ -f vcpkg ]] || ./bootstrap-vcpkg.sh -disableMetrics
