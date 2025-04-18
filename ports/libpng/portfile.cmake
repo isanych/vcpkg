@@ -1,13 +1,12 @@
 # Download the apng patch
 set(LIBPNG_APNG_PATCH_PATH "")
+if(VCPKG_HOST_IS_WINDOWS)
+    # Get (g)awk and gzip installed
+    vcpkg_acquire_msys(MSYS_ROOT PACKAGES gawk gzip)
+    set(AWK_EXE_PATH "${MSYS_ROOT}/usr/bin")
+    vcpkg_add_to_path("${AWK_EXE_PATH}")
+endif()
 if ("apng" IN_LIST FEATURES)
-    if(VCPKG_HOST_IS_WINDOWS)
-        # Get (g)awk and gzip installed
-        vcpkg_acquire_msys(MSYS_ROOT PACKAGES gawk gzip)
-        set(AWK_EXE_PATH "${MSYS_ROOT}/usr/bin")
-        vcpkg_add_to_path("${AWK_EXE_PATH}")
-    endif()
-
     set(LIBPNG_APNG_PATCH_NAME "libpng-${VERSION}-apng.patch")
     vcpkg_download_distfile(LIBPNG_APNG_PATCH_ARCHIVE
         URLS "https://downloads.sourceforge.net/project/libpng-apng/libpng16/${VERSION}/${LIBPNG_APNG_PATCH_NAME}.gz"
