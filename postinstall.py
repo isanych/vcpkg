@@ -67,10 +67,10 @@ def read_file(name):
 
 
 def ensure_dir(name):
-    dir = os.path.dirname(name)
-    if dir and not os.path.exists(dir):
-        os.makedirs(dir)
-    return dir
+    dir_ = os.path.dirname(name)
+    if dir_ and not os.path.exists(dir_):
+        os.makedirs(dir_)
+    return dir_
 
 
 def write_file(name, data):
@@ -116,13 +116,13 @@ def ensure_link_full(name, source):
         os.remove(name)
     if os.path.exists(name):
         return
-    dir = ensure_dir(name)
-    rel_source = os.path.relpath(source, dir)
+    dir_ = ensure_dir(name)
+    rel_source = os.path.relpath(source, dir_)
     os.symlink(rel_source, name, target_is_directory=os.path.isdir(source))
 
 
-def ensure_link(dir, source):
-    ensure_link_full(os.path.join(dir, os.path.basename(source)), source)
+def ensure_link(dir_, source):
+    ensure_link_full(os.path.join(dir_, os.path.basename(source)), source)
 
 
 def ensure_file(name, data):
@@ -134,7 +134,8 @@ def qt_conf_one(name, content):
     if os.path.exists(name):
         content = read_file(name)
     if "${CURRENT_INSTALLED_DIR}" in content:
-        write_file(name, content.replace("${CURRENT_INSTALLED_DIR}", cwd.replace("\\", "/")))
+        write_file(name, content.replace("CURRENT_HOST_INSTALLED_DIR", "CURRENT_INSTALLED_DIR").replace(
+            "${CURRENT_INSTALLED_DIR}", cwd.replace("\\", "/")))
     return content
 
 
@@ -156,120 +157,77 @@ cwd = os.getcwd()
 if os.path.exists("debug/lib/cmake"):
     shutil.rmtree("debug/lib/cmake")
 
-qt_conf("tools/qt5/qt_release.conf", "bin/qt.conf", """[DevicePaths]
+qt_conf("tools/Qt6/qt_release.conf", "bin/qt.conf", """[DevicePaths]
 Prefix=${CURRENT_INSTALLED_DIR}
-Documentation=share/qt5/doc
-LibraryExecutables=tools/qt5
-Imports=tools/qt5/imports
-ArchData=tools/qt5
-Data=share/qt5
-Translations=share/qt5/translations
-Examples=share/qt5/examples
+Headers=include/Qt6/
+Libraries=lib
+Plugins=Qt6/plugins
+Qml2Imports=Qt6/qml
+Documentation=doc/Qt6/
+Binaries=bin
+LibraryExecutables=tools/Qt6/bin
+ArchData=share/Qt6
+Data=share/Qt6
+Translations=translations/Qt6/
+Examples=share/examples/Qt6/
 [Paths]
 Prefix=${CURRENT_INSTALLED_DIR}
-Documentation=share/qt5/doc
-LibraryExecutables=tools/qt5
-Imports=tools/qt5/imports
-ArchData=tools/qt5
-Data=share/qt5
-Translations=share/qt5/translations
-Examples=share/qt5/examples
-HostPrefix=${CURRENT_INSTALLED_DIR}/tools/qt5
-TargetSpec=win32-msvc
-HostSpec=win32-msvc
-""" if sys.platform == "win32" else """[DevicePaths]
-Prefix=${CURRENT_INSTALLED_DIR}
-Documentation=share/qt5/doc
-LibraryExecutables=tools/qt5
-Imports=tools/qt5/imports
-ArchData=tools/qt5
-Data=share/qt5
-Translations=share/qt5/translations
-Examples=share/qt5/examples
-[Paths]
-Prefix=${CURRENT_INSTALLED_DIR}
-Documentation=share/qt5/doc
-LibraryExecutables=tools/qt5
-Imports=tools/qt5/imports
-ArchData=tools/qt5
-Data=share/qt5
-Translations=share/qt5/translations
-Examples=share/qt5/examples
-HostPrefix=${CURRENT_INSTALLED_DIR}/tools/qt5
-TargetSpec=linux-g++
-HostSpec=linux-g++
+Headers=include/Qt6/
+Libraries=lib
+Plugins=Qt6/plugins
+Qml2Imports=Qt6/qml
+Documentation=doc/Qt6/
+Binaries=bin
+LibraryExecutables=tools/Qt6/bin
+ArchData=share/Qt6
+Data=share/Qt6
+Translations=translations/Qt6/
+Examples=share/examples/Qt6/
+HostPrefix=${CURRENT_HOST_INSTALLED_DIR}
+HostData=${CURRENT_INSTALLED_DIR}/share/Qt6
+HostBinaries=bin
+HostLibraries=lib
+HostLibraryExecutables=tools/Qt6/bin
 """)
 
-qt_conf("tools/qt5/qt_debug.conf", "debug/bin/qt.conf", """[DevicePaths]
+qt_conf("tools/Qt6/qt_debug.conf", "debug/bin/qt.conf", """[DevicePaths]
 Prefix=${CURRENT_INSTALLED_DIR}
-Documentation=share/qt5/debug/doc
+Headers=include/Qt6/
 Libraries=debug/lib
-LibraryExecutables=tools/qt5/debug
+Plugins=debug/Qt6/plugins
+Qml2Imports=debug/Qt6/qml
+Documentation=doc/Qt6/
 Binaries=debug/bin
-Plugins=debug/plugins
-Imports=tools/qt5/debug/imports
-Qml2Imports=debug/qml
-ArchData=tools/qt5/debug
-Data=share/qt5/debug
-Translations=share/qt5/debug/translations
-Examples=share/qt5/debug/examples
+LibraryExecutables=tools/Qt6/bin
+ArchData=share/Qt6
+Data=share/Qt6
+Translations=translations/Qt6/
+Examples=share/examples/Qt6/
 [Paths]
 Prefix=${CURRENT_INSTALLED_DIR}
-Documentation=share/qt5/debug/doc
+Headers=include/Qt6/
 Libraries=debug/lib
-LibraryExecutables=tools/qt5/debug
+Plugins=debug/Qt6/plugins
+Qml2Imports=debug/Qt6/qml
+Documentation=doc/Qt6/
 Binaries=debug/bin
-Plugins=debug/plugins
-Imports=tools/qt5/debug/imports
-Qml2Imports=debug/qml
-ArchData=tools/qt5/debug
-Data=share/qt5/debug
-Translations=share/qt5/debug/translations
-Examples=share/qt5/debug/examples
-HostPrefix=${CURRENT_INSTALLED_DIR}/tools/qt5/debug
-TargetSpec=win32-msvc
-HostSpec=win32-msvc
-""" if sys.platform == "win32" else """[DevicePaths]
-Prefix=${CURRENT_INSTALLED_DIR}
-Documentation=share/qt5/debug/doc
-Libraries=debug/lib
-LibraryExecutables=tools/qt5/debug
-Binaries=debug/bin
-Plugins=debug/plugins
-Imports=tools/qt5/debug/imports
-Qml2Imports=debug/qml
-ArchData=tools/qt5/debug
-Data=share/qt5/debug
-Translations=share/qt5/debug/translations
-Examples=share/qt5/debug/examples
-[Paths]
-Prefix=${CURRENT_INSTALLED_DIR}
-Documentation=share/qt5/debug/doc
-Libraries=debug/lib
-LibraryExecutables=tools/qt5/debug
-Binaries=debug/bin
-Plugins=debug/plugins
-Imports=tools/qt5/debug/imports
-Qml2Imports=debug/qml
-ArchData=tools/qt5/debug
-Data=share/qt5/debug
-Translations=share/qt5/debug/translations
-Examples=share/qt5/debug/examples
-HostPrefix=${CURRENT_INSTALLED_DIR}/tools/qt5/debug
-TargetSpec=linux-g++
-HostSpec=linux-g++
+LibraryExecutables=tools/Qt6/bin
+ArchData=share/Qt6
+Data=share/Qt6
+Translations=translations/Qt6/
+Examples=share/examples/Qt6/
+HostPrefix=${CURRENT_HOST_INSTALLED_DIR}
+HostData=${CURRENT_INSTALLED_DIR}/share/Qt6
+HostBinaries=debug/bin
+HostLibraries=debug/lib
+HostLibraryExecutables=tools/Qt6/bin
 """)
 
 is_rpath = False
 ensure_link("debug", "include")
-ensure_link("", "share/qt5/doc")
-ensure_link("", "tools/qt5/mkspecs")
-ensure_link("debug", "share/qt5/debug/doc")
-ensure_link("debug", "tools/qt5/debug/mkspecs")
-ensure_link("tools/qt5", "bin")
-ensure_link("tools/qt5/debug", "debug/bin")
 is_windows = sys.platform == "win32"
 is_linux = not is_windows
+# noinspection PyBroadException
 try:
     os.environ["PATH"] = "/opt/patchelf/latest/bin:" + os.environ["PATH"]
     is_rpath = is_linux and bool(which("patchelf")) and bool(which("chrpath"))
@@ -278,17 +236,13 @@ try:
 except:
     is_rpath = False
 exe = "" if is_linux else ".exe"
-for t in ("moc", "qmake", "rcc", "uic"):
-    ensure_link("bin", f"tools/qt5-base/bin/{t}{exe}")
-for t in ("lprodump", "lrelease", "lrelease-pro", "lupdate", "lupdate-pro", "lconvert"):
-    ensure_link("bin", f"tools/qt5-tools/bin/{t}{exe}")
-for t in ("h5diff", "h5dump"):
-    ensure_link_full(f"bin/{t}{exe}", f"tools/hdf5/{t}-shared{exe}")
+for t in ("moc", "qmake", "rcc", "uic", "lprodump", "lrelease", "lrelease-pro", "lupdate", "lupdate-pro", "lconvert"):
+    ensure_link("bin", f"tools/Qt6/bin/{t}{exe}")
 if os.path.exists("tools/protobuf/protoc") and is_linux and os.stat("tools/protobuf/protoc").st_mode & 0o777 != 0o755:
     os.chmod("tools/protobuf/protoc", 0o755)
 ensure_link("bin", f"tools/bzip2/bzip2{exe}")
 ensure_link("bin", f"tools/liblzma/xz{exe}")
 ensure_link("bin", f"tools/grpc/grpc_cpp_plugin{exe}")
 ensure_link("bin", f"tools/protobuf/protoc{exe}")
-if not is_windows:
+if is_linux:
     glob_rpath()
