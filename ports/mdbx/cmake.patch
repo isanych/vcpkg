@@ -1,5 +1,5 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 7d0e3f4..afa3fcc 100644
+index 7d0e3f4..01ce221 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -17,13 +17,7 @@
@@ -35,7 +35,7 @@ index 7d0e3f4..afa3fcc 100644
  endif()
  
  if(MDBX_BUILD_SHARED_LIBRARY AND MDBX_LINK_TOOLS_NONSTATIC)
-@@ -1034,39 +1028,8 @@ endif()
+@@ -1034,38 +1028,10 @@ endif()
  
  # ######################################################################################################################
  
@@ -71,12 +71,13 @@ index 7d0e3f4..afa3fcc 100644
 -      INCLUDES
 -      DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 -      COMPONENT devel)
--  endif()
 +  install(TARGETS mdbx EXPORT mdbxTargets)
++  if(MSVC)
++    install(FILES $<TARGET_PDB_FILE:mdbx> CONFIGURATIONS "Debug" DESTINATION bin OPTIONAL)
+   endif()
  endif(MDBX_BUILD_SHARED_LIBRARY)
  
- # mdbx-tools installation
-@@ -1074,8 +1037,7 @@ if(MDBX_BUILD_TOOLS)
+@@ -1074,8 +1040,7 @@ if(MDBX_BUILD_TOOLS)
    if(NOT DEFINED MDBX_TOOLS_INSTALL_DESTINATION)
      set(MDBX_TOOLS_INSTALL_DESTINATION ${CMAKE_INSTALL_BINDIR})
    endif()
@@ -86,7 +87,7 @@ index 7d0e3f4..afa3fcc 100644
    if(MDBX_INSTALL_MANPAGES)
      if(NOT DEFINED MDBX_MAN_INSTALL_DESTINATION)
        set(MDBX_MAN_INSTALL_DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
-@@ -1091,33 +1053,28 @@ endif(MDBX_BUILD_TOOLS)
+@@ -1091,33 +1056,28 @@ endif(MDBX_BUILD_TOOLS)
  
  # mdbx-static-lib installation
  if(MDBX_INSTALL_STATIC)
@@ -152,3 +153,68 @@ index 0000000..27e5e68
 +set(THREADS_PREFER_PTHREAD_FLAG ON)
 +find_package(Threads REQUIRED)
 +include("${CMAKE_CURRENT_LIST_DIR}/mdbxTargets.cmake")
+diff --git a/cmake/utils.cmake b/cmake/utils.cmake
+index abb4cd3..139e164 100644
+--- a/cmake/utils.cmake
++++ b/cmake/utils.cmake
+@@ -356,36 +356,6 @@ macro(semver_provide name source_root_directory build_directory_for_json_output
+   set(_version_from "")
+   set(_git_root FALSE)
+ 
+-  find_program(GIT git)
+-  if(GIT)
+-    execute_process(
+-      COMMAND ${GIT} rev-parse --show-toplevel
+-      OUTPUT_VARIABLE _git_root
+-      ERROR_VARIABLE _git_root_error
+-      OUTPUT_STRIP_TRAILING_WHITESPACE
+-      WORKING_DIRECTORY ${source_root_directory}
+-      RESULT_VARIABLE _rc)
+-    if(_rc OR "${_git_root}" STREQUAL "")
+-      if(EXISTS "${source_root_directory}/.git")
+-        message(ERROR "`git rev-parse --show-toplevel` failed '${_git_root_error}'")
+-      else()
+-        message(VERBOSE "`git rev-parse --show-toplevel` failed '${_git_root_error}'")
+-      endif()
+-    else()
+-      set(_source_root "${source_root_directory}")
+-      if(NOT CMAKE_VERSION VERSION_LESS 3.19)
+-        file(REAL_PATH "${_git_root}" _git_root)
+-        file(REAL_PATH "${_source_root}" _source_root)
+-      endif()
+-      if(_source_root STREQUAL _git_root AND EXISTS "${_git_root}/VERSION.json")
+-        message(
+-          FATAL_ERROR
+-            "Несколько источников информации о версии, допустим только один из: репозиторий git, либо файл VERSION.json"
+-        )
+-      endif()
+-    endif()
+-  endif()
+-
+   if(EXISTS "${source_root_directory}/VERSION.json")
+     set(_version_from "${source_root_directory}/VERSION.json")
+ 
+diff --git a/mdbx.c b/mdbx.c
+index 2e80d09..afcdc6c 100644
+--- a/mdbx.c
++++ b/mdbx.c
+@@ -7156,7 +7156,10 @@ __cold int mdbx_env_set_userctx(MDBX_env *env, void *ctx) {
+ 
+ __cold void *mdbx_env_get_userctx(const MDBX_env *env) { return env ? env->userctx : nullptr; }
+ 
++MDBX_assert_func* global_assert_func = nullptr;
++
+ __cold int mdbx_env_set_assert(MDBX_env *env, MDBX_assert_func *func) {
++  global_assert_func = func;
+   int rc = check_env(env, false);
+   if (unlikely(rc != MDBX_SUCCESS))
+     return LOG_IFERR(rc);
+@@ -27804,6 +27807,8 @@ __cold void mdbx_assert_fail(const MDBX_env *env, const char *msg, const char *f
+ #if MDBX_DEBUG
+   if (env && env->assert_func)
+     env->assert_func(env, msg, func, line);
++  else if (global_assert_func)
++    global_assert_func(nullptr, msg, func, line);
+ #else
+   (void)env;
+   assert_fail(msg, func, line);

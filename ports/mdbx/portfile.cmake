@@ -1,7 +1,7 @@
 vcpkg_download_distfile(ARCHIVE
     URLS "https://libmdbx.dqdkfa.ru/release/libmdbx-amalgamated-${VERSION}.tar.xz"
     FILENAME "libmdbx-amalgamated-${VERSION}.tar.xz"
-    SHA512 9fcfa5b5539abf3b9cd4e2b79370a950a7f1e271dee4eb5cb7f79ceb24dcec91e3bb2f9cacec2b7655874bd4d8da88725bd5560bfa72b8553d4d30986cd10d53
+    SHA512 4d4dad6e8d80c53ebe7c1908cfc8b7f7eaccf875f3696ea4447a1536109f7d6c4f3139fcdc92cce4096b071d8d69b0e74e5dcb53ee48d3ffe9383e86ad437e75
 )
 
 vcpkg_extract_source_archive(
