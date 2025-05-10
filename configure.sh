@@ -6,7 +6,7 @@ export CC=`which gcc`
 export CXX=`which g++`
 unset SITE_CONFIG
 export VCPKG_BINARY_SOURCES=clear
-: ${VCPKG_BRANCH:=2025}
+: ${VCPKG_BRANCH:=2026}
 : ${VCPKG_ADD:=https://mirror.qac.perforce.com/vcpkg/vcpkg-add-2025-debian11-x64.txz}
 [[ -n "${VCPKG_TRIPLET}" ]] || export VCPKG_TRIPLET=x64l
 [[ -n "${VCPKG_QT5}" ]] || export VCPKG_QT5=0
