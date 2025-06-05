@@ -36,7 +36,6 @@
       "host": true,
       "default-features": false
     },
-    "sqlite3",
     {
       "name": "vcpkg-cmake-get-vars",
       "host": true
@@ -80,6 +79,12 @@
       "description": "Build the sql plugin for connecting to postgresql databases",
       "dependencies": [
         "libpq"
+      ]
+    },
+    "sqlite3plugin": {
+      "description": "Build the sql plugin for connecting to sqlite3 databases",
+      "dependencies": [
+        "sqlite3"
       ]
     },
     "vulkan": {

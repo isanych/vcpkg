@@ -1,5 +1,5 @@
 diff --git a/src/segment.c b/src/segment.c
-index 29502bcd..2d25254a 100644
+index 29502bc..2d25254 100644
 --- a/src/segment.c
 +++ b/src/segment.c
 @@ -862,7 +862,7 @@ static mi_segment_t* mi_segment_os_alloc( size_t required, size_t page_alignment
