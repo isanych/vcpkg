@@ -133,7 +133,7 @@ function(qt_get_url_filename qt_port out_urls out_filename)
         set(mirrors
             "https://mirror.qac.perforce.com/"
         )
-        set(url_subpath "$qt/${qt_major_minor}/${QT_VERSION}/submodules/${filename}")
+        set(url_subpath "qt/${qt_major_minor}/${QT_VERSION}/submodules/${filename}")
         list(TRANSFORM mirrors APPEND "${url_subpath}" OUTPUT_VARIABLE urls)
     endif()
     set(${out_urls} ${urls} PARENT_SCOPE)
