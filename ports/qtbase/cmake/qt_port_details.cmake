@@ -7,7 +7,7 @@
 ## 6. The build should fail with "Done downloading version and emitting hashes." This will have changed out the vcpkg.json versions of the qt ports and rewritten qt_port_data.cmake
 ## 7. Set QT_UPDATE_VERSION back to 0
 
-set(QT_VERSION 6.8.3)
+set(QT_VERSION 6.8.4)
 set(QT_DEV_BRANCH 0)
 
 set(QT_UPDATE_VERSION 0)
@@ -131,10 +131,9 @@ function(qt_get_url_filename qt_port out_urls out_filename)
 
         set(filename "${qt_port}-everywhere-src-${QT_VERSION}.tar.xz")
         set(mirrors
-            "https://download.qt.io/"
-            "https://mirrors.ocf.berkeley.edu/qt/"
+            "https://mirror.qac.perforce.com/"
         )
-        set(url_subpath "${branch_subpath}/qt/${qt_major_minor}/${QT_VERSION}/submodules/${filename}")
+        set(url_subpath "$qt/${qt_major_minor}/${QT_VERSION}/submodules/${filename}")
         list(TRANSFORM mirrors APPEND "${url_subpath}" OUTPUT_VARIABLE urls)
     endif()
     set(${out_urls} ${urls} PARENT_SCOPE)
