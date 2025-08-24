@@ -96,7 +96,15 @@
           "name": "qt3d",
           "default-features": false,
           "features": [
+            "render",
             "rhi"
+          ]
+        },
+        {
+          "name": "qtbase",
+          "default-features": false,
+          "features": [
+            "vulkan"
           ]
         },
         "vulkan"

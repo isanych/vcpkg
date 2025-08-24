@@ -254,6 +254,13 @@
         {
           "name": "freetype",
           "default-features": false
+        },
+        {
+          "name": "qtbase",
+          "default-features": false,
+          "features": [
+            "gui"
+          ]
         }
       ]
     },
@@ -314,13 +321,6 @@
           "name": "qtbase",
           "default-features": false,
           "features": [
-            "freetype"
-          ]
-        },
-        {
-          "name": "qtbase",
-          "default-features": false,
-          "features": [
             "opengl"
           ],
           "platform": "osx"
@@ -330,6 +330,7 @@
           "default-features": false,
           "features": [
             "egl",
+            "freetype",
             "gles2",
             "opengl"
           ],
@@ -466,7 +467,6 @@
     "sql-oci": {
       "description": "Enable SQL Driver Oracle OCI",
       "dependencies": [
-        "ocilib",
         {
           "name": "qtbase",
           "default-features": false,
@@ -478,7 +478,6 @@
     },
     "sql-odbc": {
       "description": "Enable SQL Driver odbc",
-      "supports": "windows",
       "dependencies": [
         {
           "name": "qtbase",
@@ -486,6 +485,10 @@
           "features": [
             "sql"
           ]
+        },
+        {
+          "name": "unixodbc",
+          "platform": "!windows"
         }
       ]
     },
