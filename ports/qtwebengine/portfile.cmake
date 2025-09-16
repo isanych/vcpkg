@@ -14,6 +14,7 @@ set(${PORT}_PATCHES
       "rpath.diff"
       "vs.patch"
       "uglyhack.patch"
+      "vs2026.patch"
 )
 
 list(REMOVE_ITEM FEATURES "private-dependencies")
