@@ -12,12 +12,12 @@ set(${PORT}_PATCHES
       "pdf-system-libpng.diff"
       "pkg-config.diff"
       "rpath.diff"
+      "include-dir-order.diff"
       "vs.patch"
       "uglyhack.patch"
       "vs2026.patch"
 )
 
-list(REMOVE_ITEM FEATURES "private-dependencies")
 set(qtwebengine_target "${VCPKG_TARGET_TRIPLET}-${VCPKG_CMAKE_SYSTEM_NAME}")
 if(VCPKG_CROSSCOMPILING)
     if(NOT qtwebengine_host STREQUAL qtwebengine_target)
@@ -203,7 +203,7 @@ if(QT_UPDATE_VERSION)
 endif()
 
 qt_cmake_configure(
-    DISABLE_PARALLEL_CONFIGURE # due to in source changes.
+    DISABLE_PARALLEL_CONFIGURE # due to in-source changes.
     OPTIONS
         ${FEATURE_OPTIONS}
         "-DGPerf_EXECUTABLE=${GPERF}"
@@ -222,7 +222,7 @@ qt_cmake_configure(
 )
 
 vcpkg_backup_env_variables(VARS PKG_CONFIG_PATH)
-file(GLOB target_args_gn RELATIVE "${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-dbg/src/core/Release" "${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-dbg/src/core/Release/*/args.gn")
+file(GLOB target_args_gn RELATIVE "${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-rel/src/core/Release" "${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-rel/src/core/Release/*/args.gn")
 if(NOT VCPKG_BUILD_TYPE)
     block(SCOPE_FOR VARIABLES)
     set(VCPKG_BUILD_TYPE debug)

@@ -10,6 +10,7 @@ vcpkg_from_github(
         fix-utf8-range.patch
         fix-install-dirs.patch
         fix-mingw-tail-call.patch
+        fix-abseil.patch
         support-grpc.patch
         pacify-asan.patch
         ignore-duplicates.patch
