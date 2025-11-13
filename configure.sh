@@ -16,7 +16,7 @@ export VCPKG_BINARY_SOURCES=clear
 v="$vcpkgRootDir/vcpkg install --editable --x-buildtrees-root=b --triplet=${VCPKG_TRIPLET} --host-triplet=${VCPKG_TRIPLET}"
 export LD_LIBRARY_PATH="$vcpkgRootDir/installed/${VCPKG_TRIPLET}/lib"
 $v zstd
-$v glib libjpeg-turbo libpng pkgconf "libxml2[core,iconv,icu,lzma,zlib]" "libxslt"
+$v glib libjpeg-turbo libpng pkgconf "libxml2[core,iconv,icu,zlib]" "libxslt"
 cd installed/${VCPKG_TRIPLET}
 ../../postinstall.py || true
 cd "$vcpkgRootDir"
