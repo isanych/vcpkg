@@ -16,6 +16,7 @@ set(${PORT}_PATCHES
       "vs.patch"
       "uglyhack.patch"
       "vs2026.patch"
+      "icu78.patch"
 )
 
 set(qtwebengine_target "${VCPKG_TARGET_TRIPLET}-${VCPKG_CMAKE_SYSTEM_NAME}")
