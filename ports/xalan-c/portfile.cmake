@@ -9,6 +9,7 @@ vcpkg_from_github(
         fix-win-deprecated-err.patch
         fix-missing-dll-error.patch
         fix-linux-no-bin.patch
+        gcc15.patch
 )
 
 vcpkg_configure_cmake(
