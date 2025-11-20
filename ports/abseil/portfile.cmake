@@ -9,10 +9,10 @@ vcpkg_from_github(
     SHA512 7083b73c3cf763f6f7a7edb70a5171f44d27045a0f5e52ca043e0a86379af2c50cf85dbfea30ebaa22a7bb2929452581d26b1ba18945023b057267d4c3bad2f7
     HEAD_REF master
     PATCHES
-        0001-gcc-undefined-sanitizer-compilation-fix.patch
         001-mingw-dll.patch # Upstreamed (not yet in a release): https://github.com/abseil/abseil-cpp/commit/f2dee57baf19ceeb6d12cf9af7cbb3c049396ba5
         002-string-view.patch
         003-force-cxx-17.patch
+#        abseil-gcc-undefined-sanitizer-compilation-fix.patch
 )
 
 set(ABSL_TEST_HELPERS_OPTIONS "")
