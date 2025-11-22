@@ -1,5 +1,5 @@
 diff --git a/include/mimalloc-stats.h b/include/mimalloc-stats.h
-index 44c4886..6a8e9ba 100644
+index 44c4886f..6a8e9bad 100644
 --- a/include/mimalloc-stats.h
 +++ b/include/mimalloc-stats.h
 @@ -37,6 +37,7 @@ typedef struct mi_stat_counter_s {
@@ -22,22 +22,22 @@ index 44c4886..6a8e9ba 100644
  }
  #endif
 diff --git a/include/mimalloc.h b/include/mimalloc.h
-index ff6f056..88c1b78 100644
+index f887278a..7c33cce7 100644
 --- a/include/mimalloc.h
 +++ b/include/mimalloc.h
-@@ -155,6 +155,7 @@ mi_decl_export void mi_stats_merge(void)      mi_attr_noexcept;
- mi_decl_export void mi_stats_print(void* out) mi_attr_noexcept;  // backward compatibility: `out` is ignored and should be NULL
+@@ -156,6 +156,7 @@ mi_decl_export void mi_stats_print(void* out) mi_attr_noexcept;  // backward com
  mi_decl_export void mi_stats_print_out(mi_output_fun* out, void* arg) mi_attr_noexcept;
+ mi_decl_export void mi_thread_stats_print_out(mi_output_fun* out, void* arg) mi_attr_noexcept;
  mi_decl_export void mi_options_print(void)    mi_attr_noexcept;
 +mi_decl_export void mi_pretty_print_bytes(int64_t n, char* out, int len) mi_attr_noexcept;
  
- mi_decl_export void mi_process_init(void)     mi_attr_noexcept;
- mi_decl_export void mi_thread_init(void)      mi_attr_noexcept;
+ mi_decl_export void mi_process_info(size_t* elapsed_msecs, size_t* user_msecs, size_t* system_msecs,
+                                     size_t* current_rss, size_t* peak_rss,
 diff --git a/include/mimalloc/internal.h b/include/mimalloc/internal.h
-index eae85ab..ad0cd51 100644
+index ca5be930..ae98e531 100644
 --- a/include/mimalloc/internal.h
 +++ b/include/mimalloc/internal.h
-@@ -237,6 +237,23 @@ mi_msecs_t  _mi_clock_now(void);
+@@ -280,6 +280,23 @@ mi_msecs_t  _mi_clock_now(void);
  mi_msecs_t  _mi_clock_end(mi_msecs_t start);
  mi_msecs_t  _mi_clock_start(void);
  
@@ -61,7 +61,7 @@ index eae85ab..ad0cd51 100644
  // "alloc.c"
  void*       _mi_page_malloc_zero(mi_heap_t* heap, mi_page_t* page, size_t size, bool zero) mi_attr_noexcept;  // called from `_mi_malloc_generic`
  void*       _mi_page_malloc(mi_heap_t* heap, mi_page_t* page, size_t size) mi_attr_noexcept;                  // called from `_mi_heap_malloc_aligned`
-@@ -1116,5 +1133,10 @@ static inline void _mi_memzero_aligned(void* dst, size_t n) {
+@@ -1149,5 +1166,10 @@ static inline void _mi_memzero_aligned(void* dst, size_t n) {
  }
  #endif
  
@@ -73,10 +73,10 @@ index eae85ab..ad0cd51 100644
  
  #endif
 diff --git a/include/mimalloc/types.h b/include/mimalloc/types.h
-index 5a3f5fe..daa60c4 100644
+index a15d9cba..432bf602 100644
 --- a/include/mimalloc/types.h
 +++ b/include/mimalloc/types.h
-@@ -704,4 +704,12 @@ void _mi_stat_counter_increase(mi_stat_counter_t* stat, size_t amount);
+@@ -682,4 +682,12 @@ void _mi_stat_counter_increase(mi_stat_counter_t* stat, size_t amount);
  #define mi_heap_stat_decrease(heap,stat,amount)  mi_stat_decrease( (heap)->tld->stats.stat, amount)
  #define mi_heap_stat_adjust_decrease(heap,stat,amount)  mi_stat_adjust_decrease( (heap)->tld->stats.stat, amount)
  
@@ -90,7 +90,7 @@ index 5a3f5fe..daa60c4 100644
 +
  #endif
 diff --git a/src/alloc.c b/src/alloc.c
-index 0fed5e7..90076c6 100644
+index 0fed5e75..90076c61 100644
 --- a/src/alloc.c
 +++ b/src/alloc.c
 @@ -91,7 +91,17 @@ extern inline void* _mi_page_malloc_zero(mi_heap_t* heap, mi_page_t* page, size_
@@ -123,10 +123,10 @@ index 0fed5e7..90076c6 100644
    }
    #if MI_DEBUG>3
 diff --git a/src/free.c b/src/free.c
-index 3b90673..1a0a0a9 100644
+index 5e5ae443..492f6fc3 100644
 --- a/src/free.c
 +++ b/src/free.c
-@@ -520,9 +520,9 @@ static void mi_check_padding(const mi_page_t* page, const mi_block_t* block) {
+@@ -523,9 +523,9 @@ static void mi_check_padding(const mi_page_t* page, const mi_block_t* block) {
  #endif
  
  // only maintain stats for smaller objects if requested
@@ -137,7 +137,7 @@ index 3b90673..1a0a0a9 100644
    mi_heap_t* const heap = mi_heap_get_default();
    const size_t bsize = mi_page_usable_block_size(page);
    // #if (MI_STAT>1)
-@@ -541,13 +541,22 @@ static void mi_stat_free(const mi_page_t* page, const mi_block_t* block) {
+@@ -544,13 +544,22 @@ static void mi_stat_free(const mi_page_t* page, const mi_block_t* block) {
    else {
      mi_heap_stat_decrease(heap, malloc_huge, bsize);
    }
@@ -166,7 +166,7 @@ index 3b90673..1a0a0a9 100644
  // Remove guard page when building with MI_GUARDED
  #if MI_GUARDED
 diff --git a/src/init.c b/src/init.c
-index ddded15..758fec9 100644
+index 3fc8b033..d3ebf119 100644
 --- a/src/init.c
 +++ b/src/init.c
 @@ -73,7 +73,7 @@ const mi_page_t _mi_page_empty = {
@@ -179,7 +179,7 @@ index ddded15..758fec9 100644
    { 0 }, { 0 }, { 0 }, { 0 }, \
    \
 diff --git a/src/stats.c b/src/stats.c
-index dec74f7..0535ae5 100644
+index 34b3d4e4..35955c4b 100644
 --- a/src/stats.c
 +++ b/src/stats.c
 @@ -19,6 +19,30 @@ terms of the MIT license. A copy of the license can be found in the file
@@ -257,7 +257,7 @@ index dec74f7..0535ae5 100644
  static void mi_stat_print_ex(const mi_stat_count_t* stat, const char* msg, int64_t unit, mi_output_fun* out, void* arg, const char* notok ) {
    _mi_fprintf(out, arg,"%10s:", msg);
    if (unit != 0) {
-@@ -380,7 +411,9 @@ static mi_stats_t* mi_stats_get_default(void) {
+@@ -382,7 +413,9 @@ static mi_stats_t* mi_stats_get_default(void) {
  static void mi_stats_merge_from(mi_stats_t* stats) {
    if (stats != &_mi_stats_main) {
      mi_stats_add(&_mi_stats_main, stats);
