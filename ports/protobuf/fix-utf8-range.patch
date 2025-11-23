@@ -46,3 +46,26 @@ index f411a8c5b..21bf8235b 100644
  
 -set(_protobuf_FIND_UTF8_RANGE "if(NOT TARGET utf8_range)\n  find_package(utf8_range CONFIG)\nendif()")
 +set(_protobuf_FIND_UTF8_RANGE "if(NOT TARGET utf8_range::utf8_range)\n  find_package(utf8_range CONFIG)\nendif()")
+diff --git a/cmake/libupb.cmake b/cmake/libupb.cmake
+index 1cbbaa2..4feb034 100644
+--- a/cmake/libupb.cmake
++++ b/cmake/libupb.cmake
+@@ -48,4 +48,4 @@ set_target_properties(libupb PROPERTIES
+     VISIBILITY_INLINES_HIDDEN ON
+ )
+ add_library(protobuf::libupb ALIAS libupb)
+-target_link_libraries(libupb PRIVATE utf8_range)
++target_link_libraries(libupb PRIVATE utf8_range::utf8_range)
+diff --git a/cmake/upb_generators.cmake b/cmake/upb_generators.cmake
+index 7a55f85..de897a0 100644
+--- a/cmake/upb_generators.cmake
++++ b/cmake/upb_generators.cmake
+@@ -24,7 +24,7 @@ foreach(generator upb upbdefs upb_minitable)
+   endif()
+   target_link_libraries(protoc-gen-${generator}
+     libprotobuf
+-    utf8_validity
++    utf8_range::utf8_validity
+     ${protobuf_LIB_UPB}
+     ${protobuf_ABSL_USED_TARGETS}
+   )

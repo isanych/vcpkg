@@ -214,7 +214,7 @@
     },
     "arcus": {
       "baseline": "4.10.0",
-      "port-version": 4
+      "port-version": 5
     },
     "arg-router": {
       "baseline": "1.4.0",
@@ -3194,7 +3194,7 @@
     },
     "gamenetworkingsockets": {
       "baseline": "1.4.1",
-      "port-version": 1
+      "port-version": 2
     },
     "gamma": {
       "baseline": "gamma-2018-01-27",
@@ -3577,8 +3577,8 @@
       "port-version": 6
     },
     "gz-common": {
-      "baseline": "6.0.2",
-      "port-version": 2
+      "baseline": "6.1.0",
+      "port-version": 0
     },
     "gz-common5": {
       "baseline": "5.4.1",
@@ -3634,7 +3634,7 @@
     },
     "gz-rendering": {
       "baseline": "9.0.0",
-      "port-version": 0
+      "port-version": 1
     },
     "gz-rendering7": {
       "baseline": "7.4.1",
@@ -7069,8 +7069,8 @@
       "port-version": 1
     },
     "ogre-next": {
-      "baseline": "2.3.3",
-      "port-version": 3
+      "baseline": "3.0.0",
+      "port-version": 0
     },
     "ois": {
       "baseline": "1.5.1",
@@ -7769,8 +7769,8 @@
       "port-version": 0
     },
     "protobuf": {
-      "baseline": "5.29.5",
-      "port-version": 2
+      "baseline": "6.32.0",
+      "port-version": 0
     },
     "protobuf-c": {
       "baseline": "1.5.2",
@@ -10097,7 +10097,7 @@
       "port-version": 4
     },
     "utf8-range": {
-      "baseline": "5.29.5",
+      "baseline": "6.32.0",
       "port-version": 0
     },
     "utf8h": {

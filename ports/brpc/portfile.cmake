@@ -1,3 +1,10 @@
+vcpkg_download_distfile(
+    FIX_PROTOBUF_INT64_PATCH
+    URLS https://github.com/apache/brpc/commit/ee9a9787126a0a66498d538e51768fa0bb54ff7f.patch?full_index=1
+    SHA512 8794d268384a6daaf5f8067fd9de8ed712132bbac45df028d2850d916d96abf3273182e25a9fb33468a9f588db4a6b18206534125df0de502f7d3407e6abc056
+    FILENAME fix_protobuf_int64.patch
+)
+
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO apache/brpc
@@ -7,6 +14,7 @@ vcpkg_from_github(
     PATCHES
         fix-build.patch
         fix-warnings.patch
+        ${FIX_PROTOBUF_INT64_PATCH}
 )
 
 vcpkg_cmake_configure(

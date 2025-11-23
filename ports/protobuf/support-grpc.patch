@@ -1,5 +1,5 @@
 diff --git a/cmake/protobuf-generate.cmake b/cmake/protobuf-generate.cmake
-index 244407ee2..9ae5908c9 100644
+index a1a1a53..5759859 100644
 --- a/cmake/protobuf-generate.cmake
 +++ b/cmake/protobuf-generate.cmake
 @@ -1,12 +1,12 @@
@@ -8,12 +8,12 @@ index 244407ee2..9ae5908c9 100644
  
 -  set(_options APPEND_PATH)
 +  set(_options APPEND_PATH DESCRIPTORS)
-   set(_singleargs LANGUAGE OUT_VAR EXPORT_MACRO PROTOC_OUT_DIR PLUGIN PLUGIN_OPTIONS DEPENDENCIES PROTOC_EXE)
+   set(_singleargs LANGUAGE OUT_VAR EXPORT_MACRO PROTOC_OUT_DIR PLUGIN PLUGIN_OPTIONS PROTOC_EXE)
    if(COMMAND target_sources)
      list(APPEND _singleargs TARGET)
    endif()
--  set(_multiargs PROTOS IMPORT_DIRS GENERATE_EXTENSIONS PROTOC_OPTIONS)
-+  set(_multiargs PROTOS IMPORT_DIRS GENERATE_EXTENSIONS PROTOC_OPTIONS GENERATE_EXTENSIONS_ADD ARGS_ADD DEPENDS_ADD)
+-  set(_multiargs PROTOS IMPORT_DIRS GENERATE_EXTENSIONS PROTOC_OPTIONS DEPENDENCIES)
++  set(_multiargs PROTOS IMPORT_DIRS GENERATE_EXTENSIONS PROTOC_OPTIONS DEPENDENCIES GENERATE_EXTENSIONS_ADD ARGS_ADD DEPENDS_ADD)
  
    cmake_parse_arguments(protobuf_generate "${_options}" "${_singleargs}" "${_multiargs}" "${ARGN}")
  
