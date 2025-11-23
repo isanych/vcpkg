@@ -50,18 +50,14 @@ index c316642..d58a4e8 100644
  class ScriptPromiseResolver;
  
 diff --git a/src/3rdparty/chromium/third_party/blink/renderer/core/html/parser/text_resource_decoder.cc b/src/3rdparty/chromium/third_party/blink/renderer/core/html/parser/text_resource_decoder.cc
-index 7d61edaae..3e76e017e 100644
+index 7d61edaae..b40c3e95d 100644
 --- a/src/3rdparty/chromium/third_party/blink/renderer/core/html/parser/text_resource_decoder.cc
 +++ b/src/3rdparty/chromium/third_party/blink/renderer/core/html/parser/text_resource_decoder.cc
-@@ -22,7 +22,11 @@
+@@ -22,6 +22,7 @@
 
  #include "third_party/blink/renderer/core/html/parser/text_resource_decoder.h"
 
-+#include <string_view>
-+
++#include "base/strings/string_util.h"
  #include "base/numerics/safe_conversions.h"
-+#include "base/strings/string_view_util.h"
-+#include "base/trace_event/trace_event.h"
  #include "third_party/blink/renderer/core/dom/dom_implementation.h"
  #include "third_party/blink/renderer/core/html/parser/html_meta_charset_parser.h"
- #include "third_party/blink/renderer/platform/runtime_enabled_features.h"

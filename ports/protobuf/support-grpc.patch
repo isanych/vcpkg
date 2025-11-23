@@ -78,3 +78,26 @@ index a1a1a53..5759859 100644
        COMMENT ${_comment}
        VERBATIM )
    endforeach()
+diff --git a/src/google/protobuf/port_def.inc b/src/google/protobuf/port_def.inc
+index dc6da96..ba0afd5 100644
+--- a/src/google/protobuf/port_def.inc
++++ b/src/google/protobuf/port_def.inc
+@@ -372,6 +372,18 @@ static_assert(PROTOBUF_ABSL_MIN(20230125, 3),
+ # define PROTOC_EXPORT
+ #endif
+ 
++#if defined(_WIN32)
++# if defined(PROTOBUF_USER_EXPORTS)
++#  define PROTOBUF_USER_EXPORT __declspec(dllexport)
++# else
++#  define PROTOBUF_USER_EXPORT __declspec(dllimport)
++# endif
++#elif defined(PROTOBUF_USER_EXPORTS)
++# define PROTOBUF_USER_EXPORT __attribute__((visibility("default")))
++#else
++# define PROTOBUF_USER_EXPORT
++#endif
++
+ #ifdef PROTOBUF_RESTRICT
+ #error PROTOBUF_RESTRICT was previously defined
+ #endif
