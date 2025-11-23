@@ -12,7 +12,6 @@ vcpkg_from_github(
         fix-mingw-tail-call.patch
         fix-abseil.patch
         support-grpc.patch
-        pacify-asan.patch
 )
 
 string(COMPARE EQUAL "${TARGET_TRIPLET}" "${HOST_TRIPLET}" protobuf_BUILD_PROTOC_BINARIES)
