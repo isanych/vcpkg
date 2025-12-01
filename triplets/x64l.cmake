@@ -10,6 +10,13 @@ set(VCPKG_CMAKE_SYSTEM_NAME Linux)
 
 if(EXISTS /etc/debian_version)
   set(IS_DEBIAN TRUE)
+elseif(EXISTS /etc/os-release)
+  file(READ /etc/os-release _s)
+  if(_s MATCHES "openSUSE")
+    if(PORT STREQUAL protobuf OR PORT STREQUAL grpc)
+      set(VCPKG_LIBRARY_LINKAGE static)
+    endif()
+  endif()
 endif()
 
 set(IS_LTO TRUE)
