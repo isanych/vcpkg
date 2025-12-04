@@ -1,7 +1,7 @@
 #!/bin/bash -xe
 
 cd `dirname $BASH_SOURCE`
-export VCPKG_DEFAULT_TRIPLET=x64la
+export VCPKG_TRIPLET=x64la
 export VCPKG_QT6=0
 export VCPKG_QT5=0
 unset VCPKG_BASE
