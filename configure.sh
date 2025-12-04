@@ -36,7 +36,7 @@ if [[ "$EUID" = 0 ]]; then
   cd "$vcpkgRootDir"
 fi
 (( ${VCPKG_QT5} < 1 )) || $v qt5-base[icu]
-(( ${VCPKG_QT6} < 1 )) || $v qtbase
+(( ${VCPKG_QT6} < 1 )) || $v qtbase qtwayland
 cd installed/${VCPKG_TRIPLET}
 ../../postinstall.py || true
 cd ../..
