@@ -401,8 +401,6 @@ libhdfs3:arm64-android=fail
 libhdfs3:arm64-osx=fail
 libhdfs3:x64-android=fail
 libhdfs3:x64-linux=fail
-# 120 min build time for libjxl arm64-uwp-rel, reason unknown
-libjxl:arm64-uwp=skip
 liblo:arm64-uwp=fail
 liblo:x64-uwp=fail
 # libmariadb conflicts with libmysql
@@ -560,6 +558,9 @@ ois:x64-android=fail
 omniorb:arm-neon-android=fail
 omniorb:arm64-android=fail
 omniorb:x64-android=fail
+onnxruntime:x64-linux=fail
+onnxruntime:x64-windows-release=fail
+onnxruntime:x64-windows=fail
 # opencc/deps/rapidjson-1.1.0/rapidjson.h: Unknown machine endianess detected
 # opencc/deps/marisa-0.2.5/lib/marisa/grimoire/io/mapper.cc currently doesn't support UWP.
 opencc:x64-android=fail
@@ -626,7 +627,6 @@ qt5-webengine:x86-windows=skip
 # Missing system libraries
 qt5-x11extras:arm64-osx=skip
 qtmultimedia:arm64-android=fail
-qtmultimedia:x64-android=fail
 qtopcua:arm-neon-android=fail
 qtopcua:arm64-android=fail
 qtopcua:x64-android=fail
