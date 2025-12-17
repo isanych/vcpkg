@@ -1,17 +1,8 @@
 diff --git a/cmake/Functions.cmake b/cmake/Functions.cmake
-index 8d5a97777..239eaa1dd 100644
+index 215f58d3b..8024e1cb1 100644
 --- a/cmake/Functions.cmake
 +++ b/cmake/Functions.cmake
-@@ -401,7 +401,7 @@ function(add_archiver_options target buildDir completeStatic)
-     get_target_property(cmakeTarget ${target} CMAKE_TARGET)
-     set(objects_out "${buildDir}/${cmakeTarget}_objects.o")
-     add_library(GnObject_${cmakeTarget}_${config} OBJECT IMPORTED GLOBAL)
--    target_link_libraries(${cmakeTarget} PRIVATE $<$<CONFIG:${config}>:GnObject_${cmakeTarget}_${config}>)
-+    target_link_libraries(${cmakeTarget} PRIVATE $<BUILD_LOCAL_INTERFACE:$<$<CONFIG:${config}>:GnObject_${cmakeTarget}_${config}>>)
-     set_property(TARGET GnObject_${cmakeTarget}_${config} PROPERTY IMPORTED_OBJECTS_${cfg} ${objects_out})
- endfunction()
- 
-@@ -947,6 +947,10 @@ macro(append_compiler_linker_sdk_setup)
+@@ -997,6 +997,10 @@ macro(append_compiler_linker_sdk_setup)
                  use_libcxx=true
              )
              _qt_internal_get_apple_sdk_version(apple_sdk_version)
@@ -23,7 +14,7 @@ index 8d5a97777..239eaa1dd 100644
                  list(APPEND gnArgArg
                      use_sck=false
 diff --git a/src/3rdparty/chromium/build/config/apple/sdk_info.py b/src/3rdparty/chromium/build/config/apple/sdk_info.py
-index 81b06d438..03af4f2db 100755
+index 81b06d438..03af4f2db 100644
 --- a/src/3rdparty/chromium/build/config/apple/sdk_info.py
 +++ b/src/3rdparty/chromium/build/config/apple/sdk_info.py
 @@ -59,8 +59,11 @@ def FillXcodeVersion(settings, developer_dir):
