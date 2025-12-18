@@ -11,10 +11,6 @@
       "platform": "!uwp"
     },
     {
-      "name": "opentelemetry-cpp",
-      "platform": "linux"
-    },
-    {
       "name": "grpc",
       "host": true,
       "features": [
@@ -22,6 +18,10 @@
       ]
     },
     "openssl",
+    {
+      "name": "opentelemetry-cpp",
+      "platform": "linux"
+    },
     "protobuf",
     {
       "name": "protobuf",
