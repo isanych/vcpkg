@@ -11,6 +11,10 @@
       "platform": "!uwp"
     },
     {
+      "name": "opentelemetry-cpp",
+      "platform": "linux"
+    },
+    {
       "name": "grpc",
       "host": true,
       "features": [
