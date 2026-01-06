@@ -1,8 +1,18 @@
 diff --git a/include/mimalloc-stats.h b/include/mimalloc-stats.h
-index 44c4886f..6a8e9bad 100644
+index 631f43bb..818cffd2 100644
 --- a/include/mimalloc-stats.h
 +++ b/include/mimalloc-stats.h
-@@ -37,6 +37,7 @@ typedef struct mi_stat_counter_s {
+@@ -11,7 +11,8 @@ terms of the MIT license. A copy of the license can be found in the file
+ #include <mimalloc.h>
+ #include <stdint.h>
+ 
+-#define MI_STAT_VERSION   2   // increased on every backward incompatible change
++#define MI_STAT_VERSION   3   // increased on every backward incompatible change
++#define MIMALLOC_PRQA_STATS
+ 
+ // count allocation over time
+ typedef struct mi_stat_count_s {
+@@ -37,6 +38,7 @@ typedef struct mi_stat_counter_s {
    MI_STAT_COUNT(malloc_normal)              /* allocated bytes <= MI_LARGE_OBJ_SIZE_MAX */ \
    MI_STAT_COUNT(malloc_huge)                /* allocated bytes in huge pages */ \
    MI_STAT_COUNT(malloc_requested)           /* malloc requested bytes */ \
@@ -10,90 +20,44 @@ index 44c4886f..6a8e9bad 100644
    \
    MI_STAT_COUNTER(mmap_calls) \
    MI_STAT_COUNTER(commit_calls) \
-@@ -96,6 +97,10 @@ extern "C" {
- mi_decl_export void  mi_stats_get( size_t stats_size, mi_stats_t* stats ) mi_attr_noexcept;
- mi_decl_export char* mi_stats_get_json( size_t buf_size, char* buf ) mi_attr_noexcept;    // use mi_free to free the result if the input buf == NULL
+@@ -110,6 +112,12 @@ mi_decl_export void    mi_stats_get( size_t stats_size, mi_stats_t* stats ) mi_a
+ mi_decl_export char*   mi_stats_get_json( size_t buf_size, char* buf ) mi_attr_noexcept;    // use mi_free to free the result if the input buf == NULL
+ mi_decl_export size_t  mi_stats_get_bin_size(size_t bin) mi_attr_noexcept;
  
++mi_decl_export void    mi_pretty_print_bytes(int64_t n, char* out, int len) mi_attr_noexcept;
++
 +mi_decl_nodiscard mi_decl_export mi_stat_count_t mi_get_prqa_malloc_stat(void) mi_attr_noexcept;
-+mi_decl_export void mi_reset_prqa_malloc_stat(void) mi_attr_noexcept;
-+mi_decl_export void mi_track_prqa_malloc_stat(bool enable) mi_attr_noexcept;
++mi_decl_export void              mi_reset_prqa_malloc_stat(void) mi_attr_noexcept;
++mi_decl_export void              mi_track_prqa_malloc_stat(bool enable) mi_attr_noexcept;
 +
  #ifdef __cplusplus
  }
  #endif
-diff --git a/include/mimalloc.h b/include/mimalloc.h
-index f887278a..7c33cce7 100644
---- a/include/mimalloc.h
-+++ b/include/mimalloc.h
-@@ -156,6 +156,7 @@ mi_decl_export void mi_stats_print(void* out) mi_attr_noexcept;  // backward com
- mi_decl_export void mi_stats_print_out(mi_output_fun* out, void* arg) mi_attr_noexcept;
- mi_decl_export void mi_thread_stats_print_out(mi_output_fun* out, void* arg) mi_attr_noexcept;
- mi_decl_export void mi_options_print(void)    mi_attr_noexcept;
-+mi_decl_export void mi_pretty_print_bytes(int64_t n, char* out, int len) mi_attr_noexcept;
- 
- mi_decl_export void mi_process_info(size_t* elapsed_msecs, size_t* user_msecs, size_t* system_msecs,
-                                     size_t* current_rss, size_t* peak_rss,
 diff --git a/include/mimalloc/internal.h b/include/mimalloc/internal.h
-index ca5be930..ae98e531 100644
+index 62387dc3..308e82ac 100644
 --- a/include/mimalloc/internal.h
 +++ b/include/mimalloc/internal.h
-@@ -280,6 +280,23 @@ mi_msecs_t  _mi_clock_now(void);
- mi_msecs_t  _mi_clock_end(mi_msecs_t start);
- mi_msecs_t  _mi_clock_start(void);
- 
-+static inline void _mi_prqa_stat_increase(mi_stat_count_t* stat, size_t amount) {
-+  if (amount) {
-+    stat->current += (int64_t)amount;
-+    if (stat->current > stat->peak) {
-+      stat->peak = stat->current;
-+    }
-+  }
-+}
-+
-+static inline void _mi_prqa_stat_decrease(mi_stat_count_t* stat, size_t amount) {
-+  if (amount) {
-+    // The value may get temporarily negative if e.g. some static object
-+    // that was not tracked is released.
-+    stat->current -= (int64_t)amount;
-+  }
-+}
-+
- // "alloc.c"
- void*       _mi_page_malloc_zero(mi_heap_t* heap, mi_page_t* page, size_t size, bool zero) mi_attr_noexcept;  // called from `_mi_malloc_generic`
- void*       _mi_page_malloc(mi_heap_t* heap, mi_page_t* page, size_t size) mi_attr_noexcept;                  // called from `_mi_heap_malloc_aligned`
-@@ -1149,5 +1166,10 @@ static inline void _mi_memzero_aligned(void* dst, size_t n) {
- }
- #endif
- 
-+// -------------------------------------------------------------------------------
-+// Statistics
-+// -------------------------------------------------------------------------------
-+
-+extern mi_decl_thread bool tls_prqa_stat;
- 
- #endif
-diff --git a/include/mimalloc/types.h b/include/mimalloc/types.h
-index a15d9cba..432bf602 100644
---- a/include/mimalloc/types.h
-+++ b/include/mimalloc/types.h
-@@ -682,4 +682,12 @@ void _mi_stat_counter_increase(mi_stat_counter_t* stat, size_t amount);
- #define mi_heap_stat_decrease(heap,stat,amount)  mi_stat_decrease( (heap)->tld->stats.stat, amount)
- #define mi_heap_stat_adjust_decrease(heap,stat,amount)  mi_stat_adjust_decrease( (heap)->tld->stats.stat, amount)
+@@ -369,6 +369,15 @@ void __mi_stat_counter_increase_mt(mi_stat_counter_t* stat, size_t amount);
+ #define mi_heap_stat_decrease(heap,stat,amount)                 mi_tld_stat_decrease( heap->tld, stat, amount)
+ #define mi_heap_stat_adjust_decrease(heap,stat,amount)          mi_tld_stat_adjust_decrease( heap->tld, stat, amount)
  
 +// Applicable to release and debug builds
++extern mi_decl_thread bool tls_prqa_stat;
 +
-+#define mi_prqa_stat_increase(stat, amount)         _mi_prqa_stat_increase(&(stat), amount)
-+#define mi_prqa_stat_decrease(stat, amount)         _mi_prqa_stat_decrease(&(stat), amount)
++#define mi_prqa_stat_increase(stat, amount)             __mi_stat_increase(&(stat), amount)
++#define mi_prqa_stat_decrease(stat, amount)             __mi_stat_decrease(&(stat), amount)
 +
 +#define mi_heap_prqa_stat_increase(heap, stat, amount)  mi_prqa_stat_increase((heap)->tld->stats.stat, amount)
 +#define mi_heap_prqa_stat_decrease(heap, stat, amount)  mi_prqa_stat_decrease((heap)->tld->stats.stat, amount)
 +
- #endif
+ /* -----------------------------------------------------------
+   Options (exposed for the debugger)
+ ----------------------------------------------------------- */
 diff --git a/src/alloc.c b/src/alloc.c
-index 0fed5e75..90076c61 100644
+index 3e912726..eb578aa9 100644
 --- a/src/alloc.c
 +++ b/src/alloc.c
-@@ -91,7 +91,17 @@ extern inline void* _mi_page_malloc_zero(mi_heap_t* heap, mi_page_t* page, size_
+@@ -94,7 +94,17 @@ extern inline void* _mi_page_malloc_zero(mi_heap_t* heap, mi_page_t* page, size_
      mi_heap_stat_increase(heap, malloc_bins[bin], 1);
      mi_heap_stat_increase(heap, malloc_requested, size - MI_PADDING_SIZE);
      #endif
@@ -104,14 +68,14 @@ index 0fed5e75..90076c61 100644
 +  #else
 +    if (tls_prqa_stat) {
 +      const size_t bsize = mi_page_usable_block_size(page);
-+      if (bsize <= MI_MEDIUM_OBJ_SIZE_MAX) {
++      if (bsize <= MI_LARGE_MAX_OBJ_SIZE) {
 +        mi_heap_prqa_stat_increase(heap, prqa_malloc_requested, size - MI_PADDING_SIZE);
 +      }
 +    }
    #endif
  
    #if MI_PADDING // && !MI_TRACK_ENABLED
-@@ -659,6 +669,10 @@ mi_decl_restrict void* _mi_heap_malloc_guarded(mi_heap_t* heap, size_t size, boo
+@@ -664,6 +674,10 @@ mi_decl_restrict void* _mi_heap_malloc_guarded(mi_heap_t* heap, size_t size, boo
      mi_heap_stat_adjust_decrease(heap, malloc_requested, req_size);
      mi_heap_stat_increase(heap, malloc_requested, size);
      #endif
@@ -119,14 +83,14 @@ index 0fed5e75..90076c61 100644
 +      mi_heap_prqa_stat_decrease(heap, prqa_malloc_requested, req_size);
 +      mi_heap_prqa_stat_increase(heap, prqa_malloc_requested, size);
 +    }
-     _mi_stat_counter_increase(&heap->tld->stats.malloc_guarded_count, 1);
+     mi_heap_stat_counter_increase(heap, malloc_guarded_count, 1);
    }
    #if MI_DEBUG>3
 diff --git a/src/free.c b/src/free.c
-index 5e5ae443..492f6fc3 100644
+index 40e81380..7197e297 100644
 --- a/src/free.c
 +++ b/src/free.c
-@@ -523,9 +523,9 @@ static void mi_check_padding(const mi_page_t* page, const mi_block_t* block) {
+@@ -530,9 +530,9 @@ static void mi_check_padding(const mi_page_t* page, const mi_block_t* block) {
  #endif
  
  // only maintain stats for smaller objects if requested
@@ -137,39 +101,38 @@ index 5e5ae443..492f6fc3 100644
    mi_heap_t* const heap = mi_heap_get_default();
    const size_t bsize = mi_page_usable_block_size(page);
    // #if (MI_STAT>1)
-@@ -544,13 +544,22 @@ static void mi_stat_free(const mi_page_t* page, const mi_block_t* block) {
-   else {
-     mi_heap_stat_decrease(heap, malloc_huge, bsize);
+@@ -549,12 +549,22 @@ static void mi_stat_free(const mi_page_t* page, const mi_block_t* block) {
+     const size_t bpsize = mi_page_block_size(page);  // match stat in page.c:mi_huge_page_alloc
+     mi_heap_stat_decrease(heap, malloc_huge, bpsize);
    }
 -}
 +
 +  if (tls_prqa_stat) {
-+    if (_mi_thread_id() == heap->thread_id) {
++    if (_mi_thread_id() == heap->tld->thread_id) {
 +      mi_heap_prqa_stat_decrease(heap, prqa_malloc_requested, bsize);
 +    }
 +  }
  #else
--static void mi_stat_free(const mi_page_t* page, const mi_block_t* block) {
+-void mi_stat_free(const mi_page_t* page, const mi_block_t* block) {
 -  MI_UNUSED(page); MI_UNUSED(block);
 -}
 +  if (tls_prqa_stat) {
 +    mi_heap_t* const heap = mi_heap_get_default();
-+    if (_mi_thread_id() == heap->thread_id) {
++    if (_mi_thread_id() == heap->tld->thread_id) {
 +      const size_t bsize = mi_page_usable_block_size(page);
 +      mi_heap_prqa_stat_decrease(heap, prqa_malloc_requested, bsize);
 +    }
 +  }
  #endif
--
 +}
  
+ 
  // Remove guard page when building with MI_GUARDED
- #if MI_GUARDED
 diff --git a/src/init.c b/src/init.c
-index 3fc8b033..d3ebf119 100644
+index 73847a4b..b02196d5 100644
 --- a/src/init.c
 +++ b/src/init.c
-@@ -73,7 +73,7 @@ const mi_page_t _mi_page_empty = {
+@@ -71,7 +71,7 @@ const mi_page_t _mi_page_empty = {
  #define MI_STATS_NULL  \
    MI_STAT_COUNT_NULL(), MI_STAT_COUNT_NULL(), MI_STAT_COUNT_NULL(), MI_STAT_COUNT_NULL(), \
    MI_STAT_COUNT_NULL(), MI_STAT_COUNT_NULL(), MI_STAT_COUNT_NULL(), MI_STAT_COUNT_NULL(), \
@@ -179,7 +142,7 @@ index 3fc8b033..d3ebf119 100644
    { 0 }, { 0 }, { 0 }, { 0 }, \
    \
 diff --git a/src/stats.c b/src/stats.c
-index 34b3d4e4..35955c4b 100644
+index 4eba519a..1dbcafcb 100644
 --- a/src/stats.c
 +++ b/src/stats.c
 @@ -19,6 +19,30 @@ terms of the MIT license. A copy of the license can be found in the file
@@ -210,10 +173,10 @@ index 34b3d4e4..35955c4b 100644
 +  tls_prqa_stat = enable;
 +}
 +
- static bool mi_is_in_main(void* stat) {
-   return ((uint8_t*)stat >= (uint8_t*)&_mi_stats_main
-          && (uint8_t*)stat < ((uint8_t*)&_mi_stats_main + sizeof(mi_stats_t)));
-@@ -125,12 +149,8 @@ static void mi_stats_add(mi_stats_t* stats, const mi_stats_t* src) {
+ static void mi_stat_update_mt(mi_stat_count_t* stat, int64_t amount) {
+   if (amount == 0) return;
+   // add atomically
+@@ -134,12 +158,8 @@ static void mi_stats_add(mi_stats_t* stats, const mi_stats_t* src) {
    Display statistics
  ----------------------------------------------------------- */
  
@@ -221,14 +184,14 @@ index 34b3d4e4..35955c4b 100644
 -// unit == 0: count as decimal
 -// unit < 0 : count in binary
 -static void mi_printf_amount(int64_t n, int64_t unit, mi_output_fun* out, void* arg, const char* fmt) {
--  char buf[32]; buf[0] = 0;
+-  char buf[32]; _mi_memzero_var(buf);
 -  int  len = 32;
 +static void mi_printf_amount_to_char_array(int64_t n, int64_t unit, char* buf, int len) {
-+  buf[0] = 0;
++  memset(buf, 0, len);
    const char* suffix = (unit <= 0 ? " " : "B");
    const int64_t base = (unit == 0 ? 1000 : 1024);
    if (unit>0) n *= unit;
-@@ -153,9 +173,16 @@ static void mi_printf_amount(int64_t n, int64_t unit, mi_output_fun* out, void*
+@@ -162,9 +182,16 @@ static void mi_printf_amount(int64_t n, int64_t unit, mi_output_fun* out, void*
      _mi_snprintf(unitdesc, 8, "%s%s%s", magnitude, (base==1024 ? "i" : ""), suffix);
      _mi_snprintf(buf, len, "%ld.%ld %-3s", whole, (frac1 < 0 ? -frac1 : frac1), unitdesc);
    }
@@ -241,12 +204,12 @@ index 34b3d4e4..35955c4b 100644
 +static void mi_printf_amount(int64_t n, int64_t unit, mi_output_fun* out, void* arg, const char* fmt) {
 +  char buf[32];
 +  mi_printf_amount_to_char_array(n, unit, buf, 32);
-+  _mi_fprintf(out, arg, (fmt == NULL ? "%12s" : fmt), buf);
++  _mi_fprintf(out, arg, (fmt==NULL ? "%12s" : fmt), buf);
 +}
  
  static void mi_print_amount(int64_t n, int64_t unit, mi_output_fun* out, void* arg) {
    mi_printf_amount(n,unit,out,arg,NULL);
-@@ -166,6 +193,10 @@ static void mi_print_count(int64_t n, int64_t unit, mi_output_fun* out, void* ar
+@@ -175,6 +202,10 @@ static void mi_print_count(int64_t n, int64_t unit, mi_output_fun* out, void* ar
            else mi_print_amount(n,0,out,arg);
  }
  
@@ -257,13 +220,13 @@ index 34b3d4e4..35955c4b 100644
  static void mi_stat_print_ex(const mi_stat_count_t* stat, const char* msg, int64_t unit, mi_output_fun* out, void* arg, const char* notok ) {
    _mi_fprintf(out, arg,"%10s:", msg);
    if (unit != 0) {
-@@ -382,7 +413,9 @@ static mi_stats_t* mi_stats_get_default(void) {
- static void mi_stats_merge_from(mi_stats_t* stats) {
-   if (stats != &_mi_stats_main) {
-     mi_stats_add(&_mi_stats_main, stats);
-+    mi_stat_count_t temp = stats->prqa_malloc_requested;
-     memset(stats, 0, sizeof(mi_stats_t));
-+    stats->prqa_malloc_requested = temp;
+@@ -410,7 +441,9 @@ void _mi_stats_merge_from(mi_stats_t* to, mi_stats_t* from) {
+   mi_assert_internal(to != NULL && from != NULL);
+   if (to != from) {
+     mi_stats_add(to, from);
++    mi_stat_count_t temp = from->prqa_malloc_requested;
+     _mi_memzero(from, sizeof(mi_stats_t));
++    from->prqa_malloc_requested = temp;
    }
  }
  

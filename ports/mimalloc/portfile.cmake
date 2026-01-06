@@ -6,6 +6,7 @@ vcpkg_from_github(
     HEAD_REF isanych
     PATCHES
         pkgconfig-cxx.diff
+        stats.patch
 )
 
 vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
