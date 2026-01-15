@@ -1,9 +1,9 @@
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
-    REPO isanych/mimalloc
-    REF 48ef26cd8ff13eeb009a3ab6d11b1f091480c394
-    SHA512 6e9252306068693968bd36c26cbd834e6787598001138115658cd727a790beb2a68e8da7eba263f46f5af13df8de17fc546582535d1c7d18939fe78897e08bed
-    HEAD_REF isanych
+    REPO microsoft/mimalloc
+    REF "v${VERSION}"
+    SHA512 a674dbe119e080630de0af12a972af9fb1ac3611413fd5a7eb14f61e47af620f6368a28e8849757136fcc1c3c4f8f776cfa0f351d3f0ef463eff98fdf8c4db52
+    HEAD_REF master
     PATCHES
         pkgconfig-cxx.diff
         stats.patch

@@ -61,6 +61,7 @@ set(PATCHES
     patches/vulkan-windows.diff        #Forces QMake to use vulkan from vcpkg instead of VULKAN_SDK system variable
     patches/egl.patch                  #Fix egl detection logic.
     patches/qtbug_96392.patch          #Backport fix for QTBUG-96392
+    patches/md4c.diff                  #Include vcpkg md4c.h
     patches/mysql_plugin_include.patch #Fix include path of mysql plugin
     patches/mysql-configure.patch      #Fix mysql project
 
@@ -74,7 +75,7 @@ set(PATCHES
     patches/qmake-arm64.patch          # Fix by Oliver Wolff to support ARM64 hosts on Windows
 )
 if(VCPKG_TARGET_IS_OSX)
-    execute_process(COMMAND xcrun --show-sdk-version
+    execute_process(COMMAND xcrun --sdk macosx --show-sdk-version
             OUTPUT_VARIABLE OSX_SDK_VERSION
             OUTPUT_STRIP_TRAILING_WHITESPACE)
     if(${OSX_SDK_VERSION} VERSION_GREATER_EQUAL 26)
@@ -86,12 +87,9 @@ endif()
 qt_download_submodule(OUT_SOURCE_PATH SOURCE_PATH PATCHES ${PATCHES})
 
 # Remove vendored dependencies to ensure they are not picked up by the build
-foreach(DEPENDENCY zlib freetype harfbuzz-ng libjpeg libpng double-conversion sqlite pcre2)
-    if(EXISTS ${SOURCE_PATH}/src/3rdparty/${DEPENDENCY})
-        file(REMOVE_RECURSE ${SOURCE_PATH}/src/3rdparty/${DEPENDENCY})
-    endif()
+foreach(DEPENDENCY IN ITEMS double-conversion freetype harfbuzz-ng libjpeg libpng md4c pcre2 sqlite zlib)
+    file(REMOVE_RECURSE "${SOURCE_PATH}/src/3rdparty/${DEPENDENCY}")
 endforeach()
-#file(REMOVE_RECURSE ${SOURCE_PATH}/include/QtZlib)
 
 #########################
 ## Setup Configure options
@@ -124,6 +122,7 @@ set(CORE_OPTIONS
 list(APPEND CORE_OPTIONS
     -system-zlib
     -system-libjpeg
+    -system-libmd4c
     -system-libpng
     -system-pcre
     -system-doubleconversion

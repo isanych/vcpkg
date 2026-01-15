@@ -187,7 +187,7 @@ endif()
 
 string(LENGTH "${CURRENT_BUILDTREES_DIR}" buildtree_length)
 # We know that C:/buildrees/${PORT} is to long to build Release. Debug works however. Means 24 length is too much but 23 might work.
-if(buildtree_length GREATER 22 AND VCPKG_TARGET_IS_WINDOWS AND NOT VCPKG_TARGET_ARCHITECTURE MATCHES "arm64")
+if(buildtree_length GREATER 27 AND VCPKG_TARGET_IS_WINDOWS AND NOT VCPKG_TARGET_ARCHITECTURE MATCHES "arm64")
     message(WARNING "Buildtree path '${CURRENT_BUILDTREES_DIR}' is too long.\nConsider passing --editable and --x-buildtrees-root=<shortpath> to vcpkg!")
 endif()
 
