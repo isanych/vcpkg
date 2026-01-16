@@ -199,6 +199,17 @@ set(makefiles "")
 
     vcpkg_make_install()
     vcpkg_copy_pdbs()
+
+    # Move content from usr/local to root if it exists
+    if(EXISTS "${CURRENT_PACKAGES_DIR}/usr/local")
+        file(GLOB usr_local_contents "${CURRENT_PACKAGES_DIR}/usr/local/*")
+        foreach(item IN LISTS usr_local_contents)
+            get_filename_component(item_name "${item}" NAME)
+            file(RENAME "${item}" "${CURRENT_PACKAGES_DIR}/${item_name}")
+        endforeach()
+        file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/usr")
+    endif()
+
     vcpkg_copy_tool_dependencies("${CURRENT_PACKAGES_DIR}/tools/${PORT}/bin")
     file(GLOB unix_runtime LIST_DIRECTORIES false
         "${CURRENT_PACKAGES_DIR}/lib/libgettext*${VCPKG_TARGET_SHARED_LIBRARY_SUFFIX}*"
