@@ -1,8 +1,8 @@
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO protocolbuffers/protobuf
-    REF "v33.2" # protobuf repo does not have v6.33.2 tag for C++ runtime
-    SHA512 7b84fee0cb0a3b5de4b59899b12a7cccfe330b588a26bf397ec46c3ac61ce883018116f6a0ef73e621b35e7eacde1d13086317dad5cfa1066aa558c950ef48a2
+    REF "v33.4" # protobuf repo does not have v6.33.4 tag for C++ runtime
+    SHA512 540059a93721447cf4723bcca06e91c43a4399cb366c05bf84e9d8e2c439f3107ba17803f9d912549b54c471f2dcc4c9fc834145ec441dff31ca24f9a3543aa9
     HEAD_REF master
     PATCHES
         fix-static-build.patch
