@@ -1,5 +1,5 @@
 diff --git a/include/mimalloc-stats.h b/include/mimalloc-stats.h
-index 03452f2d..2cf00891 100644
+index 03452f2..2cf0089 100644
 --- a/include/mimalloc-stats.h
 +++ b/include/mimalloc-stats.h
 @@ -11,7 +11,8 @@ terms of the MIT license. A copy of the license can be found in the file
@@ -34,58 +34,48 @@ index 03452f2d..2cf00891 100644
  }
  #endif
 diff --git a/include/mimalloc/internal.h b/include/mimalloc/internal.h
-index f1087d1b..5f302505 100644
+index f1087d1..c9e581f 100644
 --- a/include/mimalloc/internal.h
 +++ b/include/mimalloc/internal.h
-@@ -389,6 +389,15 @@ void __mi_stat_counter_increase_mt(mi_stat_counter_t* stat, size_t amount);
+@@ -388,6 +388,14 @@ void __mi_stat_counter_increase_mt(mi_stat_counter_t* stat, size_t amount);
+ #define mi_theap_stat_adjust_increase(theap,stat,amnt)          __mi_stat_adjust_increase( &(theap)->stats.stat, amnt)
  #define mi_theap_stat_adjust_decrease(theap,stat,amnt)          __mi_stat_adjust_decrease( &(theap)->stats.stat, amnt)
- 
  
 +// Applicable to release and debug builds
 +extern mi_decl_thread bool tls_prqa_stat;
 +
-+#define mi_prqa_stat_increase(stat, amount)             __mi_stat_increase(&(stat), amount)
-+#define mi_prqa_stat_decrease(stat, amount)             __mi_stat_decrease(&(stat), amount)
++#define mi_prqa_stat_increase(stat, amount)             __mi_stat_increase( &(stat), amount)
++#define mi_prqa_stat_decrease(stat, amount)             __mi_stat_decrease( &(stat), amount)
 +
-+#define mi_heap_prqa_stat_increase(heap, stat, amount)  mi_prqa_stat_increase((heap)->tld->stats.stat, amount)
-+#define mi_heap_prqa_stat_decrease(heap, stat, amount)  mi_prqa_stat_decrease((heap)->tld->stats.stat, amount)
-+
++#define mi_theap_prqa_stat_increase(theap, stat, amount)  mi_prqa_stat_increase((theap)->stats.stat, amount)
++#define mi_theap_prqa_stat_decrease(theap, stat, amount)  mi_prqa_stat_decrease((theap)->stats.stat, amount)
+ 
  /* -----------------------------------------------------------
    Options (exposed for the debugger)
- ----------------------------------------------------------- */
 diff --git a/src/alloc.c b/src/alloc.c
-index 77c010cc..b98b4fbf 100644
+index 77c010c..934ae65 100644
 --- a/src/alloc.c
 +++ b/src/alloc.c
-@@ -92,6 +92,15 @@ static mi_decl_forceinline void* mi_page_malloc_zero(mi_theap_t* theap, mi_page_
-       block->next = 0;
-       mi_track_mem_defined(block, bsize);
-     }
-+    if (tls_prqa_stat) {
-+      mi_heap_prqa_stat_increase(theap, prqa_malloc_requested, size - MI_PADDING_SIZE);
-+    }
-+  }
-+  if (tls_prqa_stat) {
-+    const size_t bsize = mi_page_usable_block_size(page);
-+    if (bsize <= MI_LARGE_MAX_OBJ_SIZE) {
-+      mi_heap_prqa_stat_increase(theap, prqa_malloc_requested, size - MI_PADDING_SIZE);
-+    }
-   }
- 
-   #if MI_PADDING // && !MI_TRACK_ENABLED
-@@ -809,6 +818,10 @@ mi_decl_restrict void* _mi_theap_malloc_guarded(mi_theap_t* theap, size_t size,
-     mi_theap_stat_adjust_decrease(theap, malloc_requested, req_size);
-     mi_theap_stat_increase(theap, malloc_requested, size);
+@@ -71,7 +71,17 @@ static mi_decl_forceinline void* mi_page_malloc_zero(mi_theap_t* theap, mi_page_
+     mi_theap_stat_increase(theap, malloc_bins[bin], 1);
+     mi_theap_stat_increase(theap, malloc_requested, size - MI_PADDING_SIZE);
      #endif
 +    if (tls_prqa_stat) {
-+      mi_heap_prqa_stat_decrease(heap, prqa_malloc_requested, req_size);
-+      mi_heap_prqa_stat_increase(heap, prqa_malloc_requested, size);
++      mi_theap_prqa_stat_increase(theap, prqa_malloc_requested, size - MI_PADDING_SIZE);
 +    }
-     mi_theap_stat_counter_increase(theap, malloc_guarded_count, 1);
    }
-   #if MI_DEBUG>3
++  #else
++    if (tls_prqa_stat) {
++      const size_t bsize = mi_page_usable_block_size(page);
++      if (bsize <= MI_LARGE_MAX_OBJ_SIZE) {
++        mi_theap_prqa_stat_increase(theap, prqa_malloc_requested, size - MI_PADDING_SIZE);
++      }
++    }
+   #endif
+ 
+   // zero the block? note: we need to zero the full block size (issue #63)
 diff --git a/src/free.c b/src/free.c
-index ab15e269..8a0e9f73 100644
+index ab15e26..bbcc76e 100644
 --- a/src/free.c
 +++ b/src/free.c
 @@ -570,9 +570,9 @@ static void mi_check_padding(const mi_page_t* page, const mi_block_t* block) {
@@ -107,7 +97,7 @@ index ab15e269..8a0e9f73 100644
 +
 +  if (tls_prqa_stat) {
 +    if (_mi_thread_id() == theap->tld->thread_id) {
-+      mi_heap_prqa_stat_decrease(theap, prqa_malloc_requested, bsize);
++      mi_theap_prqa_stat_decrease(theap, prqa_malloc_requested, bsize);
 +    }
 +  }
  #else
@@ -115,10 +105,10 @@ index ab15e269..8a0e9f73 100644
 -  MI_UNUSED(page); MI_UNUSED(block);
 -}
 +  if (tls_prqa_stat) {
-+    mi_heap_t* const theap = mi_heap_get_default();
++    mi_theap_t* const theap = mi_theap_get_default();
 +    if (_mi_thread_id() == theap->tld->thread_id) {
 +      const size_t bsize = mi_page_usable_block_size(page);
-+      mi_heap_prqa_stat_decrease(theap, prqa_malloc_requested, bsize);
++      mi_theap_prqa_stat_decrease(theap, prqa_malloc_requested, bsize);
 +    }
 +  }
  #endif
@@ -127,20 +117,19 @@ index ab15e269..8a0e9f73 100644
  
  // Remove guard page when building with MI_GUARDED
 diff --git a/src/init.c b/src/init.c
-index b779aebc..d406e1ba 100644
+index b779aeb..789886f 100644
 --- a/src/init.c
 +++ b/src/init.c
-@@ -71,7 +71,7 @@ const mi_page_t _mi_page_empty = {
-   MI_STAT_COUNT_NULL(), MI_STAT_COUNT_NULL(), MI_STAT_COUNT_NULL(), \
+@@ -72,6 +72,7 @@ const mi_page_t _mi_page_empty = {
    { 0 }, { 0 }, \
    MI_STAT_COUNT_NULL(), MI_STAT_COUNT_NULL(), MI_STAT_COUNT_NULL(), \
--  MI_STAT_COUNT_NULL(), MI_STAT_COUNT_NULL(), MI_STAT_COUNT_NULL(), \
-+  MI_STAT_COUNT_NULL(), MI_STAT_COUNT_NULL(), MI_STAT_COUNT_NULL(), MI_STAT_COUNT_NULL(), \
+   MI_STAT_COUNT_NULL(), MI_STAT_COUNT_NULL(), MI_STAT_COUNT_NULL(), \
++  MI_STAT_COUNT_NULL(), \
    { 0 }, { 0 }, { 0 }, { 0 }, \
    { 0 }, { 0 }, { 0 }, { 0 }, \
    \
 diff --git a/src/stats.c b/src/stats.c
-index 84b8ad7e..e50ff118 100644
+index 84b8ad7..cd49921 100644
 --- a/src/stats.c
 +++ b/src/stats.c
 @@ -20,6 +20,30 @@ terms of the MIT license. A copy of the license can be found in the file
@@ -151,9 +140,9 @@ index 84b8ad7e..e50ff118 100644
 +
 +mi_decl_nodiscard mi_decl_export mi_stat_count_t mi_get_prqa_malloc_stat(void) mi_attr_noexcept {
 +  if (tls_prqa_stat) {
-+    mi_theap_t* theap = mi_prim_get_default_theap();
++    mi_theap_t* theap = _mi_theap_default();
 +    mi_assert(mi_theap_is_initialized(theap));
-+    return theap->tld->stats.prqa_malloc_requested;
++    return theap->stats.prqa_malloc_requested;
 +  }
 +  mi_stat_count_t zero = {0,0,0};
 +  return zero;
@@ -161,9 +150,9 @@ index 84b8ad7e..e50ff118 100644
 +
 +mi_decl_export void mi_reset_prqa_malloc_stat(void) mi_attr_noexcept {
 +  if (tls_prqa_stat) {
-+    mi_heap_t* theap = mi_prim_get_default_theap();
-+    mi_assert(mi_theap_is_initialized(heap));
-+    memset(&theap->tld->stats.prqa_malloc_requested, 0, sizeof(mi_stat_count_t));
++    mi_theap_t* theap = _mi_theap_default();
++    mi_assert(mi_theap_is_initialized(theap));
++    memset(&theap->stats.prqa_malloc_requested, 0, sizeof(mi_stat_count_t));
 +  }
 +}
 +
@@ -222,9 +211,9 @@ index 84b8ad7e..e50ff118 100644
    mi_assert_internal(to != NULL && from != NULL);
    if (to == from) return;
    mi_stats_add(to, from);
-+    mi_stat_count_t temp = from->prqa_malloc_requested;
++  mi_stat_count_t temp = from->prqa_malloc_requested;
    _mi_memzero(from, sizeof(mi_stats_t));
-+    from->prqa_malloc_requested = temp;
++  from->prqa_malloc_requested = temp;
  }
  
  static mi_stats_t* mi_stats_merge_theap_to_heap(mi_theap_t* theap) mi_attr_noexcept {
