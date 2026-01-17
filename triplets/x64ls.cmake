@@ -1,0 +1,31 @@
+cmake_policy(SET CMP0057 NEW)
+set(VCPKG_TARGET_ARCHITECTURE x64)
+set(VCPKG_CRT_LINKAGE dynamic)
+set(VCPKG_LIBRARY_LINKAGE static)
+set(VCPKG_FIXUP_ELF_RPATH ON)
+list(APPEND VCPKG_CMAKE_CONFIGURE_OPTIONS "-DCMAKE_CXX_STANDARD=17")
+set(VCPKG_BUILD_TYPE release)
+
+set(VCPKG_CMAKE_SYSTEM_NAME Linux)
+
+if(EXISTS /etc/debian_version)
+  set(IS_DEBIAN TRUE)
+endif()
+
+set(IS_LTO TRUE)
+set(NO_LTO abseil brotli double-conversion ffmpeg glib gperf grpc libffi libuuid python3 upb)
+if(PORT IN_LIST NO_LTO)
+  set(IS_LTO FALSE)
+endif()
+
+if(IS_LTO)
+  set(VCPKG_CXX_FLAGS_RELEASE -flto)
+  set(VCPKG_C_FLAGS_RELEASE -flto)
+  set(VCPKG_LINKER_FLAGS_RELEASE -flto)
+endif()
+
+if(PORT STREQUAL glib)
+  if(IS_DEBIAN)
+    set(VCPKG_LINKER_FLAGS "-Wl,--no-as-needed -ldl")
+  endif()
+endif()
