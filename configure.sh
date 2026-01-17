@@ -8,7 +8,7 @@ unset SITE_CONFIG
 export VCPKG_BINARY_SOURCES=clear
 export CMAKE_POLICY_VERSION_MINIMUM=3.5
 export VCPKG_KEEP_ENV_VARS=CMAKE_POLICY_VERSION_MINIMUM
-: ${VCPKG_BRANCH:=2026}
+: ${VCPKG_BRANCH:=2026.1}
 : ${VCPKG_ADD:=https://mirror.qac.perforce.com/vcpkg/vcpkg-add-2025-debian11-x64.txz}
 [[ -n "${VCPKG_TRIPLET}" ]] || export VCPKG_TRIPLET=x64l
 [[ -n "${VCPKG_QT5}" ]] || export VCPKG_QT5=0
@@ -43,7 +43,7 @@ cd ../..
 (( ${VCPKG_QT5} < 1 )) || $v qt5-declarative
 (( ${VCPKG_QT6} < 1 )) || $v qtdeclarative qt5compat
 (( ${VCPKG_QT5} < 1 )) || $v qt5-script qt5-xmlpatterns
-$v libxml2 libxslt python3
+$v libxml2 libxslt
 (( ${VCPKG_QT5} < 1 )) || $v libwebp qt5-graphicaleffects qt5-quickcontrols qt5-quickcontrols2
 (( ${VCPKG_QT6} < 1 )) || $v qtquickcontrols2 qttools[qml]
 cd installed/${VCPKG_TRIPLET}

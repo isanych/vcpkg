@@ -18,7 +18,7 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 if %VCPKG_QT5% geq 2 %v% atlmfc qt5-webengine
 if %errorlevel% neq 0 exit /b %errorlevel%
 if %VCPKG_QT5% geq 2 if not exist installed\%VCPKG_DEFAULT_TRIPLET%\bin\Qt5WebEngineWidgets.dll exit /b 1
-%v% python3 protobuf boost xerces-c xalan-c grpc libzip lua[cpp]
+%v% protobuf boost xerces-c xalan-c grpc libzip lua[cpp]
 if %errorlevel% neq 0 exit /b %errorlevel%
 if %VCPKG_DEFAULT_TRIPLET% == x64w %v% mimalloc[override]
 if %errorlevel% neq 0 exit /b %errorlevel%
