@@ -30,7 +30,7 @@ if %VCPKG_QT6% geq 2 %v% qtwebengine
 if %errorlevel% neq 0 exit /b %errorlevel%
 if %VCPKG_QT6% geq 2 if not exist installed\%VCPKG_DEFAULT_TRIPLET%\bin\Qt6WebEngineWidgets.dll exit /b 1
 cd "%~dp0installed\%VCPKG_DEFAULT_TRIPLET%"
-rmdir /q/s tools\nodejs
+rmdir /q/s tools\nodejs tools\python3
 if %VCPKG_QT6% geq 2 python "%~dp0perl.py"
 copy "%~dp0postinstall.py" "%~dp0installed\%VCPKG_DEFAULT_TRIPLET%\"
 if not [%VCPKG_ADD%] == [-] curl -Ss %VCPKG_ADD% | tar xzf -

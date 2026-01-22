@@ -72,7 +72,7 @@ if [[ -e $r ]]; then
   cp $r/rlm_nossl.a lib/
 fi
 ../../postinstall.py > /dev/null || true
-rm -rf debug core* bin/pkgconf share/reprise/reprise-targets-debug.cmake
+rm -rf debug core* bin/pkgconf share/reprise/reprise-targets-debug.cmake tools/python3
 find . -name "*-debug.cmake" -delete
 unset LD_LIBRARY_PATH
 cd "$vcpkgRootDir/.."
