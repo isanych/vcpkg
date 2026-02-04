@@ -12,7 +12,7 @@ ignition_modular_library(
       fix-dependencies.patch
 )
 
-if(VCPKG_TARGET_IS_WINDOWS)
+if(VCPKG_TARGET_IS_WINDOWS)   
    file(GLOB plugins "${CURRENT_PACKAGES_DIR}/lib/${PORT}-${VERSION_MAJOR}/engine-plugins/*.dll")
    if (NOT plugins STREQUAL "")
       file(COPY ${plugins} DESTINATION "${CURRENT_PACKAGES_DIR}/bin/engine-plugins/")

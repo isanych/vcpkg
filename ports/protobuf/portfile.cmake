@@ -11,7 +11,7 @@ vcpkg_from_github(
         fix-install-dirs.patch
         fix-constinit-with-clang-cl.patch
         fix-upb.patch
-        support-grpc.patch	
+        support-grpc.patch
 )
 
 string(COMPARE EQUAL "${TARGET_TRIPLET}" "${HOST_TRIPLET}" protobuf_BUILD_PROTOC_BINARIES)
@@ -60,51 +60,24 @@ vcpkg_cmake_configure(
         -Dprotobuf_BUILD_PROTOC_BINARIES=${protobuf_BUILD_PROTOC_BINARIES}
         -Dprotobuf_BUILD_LIBPROTOC=${protobuf_BUILD_LIBPROTOC}
         -Dprotobuf_LOCAL_DEPENDENCIES_ONLY=ON
-        -Dprotobuf_BUILD_LIBUPB=OFF
+        -Dprotobuf_BUILD_LIBUPB=${protobuf_BUILD_LIBPROTOC}
         ${FEATURE_OPTIONS}
 )
 
 vcpkg_cmake_install()
 
 if(protobuf_BUILD_PROTOC_BINARIES)
-    set(TOOL_NAMES protoc protoc-gen-upb protoc-gen-upbdefs protoc-gen-upb_minitable)
-    set(VERSIONED_TOOL_NAMES)
-    if(NOT VCPKG_TARGET_IS_WINDOWS)
-        # on unix systems, the tools are symlinks to versioned tools
+    if(VCPKG_TARGET_IS_WINDOWS)
+        vcpkg_copy_tools(TOOL_NAMES protoc AUTO_CLEAN)
+    else()
         string(REPLACE "." ";" VERSION_LIST ${VERSION})
         list(GET VERSION_LIST 1 VERSION_MINOR)
         list(GET VERSION_LIST 2 VERSION_PATCH)
-        foreach(TOOL IN LISTS TOOL_NAMES)
-            list(APPEND VERSIONED_TOOL_NAMES ${TOOL}-${VERSION_MINOR}.${VERSION_PATCH}.0)
-        endforeach()
+        vcpkg_copy_tools(TOOL_NAMES protoc protoc-${VERSION_MINOR}.${VERSION_PATCH}.0 AUTO_CLEAN)
     endif()
-    vcpkg_copy_tools(TOOL_NAMES ${TOOL_NAMES} ${VERSIONED_TOOL_NAMES} AUTO_CLEAN)
 else()
     file(COPY "${CURRENT_HOST_INSTALLED_DIR}/tools/${PORT}" DESTINATION "${CURRENT_PACKAGES_DIR}/tools")
 endif()
-
-# Some other libraries, such as grpc, use their own upb. We need to move the
-# upb headers shipped with protobuf into a separate directory to avoid
-# polluting the global include directory so that those libraries won't
-# accidentally use the protobuf::upb headers.
-file(MAKE_DIRECTORY "${CURRENT_PACKAGES_DIR}/include/protobuf-upb")
-file(RENAME "${CURRENT_PACKAGES_DIR}/include/upb"
-    "${CURRENT_PACKAGES_DIR}/include/protobuf-upb/upb")
-# change include dir of libupb. A more robust solution is to apply a patch, but
-# vcpkg_apply_patches has been deprecated so here is our tricky regex...
-# note that cmake regex matches longest substrings
-vcpkg_replace_string(
-    "${CURRENT_PACKAGES_DIR}/share/protobuf/protobuf-targets.cmake"
-    "(set_target_properties\\(protobuf::libupb PROPERTIES[^e]*e)\""
-    "\\1/protobuf-upb\""
-    REGEX
-)
-vcpkg_replace_string(
-    "${CURRENT_PACKAGES_DIR}/lib/pkgconfig/upb.pc"
-    "(includedir=[^/]*/include)"
-    "\\1/protobuf-upb"
-    REGEX
-)
 
 vcpkg_replace_string("${CURRENT_PACKAGES_DIR}/share/${PORT}/protobuf-config.cmake"
     "if(protobuf_MODULE_COMPATIBLE)"

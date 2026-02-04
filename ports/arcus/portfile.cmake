@@ -8,7 +8,6 @@ vcpkg_from_github(
         0001-fix-protobuf-deprecated.patch
         0002-protobuf-version.patch
         0003-cstdint.patch
-        0003-fix-compile.patch
 )
 
 string(COMPARE EQUAL "${VCPKG_LIBRARY_LINKAGE}" "static" ENABLE_STATIC)
