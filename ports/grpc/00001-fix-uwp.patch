@@ -1,5 +1,5 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index bc86c00..e675fb3 100644
+index bc86c00463..e675fb3e5e 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -292,6 +292,9 @@ if(UNIX)
@@ -50,7 +50,7 @@ index bc86c00..e675fb3 100644
    src/core/ext/transport/chaotic_good/chaotic_good_frame.proto src/core/ext/transport/chaotic_good/chaotic_good_frame.proto
  )
 diff --git a/src/core/credentials/transport/alts/check_gcp_environment_windows.cc b/src/core/credentials/transport/alts/check_gcp_environment_windows.cc
-index dfbd5ec..3b08ef0 100644
+index dfbd5ec396..3b08ef0692 100644
 --- a/src/core/credentials/transport/alts/check_gcp_environment_windows.cc
 +++ b/src/core/credentials/transport/alts/check_gcp_environment_windows.cc
 @@ -40,6 +40,7 @@ bool check_bios_data(const char*) { return false; }
