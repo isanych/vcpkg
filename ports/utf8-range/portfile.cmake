@@ -6,8 +6,8 @@ set(VERSION "${CMAKE_MATCH_2}.${CMAKE_MATCH_3}")
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO protocolbuffers/protobuf
-    REF "v34.0-rc1.1"
-    SHA512 9438f3dfa14891b9d4f61a71c0fbf243a75dfd597d924803f893bef7e66d2620ae2dfcac3961f274ea9089e78d5d30098b9aece3822811855d7dfe8da51d3d0a
+    REF "v33.5"
+    SHA512 71110cd2cbf9f2e7f1bda4eed346ad6cad84a05ab0214d1e0880afc20a788f43176e2ccc8ac284eab38ec21578db147c2837b58789baf2823e4615d4b3557937
     HEAD_REF main
     PATCHES
         fix-cmake.patch
