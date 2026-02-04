@@ -1,13 +1,13 @@
 diff --git a/include/mimalloc-stats.h b/include/mimalloc-stats.h
-index 03452f2..2cf0089 100644
+index a714f41c..cde82301 100644
 --- a/include/mimalloc-stats.h
 +++ b/include/mimalloc-stats.h
 @@ -11,7 +11,8 @@ terms of the MIT license. A copy of the license can be found in the file
  #include <mimalloc.h>
  #include <stdint.h>
  
--#define MI_STAT_VERSION   3   // increased on every backward incompatible change
-+#define MI_STAT_VERSION   4   // increased on every backward incompatible change
+-#define MI_STAT_VERSION   4  // increased on every backward incompatible change
++#define MI_STAT_VERSION   5  // increased on every backward incompatible change
 +#define MIMALLOC_PRQA_STATS
  
  // alignment for atomic fields
@@ -20,8 +20,8 @@ index 03452f2..2cf0089 100644
    \
    MI_STAT_COUNTER(mmap_calls) \
    MI_STAT_COUNTER(commit_calls) \
-@@ -142,6 +144,12 @@ mi_decl_export void    mi_stats_print_out(mi_output_fun* out, void* arg) mi_attr
- 
+@@ -149,6 +151,12 @@ mi_decl_export bool    mi_subproc_stats_get_exclusive(mi_subproc_id_t subproc_id
+ mi_decl_export char*   mi_stats_as_json(mi_stats_t* stats, size_t buf_size, char* buf) mi_attr_noexcept;      // use mi_free to free the result if the input buf == NULL
  mi_decl_export size_t  mi_stats_get_bin_size(size_t bin) mi_attr_noexcept;
  
 +mi_decl_export void    mi_pretty_print_bytes(int64_t n, char* out, int len) mi_attr_noexcept;
@@ -34,7 +34,7 @@ index 03452f2..2cf0089 100644
  }
  #endif
 diff --git a/include/mimalloc/internal.h b/include/mimalloc/internal.h
-index f1087d1..c9e581f 100644
+index bf0b6975..89ffcc8d 100644
 --- a/include/mimalloc/internal.h
 +++ b/include/mimalloc/internal.h
 @@ -388,6 +388,14 @@ void __mi_stat_counter_increase_mt(mi_stat_counter_t* stat, size_t amount);
@@ -53,10 +53,10 @@ index f1087d1..c9e581f 100644
  /* -----------------------------------------------------------
    Options (exposed for the debugger)
 diff --git a/src/alloc.c b/src/alloc.c
-index 77c010c..934ae65 100644
+index d7b34e8c..845f63fb 100644
 --- a/src/alloc.c
 +++ b/src/alloc.c
-@@ -71,7 +71,17 @@ static mi_decl_forceinline void* mi_page_malloc_zero(mi_theap_t* theap, mi_page_
+@@ -72,7 +72,17 @@ static mi_decl_forceinline void* mi_page_malloc_zero(mi_theap_t* theap, mi_page_
      mi_theap_stat_increase(theap, malloc_bins[bin], 1);
      mi_theap_stat_increase(theap, malloc_requested, size - MI_PADDING_SIZE);
      #endif
@@ -75,10 +75,10 @@ index 77c010c..934ae65 100644
  
    // zero the block? note: we need to zero the full block size (issue #63)
 diff --git a/src/free.c b/src/free.c
-index ab15e26..bbcc76e 100644
+index 9be8f26c..3d3da739 100644
 --- a/src/free.c
 +++ b/src/free.c
-@@ -570,9 +570,9 @@ static void mi_check_padding(const mi_page_t* page, const mi_block_t* block) {
+@@ -573,9 +573,9 @@ static void mi_check_padding(const mi_page_t* page, const mi_block_t* block) {
  #endif
  
  // only maintain stats for smaller objects if requested
@@ -86,10 +86,10 @@ index ab15e26..bbcc76e 100644
  static void mi_stat_free(const mi_page_t* page, const mi_block_t* block) {
    MI_UNUSED(block);
 +#if (MI_STAT>0)
-   mi_theap_t* const theap = mi_theap_get_default();
-   const size_t bsize = mi_page_usable_block_size(page);
-   // #if (MI_STAT>1)
-@@ -589,12 +589,22 @@ static void mi_stat_free(const mi_page_t* page, const mi_block_t* block) {
+   mi_theap_t* const theap = _mi_theap_default();
+   if (!mi_theap_is_initialized(theap)) return; // (for now) skip statistics if free'd after thread_done was called (usually a thread cleanup call by the OS)
+ 
+@@ -594,12 +594,22 @@ static void mi_stat_free(const mi_page_t* page, const mi_block_t* block) {
      const size_t bpsize = mi_page_block_size(page);  // match stat in page.c:mi_huge_page_alloc
      mi_theap_stat_decrease(theap, malloc_huge, bpsize);
    }
@@ -117,7 +117,7 @@ index ab15e26..bbcc76e 100644
  
  // Remove guard page when building with MI_GUARDED
 diff --git a/src/init.c b/src/init.c
-index b779aeb..789886f 100644
+index 3161450f..cbfa8a47 100644
 --- a/src/init.c
 +++ b/src/init.c
 @@ -72,6 +72,7 @@ const mi_page_t _mi_page_empty = {
@@ -129,7 +129,7 @@ index b779aeb..789886f 100644
    { 0 }, { 0 }, { 0 }, { 0 }, \
    \
 diff --git a/src/stats.c b/src/stats.c
-index 84b8ad7..cd49921 100644
+index 877266c7..da74c97c 100644
 --- a/src/stats.c
 +++ b/src/stats.c
 @@ -20,6 +20,30 @@ terms of the MIT license. A copy of the license can be found in the file
