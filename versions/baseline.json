@@ -165,7 +165,7 @@
       "port-version": 2
     },
     "anyxx": {
-      "baseline": "0.4.1",
+      "baseline": "0.5.0",
       "port-version": 0
     },
     "aom": {
@@ -2581,7 +2581,7 @@
       "port-version": 0
     },
     "drogon": {
-      "baseline": "1.9.11",
+      "baseline": "1.9.12",
       "port-version": 0
     },
     "dstorage": {
@@ -2833,7 +2833,7 @@
       "port-version": 1
     },
     "expat": {
-      "baseline": "2.7.3",
+      "baseline": "2.7.4",
       "port-version": 0
     },
     "expected-lite": {
@@ -3405,8 +3405,8 @@
       "port-version": 0
     },
     "glib-networking": {
-      "baseline": "2.78.0",
-      "port-version": 1
+      "baseline": "2.80.1",
+      "port-version": 0
     },
     "glibmm": {
       "baseline": "2.80.1",
@@ -5125,7 +5125,7 @@
       "port-version": 0
     },
     "libmediainfo": {
-      "baseline": "25.10",
+      "baseline": "26.1",
       "port-version": 0
     },
     "libmem": {
@@ -7209,7 +7209,7 @@
       "port-version": 3
     },
     "opengl-registry": {
-      "baseline": "2025-10-23",
+      "baseline": "2026-01-26",
       "port-version": 0
     },
     "openh264": {
@@ -10009,7 +10009,7 @@
       "port-version": 0
     },
     "trantor": {
-      "baseline": "1.5.24",
+      "baseline": "1.5.26",
       "port-version": 0
     },
     "tre": {
@@ -10193,7 +10193,7 @@
       "port-version": 0
     },
     "usearch": {
-      "baseline": "2.22.0",
+      "baseline": "2.23.0",
       "port-version": 0
     },
     "usockets": {
