@@ -9261,8 +9261,8 @@
       "port-version": 0
     },
     "sol2": {
-      "baseline": "4.0.0",
-      "port-version": 0
+      "baseline": "3.5.0",
+      "port-version": 1
     },
     "solid3": {
       "baseline": "3.5.8",
