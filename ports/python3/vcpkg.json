@@ -65,7 +65,10 @@
           "name": "expat",
           "default-features": false
         },
-        "libb2",
+        {
+          "name": "libb2",
+          "platform": "!windows"
+        },
         {
           "name": "libffi",
           "default-features": false
