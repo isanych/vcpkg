@@ -1,6 +1,6 @@
 {
   "name": "python3",
-  "version": "3.12.12",
+  "version": "3.12.13",
   "description": "The Python programming language",
   "homepage": "https://github.com/python/cpython",
   "license": "Python-2.0",
@@ -67,6 +67,7 @@
         },
         {
           "name": "libb2",
+          "default-features": false,
           "platform": "!windows"
         },
         {

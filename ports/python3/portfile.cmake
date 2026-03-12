@@ -61,7 +61,7 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO python/cpython
     REF v${VERSION}
-    SHA512 35529751bc29b93b5cd797e308e1ae1fce69b33c1368d9414c9abea7b7c5415483b101fb7f12215e024c30552a35d6704573c5e78aa3721ee3382ab764139623
+    SHA512 39298ac5ee6e751264b196710dff998e4ba530f5ed0cb9ec143c138faf00e32356ff387f71287840e7d0acef855cabd75d71d3d636c23807659e79b1643d891c
     HEAD_REF master
     PATCHES ${PATCHES}
 )
@@ -261,14 +261,15 @@ else()
     if(VCPKG_TARGET_IS_ANDROID)
         list(APPEND OPTIONS "--without-static-libpython" )
         list(APPEND VCPKG_CMAKE_CONFIGURE_OPTIONS "-DANDROID_NO_UNDEFINED=OFF")
-        if(VCPKG_CROSSCOMPILING)
-            # Cannot not run target executables during configure
-            if(NOT PYTHON3_BUGGY_GETADDRINFO)
-                list(APPEND OPTIONS "ac_cv_buggy_getaddrinfo=no")
-            endif()
-            if(NOT PYTHON3_NO_PTMX)
-                list(APPEND OPTIONS "ac_cv_file__dev_ptmx=yes" "ac_cv_file__dev_ptc=no")
-            endif()
+    endif()
+
+    if(VCPKG_CROSSCOMPILING)
+        # Cannot not run target executables during configure
+        if(NOT PYTHON3_BUGGY_GETADDRINFO)
+            list(APPEND OPTIONS "ac_cv_buggy_getaddrinfo=no")
+        endif()
+        if(NOT PYTHON3_NO_PTMX)
+            list(APPEND OPTIONS "ac_cv_file__dev_ptmx=yes" "ac_cv_file__dev_ptc=no")
         endif()
     endif()
 
