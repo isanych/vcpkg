@@ -17,6 +17,7 @@ vcpkg_from_github(
         00015-disable-download-archive.patch
         00016-fix-plugin-targets.patch
         generate.patch
+        remove_cert_log.patch
 )
 file(REMOVE_RECURSE
     "${SOURCE_PATH}/third_party/abseil-cpp"
