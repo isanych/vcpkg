@@ -1,8 +1,20 @@
 diff --git a/src/core/credentials/transport/ssl/ssl_credentials.cc b/src/core/credentials/transport/ssl/ssl_credentials.cc
-index 8d6411ed..c2a011bb 100644
+index 8d6411ed..82ae022a 100644
 --- a/src/core/credentials/transport/ssl/ssl_credentials.cc
 +++ b/src/core/credentials/transport/ssl/ssl_credentials.cc
-@@ -236,11 +236,6 @@ grpc_channel_credentials* grpc_ssl_credentials_create(
+@@ -221,11 +221,6 @@ grpc_security_status grpc_ssl_credentials::InitializeClientHandshakerFactory(
+ grpc_channel_credentials* grpc_ssl_credentials_create(
+     const char* pem_root_certs, grpc_ssl_pem_key_cert_pair* pem_key_cert_pair,
+     const verify_peer_options* verify_options, void* reserved) {
+-  GRPC_TRACE_LOG(api, INFO)
+-      << "grpc_ssl_credentials_create(pem_root_certs=" << pem_root_certs
+-      << ", pem_key_cert_pair=" << pem_key_cert_pair
+-      << ", verify_options=" << verify_options << ", reserved=" << reserved
+-      << ")";
+   GRPC_CHECK_EQ(reserved, nullptr);
+ 
+   return new grpc_ssl_credentials(
+@@ -236,11 +231,6 @@ grpc_channel_credentials* grpc_ssl_credentials_create(
  grpc_channel_credentials* grpc_ssl_credentials_create_ex(
      const char* pem_root_certs, grpc_ssl_pem_key_cert_pair* pem_key_cert_pair,
      const grpc_ssl_verify_peer_options* verify_options, void* reserved) {
@@ -14,7 +26,7 @@ index 8d6411ed..c2a011bb 100644
    GRPC_CHECK_EQ(reserved, nullptr);
  
    return new grpc_ssl_credentials(pem_root_certs, pem_key_cert_pair,
-@@ -419,12 +414,6 @@ grpc_server_credentials* grpc_ssl_server_credentials_create_ex(
+@@ -419,12 +409,6 @@ grpc_server_credentials* grpc_ssl_server_credentials_create_ex(
      size_t num_key_cert_pairs,
      grpc_ssl_client_certificate_request_type client_certificate_request,
      void* reserved) {
