@@ -22,6 +22,7 @@ $v glib libjpeg-turbo libpng pkgconf "libxml2[core,iconv,icu,zlib]" "libxslt"
 cd installed/${VCPKG_TRIPLET}
 ../../postinstall.py || true
 cd "$vcpkgRootDir"
+$v mimalloc[override]
 $v icu harfbuzz
 cd installed/${VCPKG_TRIPLET}
 ../../postinstall.py || true
@@ -50,7 +51,7 @@ cd installed/${VCPKG_TRIPLET}
 ../../postinstall.py || true
 cd "$vcpkgRootDir"
 (( ${VCPKG_QT5} < 2 )) || PKG_CONFIG_PATH="$vcpkgRootDir/installed/${VCPKG_TRIPLET}/lib/pkgconfig" $v qt5-webengine
-$v protobuf grpc boost xerces-c xalan-c mimalloc[override] libzip lua[cpp] sol2 libbacktrace gmp[fat] yices
+$v protobuf grpc boost xerces-c xalan-c libzip lua[cpp] sol2 libbacktrace gmp[fat] yices
 (( ${VCPKG_QT6} < 2 )) || PKG_CONFIG_PATH="$vcpkgRootDir/installed/${VCPKG_TRIPLET}/lib/pkgconfig" $v qtwebengine
 if [[ "$EUID" = 0 ]]; then
   cd /usr/local
