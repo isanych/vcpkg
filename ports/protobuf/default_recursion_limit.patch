@@ -1,0 +1,18 @@
+diff --git a/src/google/protobuf/io/coded_stream.cc b/src/google/protobuf/io/coded_stream.cc
+index 8caa4d9..95fe60c 100644
+--- a/src/google/protobuf/io/coded_stream.cc
++++ b/src/google/protobuf/io/coded_stream.cc
+@@ -84,7 +84,12 @@ CodedInputStream::~CodedInputStream() {
+ }
+ 
+ // Static.
+-int CodedInputStream::default_recursion_limit_ = 100;
++int CodedInputStream::default_recursion_limit_ =
++#ifdef NDEBUG
++  10000;
++#else
++  900;
++#endif
+ 
+ 
+ void CodedInputStream::BackUpInputToCurrentPosition() {

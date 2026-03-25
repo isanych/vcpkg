@@ -1,8 +1,8 @@
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO protocolbuffers/protobuf
-    REF "v33.5"
-    SHA512 71110cd2cbf9f2e7f1bda4eed346ad6cad84a05ab0214d1e0880afc20a788f43176e2ccc8ac284eab38ec21578db147c2837b58789baf2823e4615d4b3557937
+    REF "v33.6"
+    SHA512 16f8689ec7aba47d29f27c2360c33c78d6e11ae9f29e815f792e6b943713395e680f0ab6d48f9395e8bec1df44c4afdc212ad4e4fc3629b820e7b3ac82e132e9
     HEAD_REF master
     PATCHES
         fix-static-build.patch
@@ -11,6 +11,7 @@ vcpkg_from_github(
         fix-install-dirs.patch
         fix-constinit-with-clang-cl.patch
         fix-upb.patch
+        default_recursion_limit.patch
         support-grpc.patch
 )
 
