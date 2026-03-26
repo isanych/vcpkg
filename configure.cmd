@@ -26,6 +26,12 @@ if %VCPKG_DEFAULT_TRIPLET% == x64ws %v% mimalloc
 if %errorlevel% neq 0 exit /b %errorlevel%
 if %x% == x64 %v% sol2 gmp yices
 if %errorlevel% neq 0 exit /b %errorlevel%
+if exist downloads\tools\python\python-3.14.2-x64-1\python314.zip (
+  rd /q/s downloads\tools\python\python-3.14.2-x64-1
+  del C:\opt\python\latest\python.exe
+  copy C:\opt\python\latest\python3.exe C:\opt\python\latest\python.exe
+  xcopy /s /i C:\opt\python\latest downloads\tools\python\python-3.14.2-x64-1 
+)
 if %VCPKG_QT6% geq 2 %v% qtwebengine
 if %errorlevel% neq 0 exit /b %errorlevel%
 if %VCPKG_QT6% geq 2 if not exist installed\%VCPKG_DEFAULT_TRIPLET%\bin\Qt6WebEngineWidgets.dll exit /b 1
