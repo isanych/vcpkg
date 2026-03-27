@@ -1,8 +1,7 @@
-diff --git a/cmake/Functions.cmake b/cmake/Functions.cmake
-index 215f58d3b..8024e1cb1 100644
---- a/cmake/Functions.cmake
-+++ b/cmake/Functions.cmake
-@@ -997,6 +997,10 @@ macro(append_compiler_linker_sdk_setup)
+diff --git a/cmake/QtToolchainHelpers.cmake b/cmake/QtToolchainHelpers.cmake
+--- a/cmake/QtToolchainHelpers.cmake
++++ b/cmake/QtToolchainHelpers.cmake
+@@ -400,6 +400,10 @@
                  use_libcxx=true
              )
              _qt_internal_get_apple_sdk_version(apple_sdk_version)
@@ -14,10 +13,9 @@ index 215f58d3b..8024e1cb1 100644
                  list(APPEND gnArgArg
                      use_sck=false
 diff --git a/src/3rdparty/chromium/build/config/apple/sdk_info.py b/src/3rdparty/chromium/build/config/apple/sdk_info.py
-index 81b06d438..03af4f2db 100644
 --- a/src/3rdparty/chromium/build/config/apple/sdk_info.py
 +++ b/src/3rdparty/chromium/build/config/apple/sdk_info.py
-@@ -59,8 +59,11 @@ def FillXcodeVersion(settings, developer_dir):
+@@ -59,8 +59,11 @@
      settings['xcode_build'] = version_plist['ProductBuildVersion']
      return
  
@@ -30,7 +28,7 @@ index 81b06d438..03af4f2db 100644
    settings['xcode_version'] = FormatVersion(lines[0].split()[-1])
    settings['xcode_version_int'] = int(settings['xcode_version'], 10)
    settings['xcode_build'] = lines[-1].split()[-1]
-@@ -86,10 +89,13 @@ def FillSDKPathAndVersion(settings, platform, xcode_version):
+@@ -86,10 +89,13 @@
    settings['sdk_build'] = subprocess.check_output(
        ['xcrun', '-sdk', platform,
         '--show-sdk-build-version']).decode('UTF-8').strip()
@@ -46,11 +44,10 @@ index 81b06d438..03af4f2db 100644
  
  def CreateXcodeSymlinkAt(src, dst, root_build_dir):
 diff --git a/src/3rdparty/chromium/build/config/mac/mac_sdk.gni b/src/3rdparty/chromium/build/config/mac/mac_sdk.gni
-index 00588459e..48b4a0102 100644
 --- a/src/3rdparty/chromium/build/config/mac/mac_sdk.gni
 +++ b/src/3rdparty/chromium/build/config/mac/mac_sdk.gni
-@@ -15,6 +15,8 @@ assert(
-     (current_os == "ios" && current_toolchain == "${default_toolchain}_blink"))
+@@ -12,6 +12,8 @@
+ assert(current_os == "mac" || current_os == "android" || current_toolchain == default_toolchain)
  
  declare_args() {
 +  apple_sdk_version = ""
@@ -58,7 +55,7 @@ index 00588459e..48b4a0102 100644
    # The following two variables control the minimum supported version for
    # macOS:
    #
-@@ -115,6 +117,7 @@ if (mac_sdk_path == "" && use_system_xcode &&
+@@ -137,6 +139,7 @@
  }
  
  if (use_system_xcode) {
@@ -66,7 +63,7 @@ index 00588459e..48b4a0102 100644
    # The tool will print the SDK path on the first line, and the version on the
    # second line.
    find_sdk_args = [
-@@ -133,6 +136,12 @@ if (use_system_xcode) {
+@@ -155,6 +158,12 @@
    } else {
      mac_bin_path = find_sdk_lines[1]
    }

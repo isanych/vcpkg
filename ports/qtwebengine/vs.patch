@@ -6,8 +6,8 @@ index fb3642c959..02a21594e2 100644
    Builtins* builtins = isolate->builtins();
  
    // Store instruction stream lengths and offsets.
--  std::vector<struct LayoutDescription> layout_descriptions(kTableSize);
--  std::vector<struct BuiltinLookupEntry> offset_descriptions(kTableSize);
+-  std::vector<struct EmbeddedData::LayoutDescription> layout_descriptions(kTableSize);
+-  std::vector<struct EmbeddedData::BuiltinLookupEntry> offset_descriptions(kTableSize);
 +  ::std::vector<struct ::v8::internal::EmbeddedData::LayoutDescription> layout_descriptions(kTableSize);
 +  ::std::vector<struct ::v8::internal::EmbeddedData::BuiltinLookupEntry> offset_descriptions(kTableSize);
  

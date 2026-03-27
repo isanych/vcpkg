@@ -26,38 +26,9 @@ index fa227f6..9b84783 100644
 +#include "third_party/blink/renderer/core/execution_context/navigator_base.h"
  
 -namespace blink {
- 
+-
 -class NavigatorBase;
 +namespace blink {
  
  class MODULES_EXPORT LockedMode final : public ScriptWrappable,
                                          public Supplement<NavigatorBase> {
-diff --git a/src/3rdparty/chromium/third_party/blink/renderer/modules/printing/web_printing_manager.h b/src/3rdparty/chromium/third_party/blink/renderer/modules/printing/web_printing_manager.h
-index c316642..d58a4e8 100644
---- a/src/3rdparty/chromium/third_party/blink/renderer/modules/printing/web_printing_manager.h
-+++ b/src/3rdparty/chromium/third_party/blink/renderer/modules/printing/web_printing_manager.h
-@@ -10,11 +10,11 @@
- #include "third_party/blink/renderer/platform/bindings/script_wrappable.h"
- #include "third_party/blink/renderer/platform/mojo/heap_mojo_remote.h"
- #include "third_party/blink/renderer/platform/supplementable.h"
-+#include "third_party/blink/renderer/core/execution_context/navigator_base.h"
- 
- namespace blink {
- 
- class ExceptionState;
--class NavigatorBase;
- class ScriptPromise;
- class ScriptPromiseResolver;
- 
-diff --git a/src/3rdparty/chromium/third_party/blink/renderer/core/html/parser/text_resource_decoder.cc b/src/3rdparty/chromium/third_party/blink/renderer/core/html/parser/text_resource_decoder.cc
-index 7d61edaae..b40c3e95d 100644
---- a/src/3rdparty/chromium/third_party/blink/renderer/core/html/parser/text_resource_decoder.cc
-+++ b/src/3rdparty/chromium/third_party/blink/renderer/core/html/parser/text_resource_decoder.cc
-@@ -22,6 +22,7 @@
-
- #include "third_party/blink/renderer/core/html/parser/text_resource_decoder.h"
-
-+#include "base/strings/string_util.h"
- #include "base/numerics/safe_conversions.h"
- #include "third_party/blink/renderer/core/dom/dom_implementation.h"
- #include "third_party/blink/renderer/core/html/parser/html_meta_charset_parser.h"
