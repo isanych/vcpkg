@@ -1,0 +1,15 @@
+diff --git a/src/core/filter/fused_filters.cc b/src/core/filter/fused_filters.cc
+--- a/src/core/filter/fused_filters.cc
++++ b/src/core/filter/fused_filters.cc
+@@ -19,6 +19,11 @@
+ #include <grpc/grpc.h>
+ #include <grpc/support/port_platform.h>
+ 
+ #include "src/core/config/core_configuration.h"
+ 
++#if defined(_MSC_VER) && _MSC_VER >= 1950 && _MSC_VER < 1960 && \
++    !defined(GRPC_NO_FILTER_FUSION)
++#define GRPC_NO_FILTER_FUSION
++#endif
++
+ #ifndef GRPC_NO_FILTER_FUSION

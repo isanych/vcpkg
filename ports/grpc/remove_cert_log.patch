@@ -33,7 +33,7 @@ index 8d6411ed..82ae022a 100644
 -  GRPC_TRACE_LOG(api, INFO)
 -      << "grpc_ssl_server_credentials_create_ex(pem_root_certs="
 -      << pem_root_certs << ", pem_key_cert_pairs=" << pem_key_cert_pairs
--      << ", num_key_cert_pairs=" << (unsigned long)num_key_cert_pairs
+-      << ", num_key_cert_pairs=" << num_key_cert_pairs
 -      << ", client_certificate_request=" << client_certificate_request
 -      << ", reserved=" << reserved << ")";
    GRPC_CHECK_EQ(reserved, nullptr);

@@ -6,7 +6,7 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO grpc/grpc
     REF "v${VERSION}"
-    SHA512 273098845d16aba71da0e0a35acfbf90b7dccb876e691d65712977998b58795208296431913c7b922390d76aff4ed8f05a5fae6d014e4394a6b8482e2d8ebcf8
+    SHA512 5ef6ec2277dcb2257f8ac7546057e9a3da6668676a3a4ff64e08e66abb465b5705103c4aa0b41955535ee437d4feef5b811aa3e31636c4cb76bf68c52caaccf7
     HEAD_REF master
     PATCHES
         00001-fix-uwp.patch
@@ -16,6 +16,7 @@ vcpkg_from_github(
         00006-utf8-range.patch
         00015-disable-download-archive.patch
         00016-fix-plugin-targets.patch
+        00017-vs2026-fused-filters.patch
         generate.patch
         remove_cert_log.patch
 )
