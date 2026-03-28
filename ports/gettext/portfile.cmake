@@ -35,6 +35,7 @@ vcpkg_extract_source_archive(SOURCE_PATH
         # parallel-gettext-tools.patch
         config-step-order.patch
         # 0001-xgettext-Fix-some-test-failures-on-MSVC.patch
+        fix-gcc15-c23-generics.patch
 )
 
 macro(execute_process)
