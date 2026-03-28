@@ -79,5 +79,5 @@ unset LD_LIBRARY_PATH
 cd "$vcpkgRootDir/.."
 if [[ -n "${VCPKG_BASE}" && -d /mnt/mirror/vcpkg ]]; then
   tar cJf /mnt/mirror/vcpkg/vcpkg-${VCPKG_BRANCH}-${VCPKG_BASE}.txz vcpkg/installed/${VCPKG_TRIPLET} vcpkg/scripts vcpkg/triplets/${VCPKG_TRIPLET}.cmake vcpkg/.vcpkg-root
-  tar cJf /mnt/mirror/vcpkg/vcpkg-${VCPKG_BRANCH}-${VCPKG_BASE}-src.txz --exclude=${VCPKG_TRIPLET}-rel --exclude=${VCPKG_TRIPLET}-dbg --exclude=${VCPKG_TRIPLET}-venv vcpkg/b
+  [[ ${VCPKG_BASE} != debian11 ]] || tar cJf /mnt/mirror/vcpkg/vcpkg-${VCPKG_BRANCH}-linux-src.txz --exclude=${VCPKG_TRIPLET}-rel --exclude=${VCPKG_TRIPLET}-dbg --exclude=${VCPKG_TRIPLET}-venv vcpkg/b
 fi
