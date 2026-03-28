@@ -7,6 +7,7 @@ vcpkg_from_github(
     disable-warning-nonnull.patch
     only-libsystemd.patch
     pkgconfig.patch
+    fix-errno-aliases.patch
 )
 
 set(static false)
