@@ -1,4 +1,4 @@
-cd "%~dp0"
+cd /d "%~dp0"
 if [%x%] == [] set x=x64
 if [%VCPKG_ADD%] == [] set VCPKG_ADD=https://mirror.qac.perforce.com/vcpkg/vcpkg-add-2025-windows-%x%.tgz
 set VCPKG_DEFAULT_TRIPLET=%x%-fast

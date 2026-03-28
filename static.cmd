@@ -1,4 +1,4 @@
-cd "%~dp0"
+cd /d "%~dp0"
 if [%x%] == [] set x=x64
 if [%VCPKG_DEFAULT_TRIPLET%] == [] set VCPKG_DEFAULT_TRIPLET=%x%ws
 set VCPKG_QT5=0

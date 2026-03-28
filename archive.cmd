@@ -1,4 +1,4 @@
-cd "%~dp0.."
+cd /d "%~dp0.."
 C:\tools\git\usr\bin\find vcpkg\installed\x64ws -name "*-debug.cmake" -delete
 if [%VCPKG_BRANCH%] == [] set VCPKG_BRANCH=2026.2
 if exist vcpkg\installed\x64w 7z a vcpkg-%VCPKG_BRANCH%-windows.7z vcpkg/installed/x64w vcpkg/scripts vcpkg/triplets/x64w.cmake vcpkg/.vcpkg-root
