@@ -17,6 +17,7 @@ vcpkg_from_github(
         00015-disable-download-archive.patch
         00016-fix-plugin-targets.patch
         00017-vs2026-fused-filters.patch
+        00018-fix-statussetint-asan.patch
         generate.patch
         remove_cert_log.patch
 )

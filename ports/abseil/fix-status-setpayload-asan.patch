@@ -1,0 +1,150 @@
+diff --git a/absl/status/internal/status_internal.cc b/absl/status/internal/status_internal.cc
+index 9884189..5d08bce 100644
+--- a/absl/status/internal/status_internal.cc
++++ b/absl/status/internal/status_internal.cc
+@@ -76,7 +76,23 @@ absl::optional<absl::Cord> StatusRep::GetPayload(
+   return absl::nullopt;
+ }
+ 
+-void StatusRep::SetPayload(absl::string_view type_url, absl::Cord payload) {
++void StatusRep::SetPayload(absl::string_view type_url,
++                           const absl::Cord& payload) {
++  if (payloads_ == nullptr) {
++    payloads_ = absl::make_unique<status_internal::Payloads>();
++  }
++
++  absl::optional<size_t> index =
++      status_internal::FindPayloadIndexByUrl(payloads_.get(), type_url);
++  if (index.has_value()) {
++    (*payloads_)[index.value()].payload = payload;
++    return;
++  }
++
++  payloads_->emplace_back(std::string(type_url), payload);
++}
++
++void StatusRep::SetPayload(absl::string_view type_url, absl::Cord&& payload) {
+   if (payloads_ == nullptr) {
+     payloads_ = absl::make_unique<status_internal::Payloads>();
+   }
+@@ -88,7 +104,7 @@ void StatusRep::SetPayload(absl::string_view type_url, absl::Cord payload) {
+     return;
+   }
+ 
+-  payloads_->push_back({std::string(type_url), std::move(payload)});
++  payloads_->emplace_back(std::string(type_url), std::move(payload));
+ }
+ 
+ StatusRep::EraseResult StatusRep::ErasePayload(absl::string_view type_url) {
+diff --git a/absl/status/internal/status_internal.h b/absl/status/internal/status_internal.h
+index 35a9f9b..716ffbb 100644
+--- a/absl/status/internal/status_internal.h
++++ b/absl/status/internal/status_internal.h
+@@ -23,10 +23,10 @@
+ #include "absl/base/attributes.h"
+ #include "absl/base/config.h"
+ #include "absl/base/nullability.h"
+-#include "absl/container/inlined_vector.h"
+ #include "absl/strings/cord.h"
+ #include "absl/strings/string_view.h"
+ #include "absl/types/optional.h"
++#include <vector>
+ 
+ #ifndef SWIG
+ // Disabled for SWIG as it doesn't parse attributes correctly.
+@@ -60,9 +60,15 @@ namespace status_internal {
+ struct Payload {
+   std::string type_url;
+   absl::Cord payload;
++
++  Payload() = default;
++  Payload(std::string type_url_arg, const absl::Cord& payload_arg)
++      : type_url(std::move(type_url_arg)), payload(payload_arg) {}
++  Payload(std::string type_url_arg, absl::Cord&& payload_arg)
++      : type_url(std::move(type_url_arg)), payload(std::move(payload_arg)) {}
+ };
+ 
+-using Payloads = absl::InlinedVector<Payload, 1>;
++using Payloads = std::vector<Payload>;
+ 
+ // Reference-counted representation of Status data.
+ class StatusRep {
+@@ -84,7 +90,8 @@ class StatusRep {
+ 
+   // Payload methods correspond to the same methods in absl::Status.
+   absl::optional<absl::Cord> GetPayload(absl::string_view type_url) const;
+-  void SetPayload(absl::string_view type_url, absl::Cord payload);
++  void SetPayload(absl::string_view type_url, const absl::Cord& payload);
++  void SetPayload(absl::string_view type_url, absl::Cord&& payload);
+   struct EraseResult {
+     bool erased;
+     uintptr_t new_rep;
+diff --git a/absl/status/status.h b/absl/status/status.h
+index b26d072..3cb23f1 100644
+--- a/absl/status/status.h
++++ b/absl/status/status.h
+@@ -591,7 +591,8 @@ class ABSL_ATTRIBUTE_TRIVIAL_ABI Status final {
+   // any existing payload for that `type_url`.
+   //
+   // NOTE: This function does nothing if the Status is ok.
+-  void SetPayload(absl::string_view type_url, absl::Cord payload);
++  void SetPayload(absl::string_view type_url, const absl::Cord& payload);
++  void SetPayload(absl::string_view type_url, absl::Cord&& payload);
+ 
+   // Status::ErasePayload()
+   //
+@@ -868,7 +869,15 @@ inline absl::optional<absl::Cord> Status::GetPayload(
+   return RepToPointer(rep_)->GetPayload(type_url);
+ }
+ 
+-inline void Status::SetPayload(absl::string_view type_url, absl::Cord payload) {
++inline void Status::SetPayload(absl::string_view type_url,
++                               const absl::Cord& payload) {
++  if (ok()) return;
++  status_internal::StatusRep* rep = PrepareToModify(rep_);
++  rep->SetPayload(type_url, payload);
++  rep_ = PointerToRep(rep);
++}
++
++inline void Status::SetPayload(absl::string_view type_url, absl::Cord&& payload) {
+   if (ok()) return;
+   status_internal::StatusRep* rep = PrepareToModify(rep_);
+   rep->SetPayload(type_url, std::move(payload));
+diff --git a/absl/strings/cord.h b/absl/strings/cord.h
+index fa6eb8a..34354b8 100644
+--- a/absl/strings/cord.h
++++ b/absl/strings/cord.h
+@@ -1019,7 +1019,7 @@ class Cord {
+     // Unrefs the tree and stops profiling.
+     void UnrefTree();
+ 
+-    void ResetToEmpty() { data_ = {}; }
++    void ResetToEmpty() { data_.set_inline_size(0); }
+ 
+     void set_inline_size(size_t size) { data_.set_inline_size(size); }
+     size_t inline_size() const { return data_.inline_size(); }
+diff --git a/absl/strings/internal/cord_internal.h b/absl/strings/internal/cord_internal.h
+index 6637561..133653d 100644
+--- a/absl/strings/internal/cord_internal.h
++++ b/absl/strings/internal/cord_internal.h
+@@ -851,7 +851,10 @@ inline InlineData& InlineData::operator=(const InlineData& rhs) noexcept {
+ 
+ constexpr void InlineData::poison_this() {
+   if (!absl::is_constant_evaluated()) {
+-    container_internal::SanitizerPoisonObject(this);
++    // Keep the tag byte (data[0]) readable so is_tree()/tag() checks in
++    // Cord::~Cord() work even when ABSL_CORD_INTERNAL_NO_SANITIZE on tag()
++    // is not honored after inlining (observed with MSVC).
++    container_internal::SanitizerPoisonMemoryRegion(rep_.as_chars(), kMaxInline);
+   }
+ }
+ 
+@@ -871,7 +874,7 @@ constexpr void InlineData::poison() {
+         container_internal::SanitizerPoisonMemoryRegion(end, kMaxInline - size);
+       }
+     } else {
+-      container_internal::SanitizerPoisonObject(this);
++      container_internal::SanitizerPoisonMemoryRegion(rep_.as_chars(), kMaxInline);
+     }
+   }
+ }

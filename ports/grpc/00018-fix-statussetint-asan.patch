@@ -1,0 +1,29 @@
+diff --git a/src/core/util/status_helper.cc b/src/core/util/status_helper.cc
+index 666a7de..72b2997 100644
+--- a/src/core/util/status_helper.cc
++++ b/src/core/util/status_helper.cc
+@@ -146,8 +146,8 @@ void StatusSetInt(absl::Status* status, StatusIntProperty key, intptr_t value) {
+   if (IsErrorFlattenEnabled() && key == StatusIntProperty::kRpcStatus) {
+     // When setting the RPC status, just replace the top-level status code.
+     *status = ReplaceStatusCode(*status, static_cast<absl::StatusCode>(value));
+     return;
+   }
+-  status->SetPayload(GetStatusIntPropertyUrl(key),
+-                     absl::Cord(std::to_string(value)));
++  absl::Cord payload(std::to_string(value));
++  status->SetPayload(GetStatusIntPropertyUrl(key), payload);
+ }
+@@ -194,11 +194,12 @@
+   if (IsErrorFlattenEnabled() && key == StatusStrProperty::kGrpcMessage) {
+     if (!status->ok()) {
+       *status = ReplaceStatusMessage(
+           *status, status->message().empty()
+                        ? value
+                        : absl::StrCat(value, " (", status->message(), ")"));
+     }
+     return;
+   }
+-  status->SetPayload(GetStatusStrPropertyUrl(key), absl::Cord(value));
++  absl::Cord payload(value);
++  status->SetPayload(GetStatusStrPropertyUrl(key), payload);
+ }
