@@ -29,6 +29,7 @@
   "features": {
     "ffmpeg": {
       "description": "Build with ffmpeg",
+      "supports": "!emscripten",
       "dependencies": [
         {
           "name": "ffmpeg",
