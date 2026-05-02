@@ -9,7 +9,7 @@ set(VCPKG_LIBRARY_LINKAGE static)
 endif()
 set(VCPKG_PLATFORM_TOOLSET v143)
 set(VCPKG_BUILD_TYPE release)
-list(APPEND VCPKG_CMAKE_CONFIGURE_OPTIONS "-DCMAKE_CXX_STANDARD=17")
+list(APPEND VCPKG_CMAKE_CONFIGURE_OPTIONS "-DCMAKE_CXX_STANDARD=20")
 
 set(IS_LTO TRUE)
 set(NO_LTO abseil double-conversion gmp grpc libffi protobuf re2 upb)

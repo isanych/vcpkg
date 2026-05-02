@@ -1,0 +1,58 @@
+GCC 16 + C++20: disable PCH on Linux and add global -include cstdint.
+PCH conflicts with -include on GCC (tokens before PCH invalidate it).
+
+--- a/src/3rdparty/chromium/build/config/BUILD.gn
++++ b/src/3rdparty/chromium/build/config/BUILD.gn
+@@ -415,7 +415,7 @@
+ 
+       # Force include the header.
+       cflags = [ "/FI$precompiled_header" ]
+-    } else if (is_mac || is_linux) {
++    } else if (is_mac) {
+       precompiled_source = "//build/precompile.h"
+     }
+   }
+--- a/src/3rdparty/chromium/build/config/compiler/BUILD.gn
++++ b/src/3rdparty/chromium/build/config/compiler/BUILD.gn
+@@ -282,7 +282,7 @@
+   asmflags = []
+   cflags = []
+   cflags_c = []
+-  cflags_cc = []
++  cflags_cc = [ "-include", "cstdint" ]
+   cflags_objc = []
+   cflags_objcc = []
+   rustflags = []
+--- a/src/3rdparty/chromium/third_party/blink/renderer/BUILD.gn
++++ b/src/3rdparty/chromium/third_party/blink/renderer/BUILD.gn
+@@ -84,8 +84,6 @@
+       cflags = [ "/FI$precompiled_header" ]
+     } else if (is_mac) {
+       precompiled_source = "//third_party/blink/renderer/build/mac/prefix.h"
+-    } else if (is_linux) {
+-      precompiled_source = "//third_party/blink/renderer/build/linux/prefix.h"
+     }
+   }
+ }
+--- a/src/3rdparty/chromium/third_party/blink/renderer/core/BUILD.gn
++++ b/src/3rdparty/chromium/third_party/blink/renderer/core/BUILD.gn
+@@ -161,7 +161,7 @@
+ 
+       # Force include the header.
+       cflags = [ "/FI$precompiled_header" ]
+-    } else if (is_mac || is_linux) {
++    } else if (is_mac) {
+       precompiled_source = "//third_party/blink/renderer/core/precompile_core.h"
+     }
+   }
+--- a/src/3rdparty/chromium/third_party/blink/renderer/platform/BUILD.gn
++++ b/src/3rdparty/chromium/third_party/blink/renderer/platform/BUILD.gn
+@@ -290,7 +290,7 @@
+ 
+       # Force include the header.
+       cflags = [ "/FI$precompiled_header" ]
+-    } else if (is_mac || is_linux) {
++    } else if (is_mac) {
+       precompiled_source =
+           "//third_party/blink/renderer/platform/precompile_platform.h"
+     }
