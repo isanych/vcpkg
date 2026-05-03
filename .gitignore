@@ -312,5 +312,4 @@ prefab/
 pythonenv3.8/
 .venv/
 /b/
-/triplets/x64.cmake
-/triplets/x64a.cmake
+

@@ -22,9 +22,10 @@ endif()
 
 set(VCPKG_CXX_FLAGS "-fsanitize=address,undefined,pointer-compare,pointer-subtract -fsanitize-address-use-after-scope -fstack-protector-all -fstack-clash-protection -fno-omit-frame-pointer -U_FORTIFY_SOURCE")
 set(VCPKG_C_FLAGS   "-fsanitize=address,undefined,pointer-compare,pointer-subtract -fsanitize-address-use-after-scope -fstack-protector-all -fstack-clash-protection -fno-omit-frame-pointer -U_FORTIFY_SOURCE")
+set(VCPKG_LINKER_FLAGS "-fsanitize=address,undefined,pointer-compare,pointer-subtract -lpthread")
 
 if(PORT STREQUAL glib)
   if(IS_DEBIAN)
-    set(VCPKG_LINKER_FLAGS "-Wl,--no-as-needed -ldl")
+    set(VCPKG_LINKER_FLAGS "${VCPKG_LINKER_FLAGS} -Wl,--no-as-needed -ldl")
   endif()
 endif()

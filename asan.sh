@@ -7,7 +7,9 @@ export VCPKG_QT5=0
 unset VCPKG_BASE
 export ASAN_OPTIONS=detect_leaks=0
 if [[ -z "$LD_PRELOAD" ]]; then
-  if [[ -e /usr/lib64/libasan.so.8 ]]; then
+  if [[ -e /opt/gcc/latest/lib64/libasan.so ]]; then
+    export LD_PRELOAD=/opt/gcc/latest/lib64/libasan.so
+  elif [[ -e /usr/lib64/libasan.so.8 ]]; then
     export LD_PRELOAD=/usr/lib64/libasan.so.8
   elif [[ -e /lib/x86_64-linux-gnu/libasan.so.8 ]]; then
     export LD_PRELOAD=/lib/x86_64-linux-gnu/libasan.so.8
