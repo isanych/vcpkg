@@ -14,12 +14,15 @@ PCH conflicts with -include on GCC (tokens before PCH invalidate it).
    }
 --- a/src/3rdparty/chromium/build/config/compiler/BUILD.gn
 +++ b/src/3rdparty/chromium/build/config/compiler/BUILD.gn
-@@ -282,7 +282,7 @@
+@@ -282,7 +282,10 @@
    asmflags = []
    cflags = []
    cflags_c = []
 -  cflags_cc = []
-+  cflags_cc = [ "-include", "cstdint" ]
++  cflags_cc = []
++  if (is_linux) {
++    cflags_cc += [ "-include", "cstdint" ]
++  }
    cflags_objc = []
    cflags_objcc = []
    rustflags = []

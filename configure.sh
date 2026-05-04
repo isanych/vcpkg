@@ -8,7 +8,7 @@ unset SITE_CONFIG
 export VCPKG_BINARY_SOURCES=clear
 export CMAKE_POLICY_VERSION_MINIMUM=3.5
 export VCPKG_KEEP_ENV_VARS=CMAKE_POLICY_VERSION_MINIMUM
-: ${VCPKG_BRANCH:=2026.2}
+: ${VCPKG_BRANCH:=2026.3}
 : ${VCPKG_ADD:=https://mirror.qac.perforce.com/vcpkg/vcpkg-add-2025-debian11-x64.txz}
 [[ -n "${VCPKG_TRIPLET}" ]] || export VCPKG_TRIPLET=x64l
 [[ -n "${VCPKG_QT5}" ]] || export VCPKG_QT5=0
